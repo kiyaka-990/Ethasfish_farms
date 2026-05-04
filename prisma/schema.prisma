@@ -1,0 +1,128 @@
+// Prisma schema - Ethasfish Farms
+// To use PostgreSQL, change provider to "postgresql"
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+}
+
+model Product {
+  id          String         @id @default(cuid())
+  slug        String         @unique
+  name        String
+  type        String         // whole | fillet | fingerling
+  description String
+  imageUrl    String?
+  badge       String?
+  active      Boolean        @default(true)
+  sortOrder   Int            @default(0)
+  variants    ProductVariant[]
+  orderItems  OrderItem[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model ProductVariant {
+  id         String      @id @default(cuid())
+  productId  String
+  product    Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  label      String      // "Small", "Medium", "Large", "100 pcs"
+  pieces     Int
+  weight     String      // "2kg", "600g", "100 fingerlings"
+  perItem    String?     // "~150g per fillet"
+  priceKsh   Int
+  stock      Int         @default(100)
+  active     Boolean     @default(true)
+  sortOrder  Int         @default(0)
+  orderItems OrderItem[]
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique
+  customerName    String
+  customerPhone   String
+  customerEmail   String?
+  deliveryAddress String
+  notes           String?
+  subtotal        Int
+  deliveryFee     Int         @default(200)
+  total           Int
+  status          String      @default("pending") // pending | paid | preparing | out_for_delivery | delivered | cancelled
+  paymentStatus   String      @default("unpaid")  // unpaid | processing | paid | failed
+  paymentMethod   String      @default("mpesa")
+  mpesaRef        String?
+  mpesaCheckoutId String?
+  items           OrderItem[]
+  payments        Payment[]
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+model OrderItem {
+  id          String          @id @default(cuid())
+  orderId     String
+  order       Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product         @relation(fields: [productId], references: [id])
+  variantId   String
+  variant     ProductVariant  @relation(fields: [variantId], references: [id])
+  productName String
+  variantLabel String
+  unitPrice   Int
+  quantity    Int
+  lineTotal   Int
+}
+
+model Payment {
+  id            String   @id @default(cuid())
+  orderId       String
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  method        String   @default("mpesa")
+  amount        Int
+  status        String   // initiated | success | failed
+  reference     String?
+  checkoutId    String?
+  rawResponse   String?
+  createdAt     DateTime @default(now())
+}
+
+model FaqEntry {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  keywords  String   // comma-separated; the chatbot matches against these
+  category  String   @default("general")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  sessionId String
+  role      String   // user | bot
+  content   String
+  metadata  String?  // JSON string
+  createdAt DateTime @default(now())
+  @@index([sessionId])
+}
+
+model Subscriber {
+  id        String   @id @default(cuid())
+  email     String?  @unique
+  phone     String?  @unique
+  createdAt DateTime @default(now())
+}

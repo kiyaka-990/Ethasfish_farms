@@ -1,0 +1,35 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4dd1c4" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="ling" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#67e8f9"/>
+      <stop offset="100%" stop-color="#0891b2"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg3)"/>
+  <g>
+    <g transform="translate(120,100)">
+      <ellipse cx="0" cy="0" rx="35" ry="14" fill="url(#ling)"/>
+      <path d="M-35 0 L-50 -10 L-45 0 L-50 10 Z" fill="url(#ling)"/>
+      <circle cx="22" cy="-4" r="2.5" fill="#051a13"/>
+    </g>
+    <g transform="translate(220,180) rotate(-15)">
+      <ellipse cx="0" cy="0" rx="40" ry="16" fill="url(#ling)" opacity="0.85"/>
+      <path d="M-40 0 L-58 -12 L-52 0 L-58 12 Z" fill="url(#ling)" opacity="0.85"/>
+      <circle cx="26" cy="-5" r="3" fill="#051a13"/>
+    </g>
+    <g transform="translate(290,80) rotate(20)">
+      <ellipse cx="0" cy="0" rx="30" ry="12" fill="url(#ling)" opacity="0.7"/>
+      <path d="M-30 0 L-44 -8 L-40 0 L-44 8 Z" fill="url(#ling)" opacity="0.7"/>
+      <circle cx="20" cy="-3" r="2" fill="#051a13"/>
+    </g>
+    <g transform="translate(160,220) rotate(8)">
+      <ellipse cx="0" cy="0" rx="28" ry="11" fill="url(#ling)" opacity="0.75"/>
+      <path d="M-28 0 L-40 -8 L-36 0 L-40 8 Z" fill="url(#ling)" opacity="0.75"/>
+      <circle cx="18" cy="-3" r="2" fill="#051a13"/>
+    </g>
+  </g>
+</svg>

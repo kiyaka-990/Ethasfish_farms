@@ -1,0 +1,22 @@
+<svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1eb5a6" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#0e8c7f" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="fish" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4dd1c4"/>
+      <stop offset="50%" stop-color="#1eb5a6"/>
+      <stop offset="100%" stop-color="#0e8c7f"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <g transform="translate(200,150)">
+    <ellipse cx="0" cy="0" rx="120" ry="50" fill="url(#fish)" opacity="0.9"/>
+    <path d="M-120 0 L-160 -30 L-150 0 L-160 30 Z" fill="url(#fish)"/>
+    <circle cx="70" cy="-15" r="8" fill="#051a13"/>
+    <circle cx="73" cy="-18" r="3" fill="#fff"/>
+    <path d="M-30 -45 L-15 -65 L0 -50 L15 -60 L25 -45" stroke="#0e8c7f" stroke-width="3" fill="none"/>
+    <path d="M30 -10 Q50 0 30 10" stroke="#051a13" stroke-width="2" fill="none" opacity="0.4"/>
+  </g>
+</svg>

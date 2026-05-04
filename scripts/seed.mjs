@@ -1,0 +1,116 @@
+// Seed script - run with `npm run db:seed`
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
+
+const prisma = new PrismaClient();
+
+async function main() {
+  console.log('🐟 Seeding Ethasfish Farms database...');
+
+  // Admin user
+  const adminEmail = process.env.ADMIN_EMAIL || 'admin@ethasfish.co.ke';
+  const adminPassword = process.env.ADMIN_PASSWORD || 'changeme123';
+  const passwordHash = await bcrypt.hash(adminPassword, 10);
+
+  await prisma.admin.upsert({
+    where: { email: adminEmail },
+    update: {},
+    create: { email: adminEmail, passwordHash, name: 'Farm Manager' }
+  });
+  console.log(`✓ Admin: ${adminEmail} / ${adminPassword}`);
+
+  // Products
+  const products = [
+    {
+      slug: 'whole-tilapia',
+      name: 'Whole Tilapia',
+      type: 'whole',
+      description: 'Gutted and scaled, ready to cook. Sustainably raised in Lake Victoria offshore cages — hormone-free, chemical-free, and packed in zero-plastic packaging.',
+      imageUrl: '/images/whole.svg',
+      badge: 'Best Seller',
+      sortOrder: 1,
+      variants: [
+        { label: 'Small',  pieces: 4,  weight: '2kg', perItem: '~450g per fish', priceKsh: 1200, stock: 50, sortOrder: 1 },
+        { label: 'Medium', pieces: 8,  weight: '4kg', perItem: '~450g per fish', priceKsh: 2200, stock: 40, sortOrder: 2 },
+        { label: 'Large',  pieces: 12, weight: '6kg', perItem: '~450g per fish', priceKsh: 3200, stock: 25, sortOrder: 3 }
+      ]
+    },
+    {
+      slug: 'filleted-tilapia',
+      name: 'Filleted Tilapia',
+      type: 'fillet',
+      description: 'Boneless, cleaned fillets — pan, grill, or oven-ready. Approximately 150g per fillet from offshore-cage tilapia.',
+      imageUrl: '/images/fillet.svg',
+      badge: 'Premium',
+      sortOrder: 2,
+      variants: [
+        { label: 'Small',  pieces: 4,  weight: '600g',  perItem: '~150g per fillet', priceKsh: 900,  stock: 60, sortOrder: 1 },
+        { label: 'Medium', pieces: 8,  weight: '1.2kg', perItem: '~150g per fillet', priceKsh: 1700, stock: 45, sortOrder: 2 },
+        { label: 'Large',  pieces: 12, weight: '1.8kg', perItem: '~150g per fillet', priceKsh: 2400, stock: 30, sortOrder: 3 }
+      ]
+    },
+    {
+      slug: 'tilapia-fingerlings',
+      name: 'Nile Tilapia Fingerlings',
+      type: 'fingerling',
+      description: 'Disease-free Nile Tilapia fingerlings, 3–5cm, from our certified hatchery — ideal for stocking ponds and cages.',
+      imageUrl: '/images/fingerling.svg',
+      badge: 'Aquaculture',
+      sortOrder: 3,
+      variants: [
+        { label: '100 pcs',  pieces: 100,  weight: '100 fingerlings',  perItem: '~KSh 20 each', priceKsh: 2000,  stock: 5000, sortOrder: 1 },
+        { label: '500 pcs',  pieces: 500,  weight: '500 fingerlings',  perItem: '~KSh 17 each', priceKsh: 8500,  stock: 5000, sortOrder: 2 },
+        { label: '1000 pcs', pieces: 1000, weight: '1000 fingerlings', perItem: '~KSh 15 each', priceKsh: 15000, stock: 5000, sortOrder: 3 }
+      ]
+    }
+  ];
+
+  for (const p of products) {
+    await prisma.product.upsert({
+      where: { slug: p.slug },
+      update: {
+        name: p.name, type: p.type, description: p.description,
+        imageUrl: p.imageUrl, badge: p.badge, sortOrder: p.sortOrder
+      },
+      create: {
+        slug: p.slug, name: p.name, type: p.type, description: p.description,
+        imageUrl: p.imageUrl, badge: p.badge, sortOrder: p.sortOrder,
+        variants: { create: p.variants }
+      }
+    });
+    console.log(`✓ Product: ${p.name}`);
+  }
+
+  // FAQ - chatbot knowledge base
+  const faqs = [
+    { question: 'What products do you sell?', answer: 'We offer Whole Tilapia (gutted & scaled), Filleted Tilapia (~150g per fillet), and Nile Tilapia Fingerlings — all raised sustainably in Lake Victoria offshore cages and freshwater ponds.', keywords: 'product,products,sell,offer,fish,tilapia,whole,fillet,fingerling,catalogue,catalog,what,have', category: 'products' },
+    { question: 'How do I order?', answer: 'Easy! Browse our shop, add items to your cart, then proceed to checkout. Fill your delivery details and pay via M-Pesa. You can also order via WhatsApp.', keywords: 'order,buy,purchase,checkout,how to order,how do i,place order', category: 'ordering' },
+    { question: 'How does payment work?', answer: 'We accept payment via M-Pesa. After placing your order, you will receive an STK push prompt on your phone. Enter your M-Pesa PIN to complete payment.', keywords: 'pay,payment,mpesa,m-pesa,stk,money,how to pay', category: 'payment' },
+    { question: 'Where are you located?', answer: 'Ethasfish Farms is located at Othany East, Seme Sub-County, Kisumu County, Kenya — right on the shores of Lake Victoria.', keywords: 'location,where,address,find,farm,seme,kisumu,othany,based', category: 'location' },
+    { question: 'Do you deliver?', answer: 'Yes! We deliver across Kisumu County. Standard delivery fee is KSh 200. For bulk orders or delivery outside Kisumu, contact us via WhatsApp.', keywords: 'deliver,delivery,shipping,ship,bring,send', category: 'delivery' },
+    { question: 'How are your fish raised?', answer: 'Our Nile Tilapia are stocked at 3–5cm fingerlings and reared for 7–10 months. Stocking density is 4–6.67 fish per m². We feed them 25% crude protein in greened water — they grow to 100g in 3 months.', keywords: 'raise,raised,grow,grown,farm,farming,cage,pond,how,rear,reared,feed', category: 'farming' },
+    { question: 'Are your fish hormone-free?', answer: 'Yes — 100% hormone-free and chemical-free. Plus, we use zero plastic in our processing and packaging.', keywords: 'hormone,chemical,natural,organic,clean,safe,healthy,plastic,packaging', category: 'quality' },
+    { question: 'What are the nutrition benefits?', answer: 'Tilapia is rich in selenium, potassium, phosphorus, and vitamin B12. It is an excellent source of lean protein — only 96 calories and 26g protein per 100g.', keywords: 'nutrition,nutritional,health,healthy,protein,vitamin,selenium,calories,benefit', category: 'nutrition' },
+    { question: 'What sizes are available?', answer: 'Whole fish: Small (2kg / 4 pieces), Medium (4kg / 8 pieces), Large (6kg / 12 pieces). Fillets: Small (600g), Medium (1.2kg), Large (1.8kg).', keywords: 'size,sizes,small,medium,large,kg,weight,how big,how much weight', category: 'products' },
+    { question: 'Do you sell fingerlings to other farmers?', answer: 'Yes! We have a dedicated Nile Tilapia fingerling production programme. Available in batches of 100, 500, and 1,000 fingerlings — 3–5cm size, certified disease-free.', keywords: 'fingerling,fingerlings,stock,stocking,hatchery,aquaculture,farmer,wholesale', category: 'fingerlings' },
+    { question: 'What are your hours?', answer: 'We are open Monday to Saturday, 7:00am to 6:00pm. Closed on Sundays.', keywords: 'hours,open,closed,time,when,schedule', category: 'general' },
+    { question: 'Can I track my order?', answer: 'Yes! After placing your order you will receive an order number. Visit the Track Order page and enter your order number to see the status.', keywords: 'track,tracking,status,where is my order,follow', category: 'ordering' },
+    { question: 'Do you offer hatchery services?', answer: 'Yes — we operate a dedicated Nile Tilapia hatchery producing certified disease-free fingerlings. Available in batches of 100, 500, and 1,000+ at 3–5cm size. Includes free survival guidance for the first 2 weeks.', keywords: 'hatchery,hatch,brood,fingerling,fingerlings,incubation,aquaculture', category: 'services' },
+    { question: 'Do you sell fish feeds?', answer: 'Yes! We supply high-protein floating pellets formulated specifically for Nile Tilapia: 25% crude protein, available as starter, grower and finisher pellet sizes in 25kg, 50kg, or bulk. No hormones or antibiotics.', keywords: 'feed,feeds,pellet,pellets,crude protein,fish food,nutrition for fish', category: 'services' },
+    { question: 'Do you offer aquaculture consultancy?', answer: 'Yes! We provide end-to-end aquaculture consultancy: site assessment, pond/cage design, stocking density, feed planning, water quality management training, and harvest planning. Backed by real Lake Victoria experience.', keywords: 'consultancy,consult,advice,advisory,training,pond design,aquaculture,help me start,how to farm', category: 'services' },
+    { question: 'Do you send a receipt after I pay?', answer: 'Yes! Once your M-Pesa payment is confirmed, we automatically send you a receipt via WhatsApp and SMS — including your order number, items, totals, and M-Pesa reference. You can also view it anytime at /receipt?order=YOUR-ORDER-NUMBER.', keywords: 'receipt,confirmation,sms,whatsapp,after payment,proof', category: 'payment' }
+  ];
+
+  for (const f of faqs) {
+    const existing = await prisma.faqEntry.findFirst({ where: { question: f.question } });
+    if (!existing) await prisma.faqEntry.create({ data: f });
+  }
+  console.log(`✓ ${faqs.length} FAQ entries`);
+
+  console.log('🎉 Done! Run `npm run dev` and visit http://localhost:3000');
+  console.log(`   Admin: http://localhost:3000/admin (${adminEmail} / ${adminPassword})`);
+}
+
+main()
+  .catch(e => { console.error(e); process.exit(1); })
+  .finally(() => prisma.$disconnect());
