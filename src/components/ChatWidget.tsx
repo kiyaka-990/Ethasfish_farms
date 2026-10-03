@@ -1,15 +1,17 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Sparkles } from 'lucide-react';
+import { MessageCircle, X, Send, Sparkles, Menu as MenuIcon } from 'lucide-react';
 
 interface Msg { role: 'user' | 'bot'; content: string; }
 
-const initialSuggestions = [
+const quickReplies = [
   'Show me your products',
   'What are the prices?',
   'Tell me about your services',
   'How do I order?',
-  'Where are you located?'
+  'Track my order',
+  'Where are you located?',
+  'Talk to a human'
 ];
 
 export default function ChatWidget() {
@@ -19,6 +21,7 @@ export default function ChatWidget() {
   ]);
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
+  const [showMenu, setShowMenu] = useState(true);
   const [sessionId] = useState(() => `s_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -86,6 +89,9 @@ export default function ChatWidget() {
               </p>
               <p className="text-[11px] text-muted">Live · learns from our menu</p>
             </div>
+            <button onClick={() => setShowMenu(v => !v)} className={`p-2 rounded-xl hover:bg-[var(--surface-strong)] transition-colors ${showMenu ? 'text-[var(--accent)]' : 'text-muted'}`} aria-label="Toggle quick menu" aria-pressed={showMenu}>
+              <MenuIcon className="w-4 h-4" />
+            </button>
             <button onClick={() => setOpen(false)} className="p-2 rounded-xl hover:bg-[var(--surface)] text-muted" aria-label="Close">
               <X className="w-4 h-4" />
             </button>
@@ -114,9 +120,9 @@ export default function ChatWidget() {
             )}
           </div>
 
-          {messages.length <= 1 && (
-            <div className="px-4 pb-2 flex flex-wrap gap-1.5">
-              {initialSuggestions.map(s => (
+          {showMenu && (
+            <div className="px-4 pb-2 flex flex-wrap gap-1.5 border-t border-[var(--border-color)] pt-2.5 max-h-28 overflow-y-auto">
+              {quickReplies.map(s => (
                 <button key={s} onClick={() => send(s)} className="text-[11px] px-3 py-1.5 rounded-full glass-soft hover:bg-[var(--surface-strong)] text-secondary transition-colors">
                   {s}
                 </button>
