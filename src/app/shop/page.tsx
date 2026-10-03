@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
-import ProductCard from '@/components/ProductCard';
+import ShopGrid from '@/components/ShopGrid';
 
-export const metadata = { title: 'Shop · Fresh Tilapia & Fingerlings' };
+export const metadata = { title: 'Shop · Fish, Feed & Consultancy' };
 
 async function getProducts(type?: string) {
   return prisma.product.findMany({
@@ -22,7 +22,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
           <span className="section-label">Our Shop</span>
           <h1 className="section-title">Fresh from the <span className="gradient-text">lake</span></h1>
           <p className="text-secondary mt-4 max-w-md mx-auto">
-            Choose your fish, pay with M-Pesa, and we'll deliver fresh.
+            Fish, fingerlings, feed, and consultancy — pay with M-Pesa, or request a quote.
           </p>
         </div>
 
@@ -31,7 +31,9 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
             { v: '', l: 'All' },
             { v: 'whole', l: 'Whole Fish' },
             { v: 'fillet', l: 'Fillets' },
-            { v: 'fingerling', l: 'Fingerlings' }
+            { v: 'fingerling', l: 'Fingerlings' },
+            { v: 'feed', l: 'Fish Feed' },
+            { v: 'consultancy', l: 'Consultancy' }
           ].map(f => {
             const active = (sp.type || '') === f.v;
             return (
@@ -48,9 +50,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
             No products in this category. <a href="/shop" className="text-[var(--accent)] hover:underline">View all</a>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {products.map((p: any, i: number) => <ProductCard key={p.id} product={p} index={i} />)}
-          </div>
+          <ShopGrid products={products as any} />
         )}
       </div>
     </div>

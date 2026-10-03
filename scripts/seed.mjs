@@ -61,6 +61,33 @@ async function main() {
         { label: '500 pcs',  pieces: 500,  weight: '500 fingerlings',  perItem: '~KSh 17 each', priceKsh: 8500,  stock: 5000, sortOrder: 2 },
         { label: '1000 pcs', pieces: 1000, weight: '1000 fingerlings', perItem: '~KSh 15 each', priceKsh: 15000, stock: 5000, sortOrder: 3 }
       ]
+    },
+    {
+      slug: 'tilapia-fish-feed',
+      name: 'Nile Tilapia Fish Feed',
+      type: 'feed',
+      description: 'High-protein floating pellets formulated specifically for Nile Tilapia — 25% crude protein, no hormones or antibiotics. Tested in our own ponds.',
+      imageUrl: 'https://images.unsplash.com/photo-1731552466988-26d1dbeff4ee?w=600&q=80',
+      badge: 'Aquaculture',
+      sortOrder: 4,
+      variants: [
+        { label: 'Starter 25kg',  pieces: 1, weight: '25kg', perItem: 'Fry & fingerling stage', priceKsh: 2800, stock: 200, sortOrder: 1 },
+        { label: 'Grower 25kg',   pieces: 1, weight: '25kg', perItem: 'Juvenile stage',          priceKsh: 2600, stock: 200, sortOrder: 2 },
+        { label: 'Finisher 25kg', pieces: 1, weight: '25kg', perItem: 'Pre-harvest stage',        priceKsh: 2500, stock: 200, sortOrder: 3 },
+        { label: 'Bulk 50kg',     pieces: 1, weight: '50kg', perItem: 'Any stage, bulk rate',      priceKsh: 4800, stock: 100, sortOrder: 4 }
+      ]
+    },
+    {
+      slug: 'aquaculture-consultancy',
+      name: 'Aquaculture Consultancy',
+      type: 'consultancy',
+      description: 'End-to-end advice for your own fish farm: site assessment, pond/cage design, stocking density, feed planning, and water-quality training — backed by real Lake Victoria experience. Pricing depends on scope, so we quote after a quick chat.',
+      imageUrl: 'https://images.unsplash.com/photo-1758535012952-67e5f5f133e7?w=600&q=80',
+      badge: 'Service',
+      sortOrder: 5,
+      variants: [
+        { label: 'Request a Quote', pieces: 1, weight: 'Custom scope', perItem: 'Priced after consultation', priceKsh: 0, stock: 999, sortOrder: 1 }
+      ]
     }
   ];
 

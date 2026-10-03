@@ -1,7 +1,7 @@
 'use client';
 import { useState, useRef } from 'react';
 import Image from 'next/image';
-import { Plus, Sparkles } from 'lucide-react';
+import { Plus, Sparkles, MessageCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useCart } from '@/lib/cart-store';
 import { fmtKsh } from '@/lib/utils';
@@ -30,7 +30,9 @@ interface Product {
 const productImages: Record<string, string> = {
   whole: 'https://images.unsplash.com/photo-1738850305638-b2f1765a4a87?w=600&q=80',
   fillet: 'https://images.unsplash.com/photo-1633244092661-4519a1ffc67e?w=600&q=80',
-  fingerling: 'https://images.unsplash.com/photo-1769771861175-2cdcdf5108db?w=600&q=80'
+  fingerling: 'https://images.unsplash.com/photo-1769771861175-2cdcdf5108db?w=600&q=80',
+  feed: 'https://images.unsplash.com/photo-1731552466988-26d1dbeff4ee?w=600&q=80',
+  consultancy: 'https://images.unsplash.com/photo-1758535012952-67e5f5f133e7?w=600&q=80'
 };
 
 export default function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
@@ -38,6 +40,10 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
   const cardRef = useRef<HTMLDivElement>(null);
   const { add, open } = useCart();
   const variant = product.variants[selectedIdx];
+  const isQuoteBased = product.type === 'consultancy';
+
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '254700000000';
+  const quoteHref = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(`Hi! I'd like a quote for ${product.name}.`)}`;
 
   function handleAdd() {
     if (!variant) return;
@@ -100,23 +106,27 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
           <p className="text-sm text-secondary leading-relaxed line-clamp-2">{product.description}</p>
         </div>
 
-        <div className="flex gap-2 flex-wrap">
-          {product.variants.map((v, i) => (
-            <button
-              key={v.id}
-              onClick={() => setSelectedIdx(i)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
-                i === selectedIdx
-                  ? 'bg-gradient-to-br from-[#3B93CE] to-[#1C6EA8] text-white shadow-lg'
-                  : 'glass-soft hover:bg-[var(--surface-strong)]'
-              }`}
-            >
-              {v.label}
-            </button>
-          ))}
-        </div>
+        {!isQuoteBased && (
+          <div className="flex gap-2 flex-wrap">
+            {product.variants.map((v, i) => (
+              <button
+                key={v.id}
+                onClick={() => setSelectedIdx(i)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                  i === selectedIdx
+                    ? 'bg-gradient-to-br from-[#3B93CE] to-[#1C6EA8] text-white shadow-lg'
+                    : 'glass-soft hover:bg-[var(--surface-strong)]'
+                }`}
+              >
+                {v.label}
+              </button>
+            ))}
+          </div>
+        )}
 
-        {variant && (
+        {isQuoteBased ? (
+          <p className="text-sm text-secondary leading-relaxed">Pricing depends on scope — site visit, pond/cage design, ongoing advisory. We'll quote after a quick chat.</p>
+        ) : variant && (
           <div className="space-y-2">
             <div className="flex items-baseline justify-between">
               <span className="font-display text-2xl font-bold gradient-text">{fmtKsh(variant.priceKsh)}</span>
@@ -126,10 +136,16 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
           </div>
         )}
 
-        <button onClick={handleAdd} disabled={!variant || variant.stock <= 0} className="btn-primary w-full !py-2.5 text-sm">
-          <Plus className="w-4 h-4" />
-          {variant && variant.stock <= 0 ? 'Out of Stock' : 'Add to Cart'}
-        </button>
+        {isQuoteBased ? (
+          <a href={quoteHref} target="_blank" rel="noopener noreferrer" className="btn-primary w-full !py-2.5 text-sm">
+            <MessageCircle className="w-4 h-4" /> Request a Quote
+          </a>
+        ) : (
+          <button onClick={handleAdd} disabled={!variant || variant.stock <= 0} className="btn-primary w-full !py-2.5 text-sm">
+            <Plus className="w-4 h-4" />
+            {variant && variant.stock <= 0 ? 'Out of Stock' : 'Add to Cart'}
+          </button>
+        )}
       </div>
     </div>
   );
