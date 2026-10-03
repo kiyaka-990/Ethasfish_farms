@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { UserButton } from '@clerk/nextjs';
 import { getStaffSession, CLERK_ENABLED } from '@/lib/identity';
-import { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet } from 'lucide-react';
 import Logo from '@/components/Logo';
 
 export const dynamic = 'force-dynamic';
@@ -32,6 +32,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: '/admin/leads', Icon: UserPlus, label: 'Leads' },
     { href: '/admin/products', Icon: Package, label: 'Products' },
     { href: '/admin/inventory', Icon: Boxes, label: 'Inventory' },
+    { href: '/admin/expenses', Icon: Wallet, label: 'Accounting' },
     { href: '/admin/content', Icon: LayoutTemplate, label: 'Site Content' },
     { href: '/admin/media', Icon: ImageIcon, label: 'Media Library' },
     { href: '/admin/faqs', Icon: MessageSquare, label: 'Bot FAQs' },
