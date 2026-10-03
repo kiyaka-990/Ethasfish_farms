@@ -27,7 +27,7 @@ export default async function AdminHomePage() {
   const stats = [
     { Icon: ShoppingBag, label: 'Total Orders', value: totalOrders.toString(), color: 'from-emerald-400/20 to-teal-600/10' },
     { Icon: Clock, label: 'Pending', value: pendingOrders.toString(), color: 'from-amber-400/20 to-orange-600/10' },
-    { Icon: TrendingUp, label: 'This Month', value: fmtKsh(monthRev._sum.total || 0), color: 'from-[#1eb5a6]/20 to-[#0e8c7f]/10' },
+    { Icon: TrendingUp, label: 'This Month', value: fmtKsh(monthRev._sum.total || 0), color: 'from-[#3B93CE]/20 to-[#1C6EA8]/10' },
     { Icon: Package, label: 'Active Products', value: productCount.toString(), color: 'from-cyan-400/20 to-blue-600/10' }
   ];
 

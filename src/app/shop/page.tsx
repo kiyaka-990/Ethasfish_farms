@@ -36,7 +36,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
             const active = (sp.type || '') === f.v;
             return (
               <a key={f.v} href={f.v ? `/shop?type=${f.v}` : '/shop'}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition ${active ? 'bg-gradient-to-br from-[#1eb5a6] to-[#0e8c7f] text-white shadow-lg' : 'glass-soft hover:bg-[var(--surface-strong)]'}`}>
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition ${active ? 'bg-gradient-to-br from-[#3B93CE] to-[#1C6EA8] text-white shadow-lg' : 'glass-soft hover:bg-[var(--surface-strong)]'}`}>
                 {f.l}
               </a>
             );

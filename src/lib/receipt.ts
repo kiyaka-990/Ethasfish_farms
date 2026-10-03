@@ -105,30 +105,30 @@ export async function sendEmailReceipt(p: ReceiptPayload, email: string): Promis
   if (!process.env.RESEND_API_KEY) return false;
   try {
     const html = `
-      <div style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:24px;background:#f6fbf9;color:#0a2a20;">
+      <div style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:24px;background:#F3F7FC;color:#0B1F3A;">
         <div style="text-align:center;margin-bottom:24px;">
-          <h1 style="background:linear-gradient(135deg,#1eb5a6,#0e8c7f);-webkit-background-clip:text;background-clip:text;color:transparent;margin:0;font-size:28px;">Ethasfish Farms</h1>
-          <p style="margin:4px 0 0;color:#5a7568;font-size:13px;">Lake Victoria · Kisumu County</p>
+          <h1 style="background:linear-gradient(135deg,#3B93CE,#1C6EA8);-webkit-background-clip:text;background-clip:text;color:transparent;margin:0;font-size:28px;">Ethasfish Farms</h1>
+          <p style="margin:4px 0 0;color:#5B7190;font-size:13px;">Lake Victoria · Kisumu County</p>
         </div>
         <div style="background:#fff;border:1px solid #d4ede4;border-radius:16px;padding:24px;">
           <h2 style="margin:0 0 16px;font-size:18px;">Receipt</h2>
           <table style="width:100%;font-size:14px;line-height:1.6;">
-            <tr><td style="color:#5a7568;">Name</td><td>${p.customerName}</td></tr>
-            <tr><td style="color:#5a7568;">Order</td><td><code>${p.orderNumber}</code></td></tr>
-            <tr><td style="color:#5a7568;">Date</td><td>${new Date().toLocaleString('en-GB')}</td></tr>
-            <tr><td style="color:#5a7568;">Status</td><td><strong style="color:#0e8c7f;">${p.status.toUpperCase()}</strong></td></tr>
-            ${p.mpesaRef ? `<tr><td style="color:#5a7568;">M-Pesa Ref</td><td><code>${p.mpesaRef}</code></td></tr>` : ''}
+            <tr><td style="color:#5B7190;">Name</td><td>${p.customerName}</td></tr>
+            <tr><td style="color:#5B7190;">Order</td><td><code>${p.orderNumber}</code></td></tr>
+            <tr><td style="color:#5B7190;">Date</td><td>${new Date().toLocaleString('en-GB')}</td></tr>
+            <tr><td style="color:#5B7190;">Status</td><td><strong style="color:#1C6EA8;">${p.status.toUpperCase()}</strong></td></tr>
+            ${p.mpesaRef ? `<tr><td style="color:#5B7190;">M-Pesa Ref</td><td><code>${p.mpesaRef}</code></td></tr>` : ''}
           </table>
           <hr style="border:none;border-top:1px solid #d4ede4;margin:16px 0;">
-          <h3 style="margin:0 0 8px;font-size:14px;color:#5a7568;text-transform:uppercase;letter-spacing:1px;">Items</h3>
+          <h3 style="margin:0 0 8px;font-size:14px;color:#5B7190;text-transform:uppercase;letter-spacing:1px;">Items</h3>
           ${p.items.map(i => `<div style="display:flex;justify-content:space-between;padding:6px 0;font-size:14px;"><span>${i.variantLabel} × ${i.quantity}</span><strong>${fmtKsh(i.lineTotal)}</strong></div>`).join('')}
           <hr style="border:none;border-top:1px solid #d4ede4;margin:16px 0;">
-          <div style="display:flex;justify-content:space-between;font-size:14px;color:#5a7568;"><span>Subtotal</span><span>${fmtKsh(p.subtotal)}</span></div>
-          <div style="display:flex;justify-content:space-between;font-size:14px;color:#5a7568;"><span>Delivery</span><span>${fmtKsh(p.deliveryFee)}</span></div>
-          <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:18px;font-weight:bold;color:#0e8c7f;"><span>Grand Total</span><span>${fmtKsh(p.total)}</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:14px;color:#5B7190;"><span>Subtotal</span><span>${fmtKsh(p.subtotal)}</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:14px;color:#5B7190;"><span>Delivery</span><span>${fmtKsh(p.deliveryFee)}</span></div>
+          <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:18px;font-weight:bold;color:#1C6EA8;"><span>Grand Total</span><span>${fmtKsh(p.total)}</span></div>
         </div>
-        <p style="margin-top:16px;font-size:12px;color:#5a7568;text-align:center;">All transactions are done in real-time. Always pay through our official till number.</p>
-        <p style="margin-top:8px;font-size:12px;color:#5a7568;text-align:center;"><a href="${process.env.NEXT_PUBLIC_SITE_URL || ''}/track?order=${p.orderNumber}" style="color:#0e8c7f;">Track your order →</a></p>
+        <p style="margin-top:16px;font-size:12px;color:#5B7190;text-align:center;">All transactions are done in real-time. Always pay through our official till number.</p>
+        <p style="margin-top:8px;font-size:12px;color:#5B7190;text-align:center;"><a href="${process.env.NEXT_PUBLIC_SITE_URL || ''}/track?order=${p.orderNumber}" style="color:#1C6EA8;">Track your order →</a></p>
       </div>
     `;
     const res = await fetch('https://api.resend.com/emails', {

@@ -67,9 +67,9 @@ export default function AdminOrdersPage() {
         </div>
 
         <div className="flex flex-wrap gap-1.5">
-          <button onClick={() => setFilter('')} className={`px-3 py-1.5 rounded-xl text-xs font-medium transition ${!filter ? 'bg-gradient-to-br from-[#1eb5a6] to-[#0e8c7f] text-white' : 'glass-soft text-secondary'}`}>All</button>
+          <button onClick={() => setFilter('')} className={`px-3 py-1.5 rounded-xl text-xs font-medium transition ${!filter ? 'bg-gradient-to-br from-[#3B93CE] to-[#1C6EA8] text-white' : 'glass-soft text-secondary'}`}>All</button>
           {STATUS_OPTIONS.map(s => (
-            <button key={s} onClick={() => setFilter(s)} className={`px-3 py-1.5 rounded-xl text-xs font-medium transition ${filter === s ? 'bg-gradient-to-br from-[#1eb5a6] to-[#0e8c7f] text-white' : 'glass-soft text-secondary'}`}>
+            <button key={s} onClick={() => setFilter(s)} className={`px-3 py-1.5 rounded-xl text-xs font-medium transition ${filter === s ? 'bg-gradient-to-br from-[#3B93CE] to-[#1C6EA8] text-white' : 'glass-soft text-secondary'}`}>
               {s}
             </button>
           ))}
@@ -126,7 +126,7 @@ export default function AdminOrdersPage() {
                 <span className="text-[11px] text-muted uppercase tracking-wider mr-2">Status:</span>
                 {STATUS_OPTIONS.map(s => (
                   <button key={s} onClick={() => updateStatus(o.id, s)}
-                    className={`px-3 py-1 rounded-lg text-[11px] transition ${o.status === s ? 'bg-gradient-to-br from-[#1eb5a6] to-[#0e8c7f] text-white' : 'glass-soft text-secondary hover:text-primary'}`}>
+                    className={`px-3 py-1 rounded-lg text-[11px] transition ${o.status === s ? 'bg-gradient-to-br from-[#3B93CE] to-[#1C6EA8] text-white' : 'glass-soft text-secondary hover:text-primary'}`}>
                     {s}
                   </button>
                 ))}

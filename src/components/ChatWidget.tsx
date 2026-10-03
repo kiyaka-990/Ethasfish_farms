@@ -69,7 +69,7 @@ export default function ChatWidget() {
       <button
         onClick={() => setOpen(!open)}
         className="fixed bottom-6 right-6 z-[80] w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110"
-        style={{ background: 'linear-gradient(135deg, #1eb5a6 0%, #0e8c7f 100%)', boxShadow: '0 12px 32px rgba(30, 181, 166, 0.5)' }}
+        style={{ background: 'linear-gradient(135deg, #3B93CE 0%, #1C6EA8 100%)', boxShadow: '0 12px 32px rgba(59, 147, 206, 0.5)' }}
         aria-label="Open chat"
       >
         {open ? <X className="w-6 h-6 text-white" /> : <MessageCircle className="w-6 h-6 text-white" />}
@@ -78,9 +78,9 @@ export default function ChatWidget() {
 
       <div className={`fixed bottom-24 right-6 z-[75] w-[calc(100vw-3rem)] sm:w-[400px] h-[600px] max-h-[80vh] transition-all duration-500 ${open ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-8 pointer-events-none'}`}>
         <div className="h-full flex flex-col glass-strong rounded-3xl overflow-hidden border border-[var(--border-color)] shadow-2xl">
-          <div className="p-4 flex items-center gap-3 border-b border-[var(--border-color)]" style={{ background: 'linear-gradient(135deg, rgba(30, 181, 166, 0.15), rgba(14, 140, 127, 0.05))' }}>
+          <div className="p-4 flex items-center gap-3 border-b border-[var(--border-color)]" style={{ background: 'linear-gradient(135deg, rgba(59, 147, 206, 0.15), rgba(28, 110, 168, 0.05))' }}>
             <div className="relative">
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#4dd1c4] to-[#0e8c7f] flex items-center justify-center text-xl">🐟</div>
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#7FC2E8] to-[#1C6EA8] flex items-center justify-center text-xl">🐟</div>
               <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-500 border-2 border-[var(--bg-tertiary)]" />
             </div>
             <div className="flex-1 min-w-0">
@@ -102,7 +102,7 @@ export default function ChatWidget() {
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[85%] px-4 py-2.5 text-sm leading-relaxed ${
                   m.role === 'user'
-                    ? 'rounded-2xl rounded-br-md bg-gradient-to-br from-[#1eb5a6] to-[#0e8c7f] text-white'
+                    ? 'rounded-2xl rounded-br-md bg-gradient-to-br from-[#3B93CE] to-[#1C6EA8] text-white'
                     : 'rounded-2xl rounded-bl-md glass-soft text-primary'
                 }`}>
                   {format(m.content)}

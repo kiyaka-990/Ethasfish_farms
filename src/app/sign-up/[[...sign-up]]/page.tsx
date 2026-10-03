@@ -15,7 +15,7 @@ export default function SignUpPage() {
     <div className="min-h-[80vh] flex items-center justify-center px-4 py-16">
       <SignUp
         appearance={{
-          variables: { colorPrimary: '#0e8c7f', borderRadius: '1rem' },
+          variables: { colorPrimary: '#1C6EA8', borderRadius: '1rem' },
           elements: { card: 'glass-strong shadow-xl', headerTitle: 'font-display' }
         }}
       />

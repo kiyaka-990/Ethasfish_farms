@@ -131,7 +131,7 @@ export default function FarmPage() {
                       <span className="text-sm font-semibold text-primary">{n.value}</span>
                     </div>
                     <div className="h-2 rounded-full bg-[var(--surface)] overflow-hidden">
-                      <div className="h-full rounded-full bg-gradient-to-r from-[#4dd1c4] to-[#0e8c7f] transition-all duration-1000" style={{width: `${n.pct}%`}} />
+                      <div className="h-full rounded-full bg-gradient-to-r from-[#7FC2E8] to-[#1C6EA8] transition-all duration-1000" style={{width: `${n.pct}%`}} />
                     </div>
                   </div>
                 ))}

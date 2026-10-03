@@ -85,7 +85,7 @@ function TrackInner() {
             {!cancelled ? (
               <div className="hidden md:block relative pt-2">
                 <div className="absolute top-7 left-5 right-5 h-1 rounded-full bg-[var(--surface)]" />
-                <div className="absolute top-7 left-5 h-1 rounded-full bg-gradient-to-r from-[#4dd1c4] via-[#1eb5a6] to-[#0e8c7f] transition-all duration-1000" style={{ width: `calc(${Math.max(0, (currentStageIdx / (STAGES.length - 1)) * 100)}% - 10px)` }} />
+                <div className="absolute top-7 left-5 h-1 rounded-full bg-gradient-to-r from-[#7FC2E8] via-[#3B93CE] to-[#1C6EA8] transition-all duration-1000" style={{ width: `calc(${Math.max(0, (currentStageIdx / (STAGES.length - 1)) * 100)}% - 10px)` }} />
                 <div className="grid grid-cols-5 relative">
                   {STAGES.map((stage, i) => {
                     const Icon = stage.Icon;
@@ -93,7 +93,7 @@ function TrackInner() {
                     const current = i === currentStageIdx;
                     return (
                       <div key={stage.key} className="flex flex-col items-center gap-2 px-1">
-                        <div className={`relative w-12 h-12 rounded-full flex items-center justify-center transition-all ${done ? 'bg-gradient-to-br from-[#4dd1c4] to-[#0e8c7f] shadow-lg' : 'glass-soft'} ${current ? 'ring-4 ring-[var(--accent)]/30' : ''}`}>
+                        <div className={`relative w-12 h-12 rounded-full flex items-center justify-center transition-all ${done ? 'bg-gradient-to-br from-[#7FC2E8] to-[#1C6EA8] shadow-lg' : 'glass-soft'} ${current ? 'ring-4 ring-[var(--accent)]/30' : ''}`}>
                           <Icon className={`w-5 h-5 ${done ? 'text-white' : 'text-muted'}`} />
                           {current && <span className="absolute inset-0 rounded-full bg-[var(--accent)] animate-ping opacity-30" />}
                         </div>
@@ -119,7 +119,7 @@ function TrackInner() {
                   const current = i === currentStageIdx;
                   return (
                     <div key={stage.key} className={`flex items-start gap-3 p-3 rounded-2xl transition ${current ? 'glass-strong' : 'glass-soft'}`}>
-                      <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${done ? 'bg-gradient-to-br from-[#4dd1c4] to-[#0e8c7f]' : 'glass'}`}>
+                      <div className={`w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${done ? 'bg-gradient-to-br from-[#7FC2E8] to-[#1C6EA8]' : 'glass'}`}>
                         <Icon className={`w-4 h-4 ${done ? 'text-white' : 'text-muted'}`} />
                       </div>
                       <div className="min-w-0">

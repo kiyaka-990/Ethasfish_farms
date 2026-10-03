@@ -8,9 +8,9 @@ export default {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif']
       },
       colors: {
-        ink: { 50:'#f3faf7',100:'#dcf2e7',200:'#bbe5d2',500:'#1d9e75',600:'#0f8a5f',700:'#0a7c5c',800:'#0d4d3a',900:'#0a2a20',950:'#051a13' },
-        sea: { 400:'#4dd1c4',500:'#1eb5a6',600:'#0e8c7f' },
-        sand:{ 200:'#fae3b8',400:'#e0a843',500:'#ba7517' }
+        ink: { 50:'#F3F7FC',100:'#E7EFF8',200:'#C7D9EC',500:'#2F4868',600:'#1C3253',700:'#15263F',800:'#112A4D',900:'#0B1F3A',950:'#040C1A' },
+        sea: { 400:'#7FC2E8',500:'#3B93CE',600:'#1C6EA8' },
+        sand:{ 200:'#D9E8F5',400:'#A9C6DE',500:'#7F9CB8' }
       },
       backdropBlur: { xs:'2px' },
       animation: {

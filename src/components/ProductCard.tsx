@@ -107,7 +107,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
               onClick={() => setSelectedIdx(i)}
               className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
                 i === selectedIdx
-                  ? 'bg-gradient-to-br from-[#1eb5a6] to-[#0e8c7f] text-white shadow-lg'
+                  ? 'bg-gradient-to-br from-[#3B93CE] to-[#1C6EA8] text-white shadow-lg'
                   : 'glass-soft hover:bg-[var(--surface-strong)]'
               }`}
             >

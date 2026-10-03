@@ -107,7 +107,7 @@ export default function ContactPage() {
                   { v: 'consultancy', l: 'Consultancy' }
                 ].map(o => (
                   <button key={o.v} type="button" onClick={() => setForm({...form, subject: o.v})}
-                    className={`px-3 py-2 rounded-xl text-xs font-medium transition ${form.subject === o.v ? 'bg-gradient-to-br from-[#1eb5a6] to-[#0e8c7f] text-white shadow-lg' : 'glass-soft hover:bg-[var(--surface-strong)]'}`}>
+                    className={`px-3 py-2 rounded-xl text-xs font-medium transition ${form.subject === o.v ? 'bg-gradient-to-br from-[#3B93CE] to-[#1C6EA8] text-white shadow-lg' : 'glass-soft hover:bg-[var(--surface-strong)]'}`}>
                     {o.l}
                   </button>
                 ))}

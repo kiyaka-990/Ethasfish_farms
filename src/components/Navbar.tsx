@@ -71,7 +71,7 @@ export default function Navbar() {
             <button onClick={open} className="relative p-2.5 rounded-xl glass hover:bg-[var(--surface-strong)] transition-colors" aria-label={`Open cart${cartCount > 0 ? `, ${cartCount} items` : ''}`}>
               <ShoppingBag className="w-5 h-5" />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 rounded-full bg-gradient-to-br from-[#4dd1c4] to-[#0e8c7f] text-[11px] font-bold flex items-center justify-center text-white shadow-lg" aria-hidden="true">
+                <span className="absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 rounded-full bg-gradient-to-br from-[#7FC2E8] to-[#1C6EA8] text-[11px] font-bold flex items-center justify-center text-white shadow-lg" aria-hidden="true">
                   {cartCount}
                 </span>
               )}

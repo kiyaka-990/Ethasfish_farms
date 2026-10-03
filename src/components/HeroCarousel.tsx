@@ -109,7 +109,7 @@ export default function HeroCarousel({ slides = DEFAULT_HERO_SLIDES }: { slides?
                   className="object-cover animate-ken-burns"
                 />
               )}
-              <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/45 to-[#051a13]/90" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/45 to-[#040C1A]/90" />
               <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent" />
             </div>
           );
