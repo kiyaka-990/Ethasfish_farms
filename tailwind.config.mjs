@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ['var(--font-display)', 'serif'],
+        display: ['var(--font-display)', 'sans-serif'],
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif']
       },
       colors: {

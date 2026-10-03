@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Playfair_Display } from 'next/font/google';
+import { Inter, Space_Grotesk } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
 import './globals.css';
 import Navbar from '@/components/Navbar';
@@ -14,7 +14,7 @@ import CursorGlow from '@/components/CursorGlow';
 import AppClerkProvider from '@/components/AppClerkProvider';
 
 const sans = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
-const display = Playfair_Display({ subsets: ['latin'], variable: '--font-display', display: 'swap', weight: ['500','600','700','800','900'] });
+const display = Space_Grotesk({ subsets: ['latin'], variable: '--font-display', display: 'swap', weight: ['500','600','700'] });
 
 export const metadata: Metadata = {
   title: { default: 'Ethasfish Farms — Premium Nile Tilapia from Lake Victoria', template: '%s · Ethasfish Farms' },

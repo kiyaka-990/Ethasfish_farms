@@ -196,15 +196,51 @@ function buildMenu(): string {
 }
 
 // ---------- Main reply function ----------
+// Kenyan mobile numbers: 07XXXXXXXX, 01XXXXXXXX, 2547XXXXXXXX, +2547XXXXXXXX
+const KENYA_PHONE_RE = /(?:\+?254|0)(7|1)\d{8}\b/;
+const NAME_RE = /\b(?:i'?m|i am|my name is|this is|name's)\s+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)?)/i;
+
+// The rule-based bot has no LLM, so it can't *decide* to ask for contact
+// info the way the AI sales agent does - instead it deterministically
+// captures a lead the moment a phone number appears in the conversation
+// (this is the path that actually runs whenever AI Gateway credits
+// aren't loaded, so it needs to carry this on its own).
+async function captureLeadIfPhoneShared(message: string): Promise<string | null> {
+  const phoneMatch = message.match(KENYA_PHONE_RE);
+  if (!phoneMatch) return null;
+  const phone = phoneMatch[0];
+
+  const recent = await prisma.lead.findFirst({
+    where: { phone, source: 'chatbot', createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) } }
+  });
+  if (recent) return null; // already captured this phone recently, don't spam duplicate leads
+
+  const nameMatch = message.match(NAME_RE);
+  const name = nameMatch ? nameMatch[1] : 'Website visitor';
+
+  await prisma.lead.create({ data: { name, phone, source: 'chatbot', notes: message.slice(0, 500) } });
+  return phone;
+}
+
 export async function generateReply(message: string): Promise<{ text: string; intent: string }> {
   const ctx = await getBotContext();
   const tokens = tokenize(message);
   const { intent, data } = detectIntent(message);
+  const capturedPhone = await captureLeadIfPhoneShared(message).catch(() => null);
+  const leadNote = capturedPhone ? `Got it — I've noted ${capturedPhone} and our team will reach out shortly. ` : '';
 
   // FAQ retrieval (handles questions outside hard-coded intents)
   const scored = ctx.faqs.map(f => ({ f, score: scoreFaq(tokens, f) })).sort((a, b) => b.score - a.score);
   const bestFaq = scored[0];
 
+  if (leadNote) {
+    const base = await replyFor(intent, data, ctx, bestFaq);
+    return { text: leadNote + base.text, intent: base.intent };
+  }
+  return replyFor(intent, data, ctx, bestFaq);
+}
+
+async function replyFor(intent: string, data: any, ctx: BotContext, bestFaq: { f: { answer: string; category: string }; score: number } | undefined): Promise<{ text: string; intent: string }> {
   switch (intent) {
     case 'menu':
       return { text: buildMenu(), intent };
@@ -245,7 +281,7 @@ export async function generateReply(message: string): Promise<{ text: string; in
     case 'careers':
       return { text: 'We occasionally hire for farm operations and sales. Send your CV and interest via WhatsApp or email and we\'ll keep it on file for openings.', intent };
     case 'order':
-      return { text: 'Easy! On our website, browse the *Shop*, add fish to your cart, then checkout. You\'ll fill delivery details and pay via M-Pesa. Want me to send you the link?', intent };
+      return { text: 'Easy! On our website, browse the *Shop*, add fish to your cart, then checkout. You\'ll fill delivery details and pay via M-Pesa. Or share your name and phone number here and our team will call you to take the order directly.', intent };
     case 'delivery':
       return { text: 'We deliver across Kisumu County. Delivery fee is KSh 200. For other locations or bulk orders, message us on WhatsApp.', intent };
     case 'payment':

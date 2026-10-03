@@ -1,6 +1,6 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Sparkles, Menu as MenuIcon } from 'lucide-react';
+import { MessageCircle, X, Send, Menu as MenuIcon, Fish } from 'lucide-react';
 
 interface Msg { role: 'user' | 'bot'; content: string; }
 
@@ -17,7 +17,7 @@ const quickReplies = [
 export default function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([
-    { role: 'bot', content: "Hi! Welcome to Ethasfish Farms 🐟 I'm your AI assistant — ask me about fresh tilapia, hatchery services, fish feeds, consultancy, orders, or anything else." }
+    { role: 'bot', content: "Hi! I'm the Ethasfish Farms assistant. Ask me about fresh tilapia, hatchery services, fish feeds, consultancy, or your order." }
   ]);
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
@@ -68,62 +68,67 @@ export default function ChatWidget() {
     <>
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 z-[80] w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-110"
-        style={{ background: 'linear-gradient(135deg, #3B93CE 0%, #1C6EA8 100%)', boxShadow: '0 12px 32px rgba(59, 147, 206, 0.5)' }}
+        className="fixed bottom-6 right-6 z-[80] w-[52px] h-[52px] rounded-full flex items-center justify-center bg-[var(--accent)] shadow-lg hover:brightness-110 transition-all duration-200"
         aria-label="Open chat"
       >
-        {open ? <X className="w-6 h-6 text-white" /> : <MessageCircle className="w-6 h-6 text-white" />}
-        {!open && <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-500 border-2 border-[var(--bg-primary)] animate-pulse-soft" />}
+        {open ? <X className="w-5 h-5 text-white" /> : <MessageCircle className="w-5 h-5 text-white" />}
       </button>
 
-      <div className={`fixed bottom-24 right-6 z-[75] w-[calc(100vw-3rem)] sm:w-[400px] h-[600px] max-h-[80vh] transition-all duration-500 ${open ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-8 pointer-events-none'}`}>
-        <div className="h-full flex flex-col glass-strong rounded-3xl overflow-hidden border border-[var(--border-color)] shadow-2xl">
-          <div className="p-4 flex items-center gap-3 border-b border-[var(--border-color)]" style={{ background: 'linear-gradient(135deg, rgba(59, 147, 206, 0.15), rgba(28, 110, 168, 0.05))' }}>
-            <div className="relative">
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#7FC2E8] to-[#1C6EA8] flex items-center justify-center text-xl">🐟</div>
-              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-500 border-2 border-[var(--bg-tertiary)]" />
+      <div className={`fixed bottom-24 right-6 z-[75] w-[calc(100vw-3rem)] sm:w-[380px] h-[600px] max-h-[75vh] transition-all duration-300 ${open ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-3 pointer-events-none'}`}>
+        <div className="h-full flex flex-col rounded-2xl overflow-hidden border border-[var(--border-color)] shadow-2xl" style={{ background: 'var(--bg-tertiary)' }}>
+          <div className="px-4 py-3.5 flex items-center gap-2.5 border-b border-[var(--border-color)]">
+            <div className="w-8 h-8 rounded-full bg-[var(--accent)]/10 flex items-center justify-center shrink-0">
+              <Fish className="w-4 h-4 text-[var(--accent)]" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-primary text-sm flex items-center gap-1">
-                Ethasfish AI <Sparkles className="w-3 h-3 text-[var(--accent)]" />
-              </p>
-              <p className="text-[11px] text-muted">Live · learns from our menu</p>
+              <p className="font-semibold text-primary text-sm">Ethasfish Assistant</p>
             </div>
-            <button onClick={() => setShowMenu(v => !v)} className={`p-2 rounded-xl hover:bg-[var(--surface-strong)] transition-colors ${showMenu ? 'text-[var(--accent)]' : 'text-muted'}`} aria-label="Toggle quick menu" aria-pressed={showMenu}>
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" aria-hidden />
+            <button onClick={() => setShowMenu(v => !v)} className={`p-1.5 rounded-lg hover:bg-[var(--surface)] transition-colors ${showMenu ? 'text-[var(--accent)]' : 'text-muted'}`} aria-label="Toggle quick menu" aria-pressed={showMenu}>
               <MenuIcon className="w-4 h-4" />
             </button>
-            <button onClick={() => setOpen(false)} className="p-2 rounded-xl hover:bg-[var(--surface)] text-muted" aria-label="Close">
+            <button onClick={() => setOpen(false)} className="p-1.5 rounded-lg hover:bg-[var(--surface)] text-muted" aria-label="Close">
               <X className="w-4 h-4" />
             </button>
           </div>
 
-          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3">
+          <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
             {messages.map((m, i) => (
-              <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[85%] px-4 py-2.5 text-sm leading-relaxed ${
-                  m.role === 'user'
-                    ? 'rounded-2xl rounded-br-md bg-gradient-to-br from-[#3B93CE] to-[#1C6EA8] text-white'
-                    : 'rounded-2xl rounded-bl-md glass-soft text-primary'
-                }`}>
-                  {format(m.content)}
+              m.role === 'user' ? (
+                <div key={i} className="flex justify-end">
+                  <div className="max-w-[80%] px-3.5 py-2 text-[13.5px] leading-relaxed rounded-xl bg-[var(--surface-strong)] border border-[var(--border-color)] text-primary">
+                    {format(m.content)}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div key={i} className="flex gap-2.5">
+                  <div className="w-6 h-6 rounded-full bg-[var(--accent)]/10 flex items-center justify-center shrink-0 mt-0.5">
+                    <Fish className="w-3 h-3 text-[var(--accent)]" />
+                  </div>
+                  <div className="text-[13.5px] leading-relaxed text-primary pt-0.5 [&_p]:mb-1.5 last:[&_p]:mb-0">
+                    {format(m.content)}
+                  </div>
+                </div>
+              )
             ))}
             {typing && (
-              <div className="flex justify-start">
-                <div className="rounded-2xl rounded-bl-md glass-soft px-4 py-3 flex gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-bounce" style={{animationDelay: '0ms'}} />
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-bounce" style={{animationDelay: '150ms'}} />
-                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-bounce" style={{animationDelay: '300ms'}} />
+              <div className="flex gap-2.5">
+                <div className="w-6 h-6 rounded-full bg-[var(--accent)]/10 flex items-center justify-center shrink-0">
+                  <Fish className="w-3 h-3 text-[var(--accent)]" />
+                </div>
+                <div className="flex gap-1 items-center pt-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-muted)] animate-bounce" style={{animationDelay: '0ms'}} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-muted)] animate-bounce" style={{animationDelay: '150ms'}} />
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--text-muted)] animate-bounce" style={{animationDelay: '300ms'}} />
                 </div>
               </div>
             )}
           </div>
 
           {showMenu && (
-            <div className="px-4 pb-2 flex flex-wrap gap-1.5 border-t border-[var(--border-color)] pt-2.5 max-h-28 overflow-y-auto">
+            <div className="px-4 pb-2.5 flex flex-wrap gap-1.5 border-t border-[var(--border-color)] pt-2.5 max-h-28 overflow-y-auto">
               {quickReplies.map(s => (
-                <button key={s} onClick={() => send(s)} className="text-[11px] px-3 py-1.5 rounded-full glass-soft hover:bg-[var(--surface-strong)] text-secondary transition-colors">
+                <button key={s} onClick={() => send(s)} className="text-[11px] px-2.5 py-1.5 rounded-full border border-[var(--border-color)] hover:bg-[var(--surface)] text-secondary transition-colors">
                   {s}
                 </button>
               ))}
@@ -136,11 +141,11 @@ export default function ChatWidget() {
               type="text"
               value={input}
               onChange={e => setInput(e.target.value)}
-              placeholder="Ask anything..."
-              className="input-glass !py-2.5 text-sm flex-1"
+              placeholder="Message Ethasfish..."
+              className="flex-1 px-3.5 py-2.5 text-sm rounded-xl border border-[var(--border-color)] bg-transparent text-primary placeholder:text-muted outline-none focus:border-[var(--accent)] transition-colors"
             />
-            <button type="submit" disabled={!input.trim()} className="btn-primary !p-3 disabled:opacity-50" aria-label="Send">
-              <Send className="w-4 h-4" />
+            <button type="submit" disabled={!input.trim()} className="w-9 h-9 rounded-xl bg-[var(--accent)] flex items-center justify-center disabled:opacity-40 transition-opacity shrink-0" aria-label="Send">
+              <Send className="w-4 h-4 text-white" />
             </button>
           </form>
         </div>
