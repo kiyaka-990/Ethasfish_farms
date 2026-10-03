@@ -9,6 +9,9 @@ import ChatWidget from '@/components/ChatWidget';
 import WhatsAppButton from '@/components/WhatsAppButton';
 import AccessibilityProvider from '@/components/AccessibilityProvider';
 import AccessibilityMenu from '@/components/AccessibilityMenu';
+import ScrollProgressBar from '@/components/ScrollProgressBar';
+import CursorGlow from '@/components/CursorGlow';
+import AppClerkProvider from '@/components/AppClerkProvider';
 
 const sans = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
 const display = Fraunces({ subsets: ['latin'], variable: '--font-display', display: 'swap', weight: ['400','500','600','700'] });
@@ -47,19 +50,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${sans.variable} ${display.variable}`} suppressHydrationWarning>
       <body className="min-h-screen flex flex-col">
-        <a href="#main" className="skip-link">Skip to main content</a>
-        <AccessibilityProvider>
-          <Navbar />
-          <main id="main" className="flex-1 pt-16">{children}</main>
-          <Footer />
-          <CartDrawer />
-          <ChatWidget />
-          <WhatsAppButton />
-          <AccessibilityMenu />
-          <Toaster position="bottom-center" toastOptions={{
-            style: { background: 'var(--surface-strong)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', backdropFilter: 'blur(20px)', borderRadius: '12px', fontSize: '14px' }
-          }} />
-        </AccessibilityProvider>
+        <AppClerkProvider>
+          <a href="#main" className="skip-link">Skip to main content</a>
+          <AccessibilityProvider>
+            <ScrollProgressBar />
+            <CursorGlow />
+            <Navbar />
+            <main id="main" className="flex-1 pt-16">{children}</main>
+            <Footer />
+            <CartDrawer />
+            <ChatWidget />
+            <WhatsAppButton />
+            <AccessibilityMenu />
+            <Toaster position="bottom-center" toastOptions={{
+              style: { background: 'var(--surface-strong)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', backdropFilter: 'blur(20px)', borderRadius: '12px', fontSize: '14px' }
+            }} />
+          </AccessibilityProvider>
+        </AppClerkProvider>
       </body>
     </html>
   );

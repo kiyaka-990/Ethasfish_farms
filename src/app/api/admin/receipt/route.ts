@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAdminFromCookies } from '@/lib/auth';
+import { requireStaff, identityErrorStatus } from '@/lib/identity';
+import { logActivity } from '@/lib/audit';
 import { dispatchReceipt } from '@/lib/receipt';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
-    const admin = await getAdminFromCookies();
-    if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const staff = await requireStaff();
 
     const { orderId } = await req.json();
     const order = await prisma.order.findUnique({ where: { id: orderId }, include: { items: true } });
@@ -32,8 +32,9 @@ export async function POST(req: NextRequest) {
       servedAt: order.deliveryAddress
     }, order.customerEmail);
 
+    await logActivity({ actorType: 'staff', actorId: staff.clerkUserId, actorName: staff.name, action: 'order.receipt_resent', entityType: 'Order', entityId: order.id, summary: `resent receipt for order ${order.orderNumber}` });
     return NextResponse.json({ ok: true, result });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    return NextResponse.json({ error: e.message }, { status: identityErrorStatus(e) });
   }
 }

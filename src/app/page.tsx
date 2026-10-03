@@ -1,8 +1,9 @@
 import Link from 'next/link';
 import { ArrowRight, Fish, Leaf, Award, Truck, Shield, Sparkles, Apple, Smartphone, GraduationCap, Wheat, Microscope } from 'lucide-react';
 import { prisma } from '@/lib/prisma';
+import { getSiteContent } from '@/lib/content';
 import ProductCard from '@/components/ProductCard';
-import HeroCarousel from '@/components/HeroCarousel';
+import HeroCarousel, { DEFAULT_HERO_SLIDES } from '@/components/HeroCarousel';
 
 async function getProducts() {
   return prisma.product.findMany({
@@ -13,11 +14,14 @@ async function getProducts() {
 }
 
 export default async function HomePage() {
-  const products = await getProducts().catch(() => []);
+  const [products, hero] = await Promise.all([
+    getProducts().catch(() => []),
+    getSiteContent('home.hero', { slides: DEFAULT_HERO_SLIDES })
+  ]);
 
   return (
     <div className="relative">
-      <HeroCarousel />
+      <HeroCarousel slides={hero.slides} />
 
       {/* TRUST STRIP */}
       <section className="px-4 py-12 mt-12">

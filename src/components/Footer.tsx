@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Logo from './Logo';
-import { Mail, Phone, MapPin, Facebook, Instagram, Twitter } from 'lucide-react';
+import { Mail, Phone, MapPin } from 'lucide-react';
+import { FacebookIcon, InstagramIcon, XIcon } from './SocialIcons';
 
 export default function Footer() {
   return (
@@ -13,7 +14,7 @@ export default function Footer() {
               Premium Nile Tilapia from Lake Victoria — sustainably farmed at Othany East, Seme, Kisumu County. Hormone-free, chemical-free, zero plastic packaging.
             </p>
             <div className="mt-6 flex gap-2">
-              {[Facebook, Instagram, Twitter].map((Icon, i) => (
+              {[FacebookIcon, InstagramIcon, XIcon].map((Icon, i) => (
                 <a key={i} href="#" className="w-10 h-10 rounded-xl glass flex items-center justify-center hover:bg-[var(--surface-strong)] transition-colors" aria-label="Social link">
                   <Icon className="w-4 h-4 text-secondary" />
                 </a>

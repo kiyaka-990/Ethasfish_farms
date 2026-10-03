@@ -1,6 +1,5 @@
-import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { getAdminFromCookies } from '@/lib/auth';
+import { getStaffSession } from '@/lib/identity';
 import { prisma } from '@/lib/prisma';
 import { fmtKsh } from '@/lib/utils';
 import { ShoppingBag, TrendingUp, Package, Clock, ArrowRight } from 'lucide-react';
@@ -9,8 +8,9 @@ export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Admin Dashboard' };
 
 export default async function AdminHomePage() {
-  const admin = await getAdminFromCookies();
-  if (!admin) redirect('/admin/login');
+  // AdminLayout already redirects unauthenticated / non-staff visitors.
+  const admin = await getStaffSession();
+  if (!admin) return null;
 
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -96,6 +96,39 @@ export default async function AdminHomePage() {
           </div>
         )}
       </div>
+
+      <RecentActivity />
+    </div>
+  );
+}
+
+async function RecentActivity() {
+  const logs = await prisma.auditLog.findMany({ orderBy: { createdAt: 'desc' }, take: 10 });
+  return (
+    <div className="glass-strong rounded-3xl p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="font-display text-xl font-semibold text-primary">Recent Activity</h2>
+        <Link href="/admin/activity" className="text-sm text-[var(--accent)] hover:text-[var(--accent-light)] inline-flex items-center gap-1">
+          Full log <ArrowRight className="w-3 h-3" />
+        </Link>
+      </div>
+      {logs.length === 0 ? (
+        <div className="py-8 text-center text-muted text-sm">No activity recorded yet</div>
+      ) : (
+        <ul className="space-y-3">
+          {logs.map(l => (
+            <li key={l.id} className="flex items-start gap-3 text-sm">
+              <span className={`mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0 ${l.actorType === 'agent' ? 'bg-[var(--accent-light)]' : 'bg-[var(--accent)]'}`} />
+              <div className="min-w-0">
+                <p className="text-primary">
+                  <span className="font-medium">{l.actorName}</span> <span className="text-secondary">{l.summary}</span>
+                </p>
+                <p className="text-[11px] text-muted">{l.createdAt.toLocaleString('en-KE')} &middot; {l.actorType}</p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }

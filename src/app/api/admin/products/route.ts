@@ -1,32 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAdminFromCookies } from '@/lib/auth';
+import { requireStaff, identityErrorStatus } from '@/lib/identity';
+import { logActivity } from '@/lib/audit';
 import { clearBotCache } from '@/lib/chatbot';
 
 export const dynamic = 'force-dynamic';
 
-async function requireAdmin() {
-  const admin = await getAdminFromCookies();
-  if (!admin) throw new Error('Unauthorized');
-  return admin;
-}
-
 export async function GET() {
   try {
-    await requireAdmin();
+    await requireStaff();
     const products = await prisma.product.findMany({
       include: { variants: { orderBy: { sortOrder: 'asc' } } },
       orderBy: { sortOrder: 'asc' }
     });
     return NextResponse.json({ products });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: e.message === 'Unauthorized' ? 401 : 500 });
+    return NextResponse.json({ error: e.message }, { status: identityErrorStatus(e) });
   }
 }
 
 export async function PATCH(req: NextRequest) {
   try {
-    await requireAdmin();
+    const staff = await requireStaff();
     const body = await req.json();
     const { type, productId, variantId } = body;
 
@@ -38,10 +33,12 @@ export async function PATCH(req: NextRequest) {
           description: body.description,
           badge: body.badge ?? null,
           active: body.active ?? true,
-          imageUrl: body.imageUrl ?? null
+          imageUrl: body.imageUrl ?? null,
+          videoUrl: body.videoUrl ?? null
         }
       });
       clearBotCache();
+      await logActivity({ actorType: 'staff', actorId: staff.clerkUserId, actorName: staff.name, action: 'product.update', entityType: 'Product', entityId: updated.id, summary: `updated product "${updated.name}"` });
       return NextResponse.json({ product: updated });
     }
 
@@ -57,20 +54,22 @@ export async function PATCH(req: NextRequest) {
           active: body.active ?? true
         }
       });
-      clearBotCache(); // 🔑 the bot picks up new prices instantly
+      clearBotCache(); // the bot picks up new prices instantly
+      await logActivity({ actorType: 'staff', actorId: staff.clerkUserId, actorName: staff.name, action: 'variant.update', entityType: 'ProductVariant', entityId: updated.id, summary: `updated variant "${updated.label}" → KSh ${updated.priceKsh}` });
       return NextResponse.json({ variant: updated });
     }
 
     return NextResponse.json({ error: 'Unknown operation' }, { status: 400 });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: e.message === 'Unauthorized' ? 401 : 500 });
+    return NextResponse.json({ error: e.message }, { status: identityErrorStatus(e) });
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    await requireAdmin();
+    const staff = await requireStaff();
     const body = await req.json();
+
     if (body.type === 'createVariant') {
       const created = await prisma.productVariant.create({
         data: {
@@ -85,23 +84,54 @@ export async function POST(req: NextRequest) {
         }
       });
       clearBotCache();
+      await logActivity({ actorType: 'staff', actorId: staff.clerkUserId, actorName: staff.name, action: 'variant.create', entityType: 'ProductVariant', entityId: created.id, summary: `added variant "${created.label}"` });
       return NextResponse.json({ variant: created });
     }
+
+    if (body.type === 'createProduct') {
+      const created = await prisma.product.create({
+        data: {
+          slug: body.slug,
+          name: body.name,
+          type: body.type2 || body.productType || 'whole',
+          description: body.description || '',
+          imageUrl: body.imageUrl ?? null,
+          videoUrl: body.videoUrl ?? null,
+          badge: body.badge ?? null,
+          sortOrder: parseInt(body.sortOrder, 10) || 99
+        }
+      });
+      clearBotCache();
+      await logActivity({ actorType: 'staff', actorId: staff.clerkUserId, actorName: staff.name, action: 'product.create', entityType: 'Product', entityId: created.id, summary: `created product "${created.name}"` });
+      return NextResponse.json({ product: created });
+    }
+
     return NextResponse.json({ error: 'Unknown operation' }, { status: 400 });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: e.message === 'Unauthorized' ? 401 : 500 });
+    return NextResponse.json({ error: e.message }, { status: identityErrorStatus(e) });
   }
 }
 
 export async function DELETE(req: NextRequest) {
   try {
-    await requireAdmin();
+    const staff = await requireStaff();
     const variantId = req.nextUrl.searchParams.get('variantId');
-    if (!variantId) return NextResponse.json({ error: 'variantId required' }, { status: 400 });
-    await prisma.productVariant.delete({ where: { id: variantId } });
-    clearBotCache();
-    return NextResponse.json({ ok: true });
+    const productId = req.nextUrl.searchParams.get('productId');
+
+    if (variantId) {
+      await prisma.productVariant.delete({ where: { id: variantId } });
+      clearBotCache();
+      await logActivity({ actorType: 'staff', actorId: staff.clerkUserId, actorName: staff.name, action: 'variant.delete', entityType: 'ProductVariant', entityId: variantId, summary: 'deleted a product variant' });
+      return NextResponse.json({ ok: true });
+    }
+    if (productId) {
+      await prisma.product.delete({ where: { id: productId } });
+      clearBotCache();
+      await logActivity({ actorType: 'staff', actorId: staff.clerkUserId, actorName: staff.name, action: 'product.delete', entityType: 'Product', entityId: productId, summary: 'deleted a product' });
+      return NextResponse.json({ ok: true });
+    }
+    return NextResponse.json({ error: 'variantId or productId required' }, { status: 400 });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: e.message === 'Unauthorized' ? 401 : 500 });
+    return NextResponse.json({ error: e.message }, { status: identityErrorStatus(e) });
   }
 }

@@ -131,14 +131,6 @@ export async function generateReply(message: string): Promise<{ text: string; in
   const tokens = tokenize(message);
   const { intent, data } = detectIntent(message);
 
-  // Try Anthropic first if available
-  if (process.env.ANTHROPIC_API_KEY) {
-    try {
-      const aiReply = await callAnthropic(message, ctx);
-      if (aiReply) return { text: aiReply, intent: 'ai' };
-    } catch (e) { console.error('Anthropic call failed, falling back:', e); }
-  }
-
   // FAQ retrieval (handles questions outside hard-coded intents)
   const scored = ctx.faqs.map(f => ({ f, score: scoreFaq(tokens, f) })).sort((a, b) => b.score - a.score);
   const bestFaq = scored[0];
@@ -189,31 +181,7 @@ export async function generateReply(message: string): Promise<{ text: string; in
   return { text: 'I can help with *products*, *prices*, *orders*, *delivery*, *payment*, or *farm info*. What would you like to know? You can also chat with our team on WhatsApp.', intent: 'unknown' };
 }
 
-// ---------- Optional Anthropic integration ----------
-async function callAnthropic(message: string, ctx: BotContext): Promise<string | null> {
-  const sys = `You are the helpful chatbot for Ethasfish Farms, a Nile Tilapia farm at Othany East, Seme, Kisumu County, Kenya, on Lake Victoria. Be warm, concise (under 80 words), use Kenyan English, and only answer about Ethasfish.
-
-LIVE PRODUCTS:
-${ctx.products.map(p => `- ${p.name}: ${p.variants.map(v => `${v.label} ${v.weight} KSh ${v.priceKsh.toLocaleString()}`).join(', ')}`).join('\n')}
-
-FACTS: Hormone-free, chemical-free, zero plastic packaging. Fish raised 7-10 months at 4-6.67 fish/m². Fed 25% crude protein. Payment via M-Pesa STK push. Delivery KSh 200 in Kisumu County. WhatsApp orders accepted.`;
-
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': process.env.ANTHROPIC_API_KEY!,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json'
-    },
-    body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 300,
-      system: sys,
-      messages: [{ role: 'user', content: message }]
-    })
-  });
-  if (!res.ok) return null;
-  const data = await res.json();
-  const txt = data?.content?.[0]?.text;
-  return typeof txt === 'string' ? txt : null;
-}
+// The real autonomous sales agent (tool-calling via the AI Gateway) lives
+// in lib/agents/sales-agent.ts and is tried first by the /api/chatbot
+// route. generateReply() above is the deterministic, always-available
+// fallback for when the agent/model is unreachable.

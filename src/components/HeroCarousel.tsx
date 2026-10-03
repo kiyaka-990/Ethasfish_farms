@@ -1,11 +1,24 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowRight, Sparkles, Pause, Play } from 'lucide-react';
 
-const slides = [
+export interface HeroSlide {
+  id: string;
+  media: { type: 'image' | 'video'; url: string; poster?: string };
+  badge: string;
+  titlePre: string;
+  titleAccent: string;
+  subtitle: string;
+  primaryHref: string;
+  primaryLabel: string;
+}
+
+export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
   {
-    image: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1600&q=80',
+    id: 'lake-to-table',
+    media: { type: 'image', url: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1600&q=80' },
     badge: 'Fresh from Lake Victoria',
     titlePre: 'Premium Nile Tilapia',
     titleAccent: 'Lake-to-Table.',
@@ -14,7 +27,8 @@ const slides = [
     primaryLabel: 'Shop Fresh Fish'
   },
   {
-    image: 'https://images.unsplash.com/photo-1545816250-e12bedba42ba?w=1600&q=80',
+    id: 'hatchery',
+    media: { type: 'image', url: 'https://images.unsplash.com/photo-1545816250-e12bedba42ba?w=1600&q=80' },
     badge: 'Hatchery & Fingerlings',
     titlePre: 'Disease-free fingerlings,',
     titleAccent: 'ready to stock.',
@@ -23,7 +37,8 @@ const slides = [
     primaryLabel: 'Explore Services'
   },
   {
-    image: 'https://images.unsplash.com/photo-1518545300995-3c3e3a72e64a?w=1600&q=80',
+    id: 'consultancy',
+    media: { type: 'image', url: 'https://images.unsplash.com/photo-1518545300995-3c3e3a72e64a?w=1600&q=80' },
     badge: 'Aquaculture Consultancy',
     titlePre: 'From pond design to',
     titleAccent: 'profitable harvest.',
@@ -32,7 +47,8 @@ const slides = [
     primaryLabel: 'Get Consultation'
   },
   {
-    image: 'https://images.unsplash.com/photo-1580651207-26d76d3eecd6?w=1600&q=80',
+    id: 'order-online',
+    media: { type: 'image', url: 'https://images.unsplash.com/photo-1580651207-26d76d3eecd6?w=1600&q=80' },
     badge: 'Order Online',
     titlePre: 'Pay with M-Pesa,',
     titleAccent: 'delivered fresh.',
@@ -42,15 +58,16 @@ const slides = [
   }
 ];
 
-export default function HeroCarousel() {
+export default function HeroCarousel({ slides = DEFAULT_HERO_SLIDES }: { slides?: HeroSlide[] }) {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  const list = slides.length ? slides : DEFAULT_HERO_SLIDES;
 
   useEffect(() => {
     if (paused) return;
-    const id = setInterval(() => setActive(i => (i + 1) % slides.length), 6000);
+    const id = setInterval(() => setActive(i => (i + 1) % list.length), 7000);
     return () => clearInterval(id);
-  }, [paused]);
+  }, [paused, list.length]);
 
   return (
     <section
@@ -62,29 +79,50 @@ export default function HeroCarousel() {
     >
       {/* Background slides */}
       <div className="absolute inset-0">
-        {slides.map((s, i) => (
-          <div
-            key={i}
-            className={`fade-slide ${i === active ? 'active' : ''}`}
-            aria-hidden={i !== active}
-          >
-            <div
-              className="absolute inset-0 bg-cover bg-center animate-ken-burns"
-              style={{ backgroundImage: `url('${s.image}')` }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg-primary)]/40 via-[var(--bg-primary)]/60 to-[var(--bg-primary)]/95" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[var(--bg-primary)]/60 via-transparent to-transparent" />
-          </div>
-        ))}
+        {list.map((s, i) => {
+          const near = Math.abs(i - active) <= 1 || (active === 0 && i === list.length - 1) || (active === list.length - 1 && i === 0);
+          return (
+            <div key={s.id} className={`fade-slide ${i === active ? 'active' : ''}`} aria-hidden={i !== active}>
+              {s.media.type === 'video' ? (
+                near ? (
+                  <video
+                    className="absolute inset-0 w-full h-full object-cover animate-ken-burns"
+                    src={s.media.url}
+                    poster={s.media.poster}
+                    autoPlay={i === active}
+                    muted
+                    loop
+                    playsInline
+                    preload={i === active ? 'auto' : 'metadata'}
+                  />
+                ) : (
+                  <div className="absolute inset-0 w-full h-full bg-[var(--bg-secondary)]" />
+                )
+              ) : (
+                <Image
+                  src={s.media.url}
+                  alt=""
+                  fill
+                  priority={i === 0}
+                  loading={i === 0 ? undefined : 'lazy'}
+                  sizes="100vw"
+                  className="object-cover animate-ken-burns"
+                />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg-primary)]/40 via-[var(--bg-primary)]/60 to-[var(--bg-primary)]/95" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[var(--bg-primary)]/60 via-transparent to-transparent" />
+            </div>
+          );
+        })}
       </div>
 
       <div className="orb orb-1 animate-float" />
       <div className="orb orb-2 animate-float-delay" />
 
       <div className="relative max-w-5xl mx-auto px-4 text-center z-10">
-        {slides.map((s, i) => (
+        {list.map((s, i) => (
           <div
-            key={i}
+            key={s.id}
             className={`transition-all duration-1000 ${i === active ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6 absolute inset-x-4 pointer-events-none'}`}
             aria-hidden={i !== active}
           >
@@ -94,7 +132,7 @@ export default function HeroCarousel() {
               </span>
             </div>
             <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] tracking-tight">
-              {s.titlePre}<br/>
+              {s.titlePre}<br />
               <span className="gradient-text">{s.titleAccent}</span>
             </h1>
             <p className="mt-7 text-lg md:text-xl text-secondary max-w-2xl mx-auto leading-relaxed">{s.subtitle}</p>
@@ -107,16 +145,27 @@ export default function HeroCarousel() {
           </div>
         ))}
 
-        {/* Dots */}
-        <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 flex items-center gap-2">
-          {slides.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setActive(i)}
-              className={`h-2 rounded-full transition-all ${i === active ? 'w-10 bg-[var(--accent)]' : 'w-2 bg-[var(--border-color)] hover:bg-[var(--accent-soft)]'}`}
-              aria-label={`Go to slide ${i + 1}`}
-            />
-          ))}
+        {/* Controls */}
+        <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 flex items-center gap-3">
+          <button
+            onClick={() => setPaused(p => !p)}
+            className="w-7 h-7 rounded-full flex items-center justify-center glass-soft hover:bg-[var(--surface-strong)] transition-colors"
+            aria-label={paused ? 'Resume slideshow' : 'Pause slideshow'}
+            aria-pressed={paused}
+          >
+            {paused ? <Play className="w-3 h-3" /> : <Pause className="w-3 h-3" />}
+          </button>
+          <div className="flex items-center gap-2">
+            {list.map((s, i) => (
+              <button
+                key={s.id}
+                onClick={() => setActive(i)}
+                className={`h-2 rounded-full transition-all ${i === active ? 'w-10 bg-[var(--accent)]' : 'w-2 bg-[var(--border-color)] hover:bg-[var(--accent-soft)]'}`}
+                aria-label={`Go to slide ${i + 1}: ${s.titlePre} ${s.titleAccent}`}
+                aria-current={i === active ? 'true' : undefined}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

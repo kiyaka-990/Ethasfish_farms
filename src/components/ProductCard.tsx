@@ -1,5 +1,6 @@
 'use client';
 import { useState, useRef } from 'react';
+import Image from 'next/image';
 import { Plus, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useCart } from '@/lib/cart-store';
@@ -65,7 +66,7 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
     if (cardRef.current) cardRef.current.style.transform = '';
   }
 
-  const img = productImages[product.type] || productImages.whole;
+  const img = product.imageUrl || productImages[product.type] || productImages.whole;
 
   return (
     <div
@@ -76,9 +77,13 @@ export default function ProductCard({ product, index = 0 }: { product: Product; 
       style={{ animationDelay: `${index * 100}ms`, transformStyle: 'preserve-3d', willChange: 'transform' }}
     >
       <div className="relative h-56 overflow-hidden">
-        <div
-          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-          style={{ backgroundImage: `url('${img}')` }}
+        <Image
+          src={img}
+          alt={product.name}
+          fill
+          loading="lazy"
+          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+          className="object-cover transition-transform duration-700 group-hover:scale-110"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-primary)]/40 via-transparent to-transparent" />
         {product.badge && (

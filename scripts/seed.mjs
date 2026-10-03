@@ -1,23 +1,22 @@
 // Seed script - run with `npm run db:seed`
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log('🐟 Seeding Ethasfish Farms database...');
 
-  // Admin user
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@ethasfish.co.ke';
-  const adminPassword = process.env.ADMIN_PASSWORD || 'changeme123';
-  const passwordHash = await bcrypt.hash(adminPassword, 10);
-
-  await prisma.admin.upsert({
-    where: { email: adminEmail },
-    update: {},
-    create: { email: adminEmail, passwordHash, name: 'Farm Manager' }
-  });
-  console.log(`✓ Admin: ${adminEmail} / ${adminPassword}`);
+  // Staff: pre-provision the first admin by email. Authentication itself
+  // is handled by Clerk - this row links to a real Clerk user id the
+  // moment someone signs in with this email (see lib/identity.ts).
+  const adminEmail = (process.env.ADMIN_EMAIL || 'admin@ethasfish.co.ke').toLowerCase();
+  const existingStaff = await prisma.staffProfile.findUnique({ where: { email: adminEmail } });
+  if (!existingStaff) {
+    await prisma.staffProfile.create({
+      data: { clerkUserId: `pending:${adminEmail}:seed`, email: adminEmail, name: 'Farm Manager', role: 'admin' }
+    });
+  }
+  console.log(`✓ Admin staff slot ready for: ${adminEmail} (sign in with this email to claim it)`);
 
   // Products
   const products = [
@@ -108,7 +107,7 @@ async function main() {
   console.log(`✓ ${faqs.length} FAQ entries`);
 
   console.log('🎉 Done! Run `npm run dev` and visit http://localhost:3000');
-  console.log(`   Admin: http://localhost:3000/admin (${adminEmail} / ${adminPassword})`);
+  console.log(`   Admin portal: http://localhost:3000/admin — sign in with ${adminEmail} to claim the admin seat`);
 }
 
 main()

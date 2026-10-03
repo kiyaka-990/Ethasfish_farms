@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAdminFromCookies } from '@/lib/auth';
+import { requireStaff, identityErrorStatus } from '@/lib/identity';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const admin = await getAdminFromCookies();
-    if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    await requireStaff();
 
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -35,6 +34,6 @@ export async function GET() {
       productCount
     });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    return NextResponse.json({ error: e.message }, { status: identityErrorStatus(e) });
   }
 }

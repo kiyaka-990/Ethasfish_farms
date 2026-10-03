@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getAdminFromCookies } from '@/lib/auth';
+import { requireStaff, identityErrorStatus } from '@/lib/identity';
+import { logActivity } from '@/lib/audit';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   try {
-    const admin = await getAdminFromCookies();
-    if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    await requireStaff();
 
     const status = req.nextUrl.searchParams.get('status');
     const where: any = {};
@@ -21,14 +21,13 @@ export async function GET(req: NextRequest) {
     });
     return NextResponse.json({ orders });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    return NextResponse.json({ error: e.message }, { status: identityErrorStatus(e) });
   }
 }
 
 export async function PATCH(req: NextRequest) {
   try {
-    const admin = await getAdminFromCookies();
-    if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const staff = await requireStaff();
 
     const { orderId, status, paymentStatus } = await req.json();
     if (!orderId) return NextResponse.json({ error: 'orderId required' }, { status: 400 });
@@ -38,8 +37,17 @@ export async function PATCH(req: NextRequest) {
     if (paymentStatus) data.paymentStatus = paymentStatus;
 
     const order = await prisma.order.update({ where: { id: orderId }, data });
+    await logActivity({
+      actorType: 'staff',
+      actorId: staff.clerkUserId,
+      actorName: staff.name,
+      action: 'order.update',
+      entityType: 'Order',
+      entityId: order.id,
+      summary: `updated order ${order.orderNumber}${status ? ` → status: ${status}` : ''}${paymentStatus ? ` → payment: ${paymentStatus}` : ''}`
+    });
     return NextResponse.json({ order });
   } catch (e: any) {
-    return NextResponse.json({ error: e.message }, { status: 500 });
+    return NextResponse.json({ error: e.message }, { status: identityErrorStatus(e) });
   }
 }
