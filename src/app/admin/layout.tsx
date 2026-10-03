@@ -4,6 +4,7 @@ import { UserButton } from '@clerk/nextjs';
 import { getStaffSession, CLERK_ENABLED } from '@/lib/identity';
 import { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck } from 'lucide-react';
 import Logo from '@/components/Logo';
+import AdminMobileNav from './AdminMobileNav';
 
 export const dynamic = 'force-dynamic';
 
@@ -42,7 +43,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   ];
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)]">
+    <div className="flex flex-col lg:flex-row min-h-[calc(100vh-4rem)]">
+      <AdminMobileNav
+        navItems={navItems}
+        staffName={staff.name}
+        staffEmail={staff.email}
+        portalLabel={staff.role === 'admin' ? 'Admin Portal' : 'Sales Portal'}
+      />
       <aside className="hidden lg:flex w-64 flex-col p-4 gap-2 border-r border-[var(--border-color)] sticky top-16 self-start h-[calc(100vh-4rem)]">
         <div className="px-3 py-4 flex items-center justify-between">
           <div>
