@@ -10,6 +10,12 @@ export function generateOrderNumber(): string {
   return `EF-${ts}-${rand}`;
 }
 
+export function generateDocNumber(prefix: string): string {
+  const ts = Date.now().toString(36).toUpperCase();
+  const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return `${prefix}-${ts}-${rand}`;
+}
+
 export function normalizeKenyanPhone(phone: string): string {
   let p = phone.replace(/\D/g, '');
   if (p.startsWith('0')) p = '254' + p.slice(1);

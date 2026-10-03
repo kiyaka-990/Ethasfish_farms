@@ -96,6 +96,7 @@ model Order {
   mpesaCheckoutId String?
   items           OrderItem[]
   payments        Payment[]
+  invoices        Invoice[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 
@@ -228,6 +229,133 @@ model AuditLog {
 
   @@index([createdAt])
   @@index([entityType, entityId])
+}
+
+// ===================== ERP: INVOICING =====================
+
+model Invoice {
+  id            String        @id @default(cuid())
+  invoiceNumber String        @unique
+  orderId       String?
+  order         Order?        @relation(fields: [orderId], references: [id])
+  customerName  String
+  customerEmail String?
+  customerPhone String?
+  customerAddr  String?
+  items         InvoiceItem[]
+  subtotal      Int
+  taxRate       Int           @default(0) // percent
+  taxAmount     Int           @default(0)
+  total         Int
+  status        String        @default("draft") // draft | sent | paid | overdue | void
+  dueDate       DateTime?
+  issuedAt      DateTime      @default(now())
+  paidAt        DateTime?
+  notes         String?
+  createdBy     String? // StaffProfile.id
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([status])
+}
+
+model InvoiceItem {
+  id          String  @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String
+  quantity    Int
+  unitPrice   Int
+  lineTotal   Int
+}
+
+// ===================== ERP: INVENTORY =====================
+
+model InventoryItem {
+  id           String              @id @default(cuid())
+  name         String
+  category     String              @default("other") // feed | supplies | equipment | other
+  unit         String // kg, bag, litre, piece
+  quantity     Float               @default(0)
+  reorderLevel Float               @default(0)
+  costPerUnit  Int                 @default(0) // KSh
+  notes        String?
+  movements    InventoryMovement[]
+  active       Boolean             @default(true)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+}
+
+model InventoryMovement {
+  id        String        @id @default(cuid())
+  itemId    String
+  item      InventoryItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  type      String // in | out | adjustment
+  quantity  Float
+  reason    String?
+  reference String? // e.g. PO number or order number
+  createdBy String?
+  createdAt DateTime      @default(now())
+
+  @@index([itemId])
+}
+
+// ===================== ERP: ACCOUNTING =====================
+
+model Expense {
+  id          String   @id @default(cuid())
+  category    String   @default("other") // feed | labor | utilities | transport | maintenance | other
+  description String
+  amount      Int
+  paidTo      String?
+  receiptUrl  String?
+  date        DateTime @default(now())
+  recordedBy  String?
+  createdAt   DateTime @default(now())
+
+  @@index([date])
+}
+
+// ===================== ERP: SUPPLIERS & PURCHASING =====================
+
+model Supplier {
+  id             String          @id @default(cuid())
+  name           String
+  contactName    String?
+  phone          String?
+  email          String?
+  category       String          @default("other") // feed | equipment | fingerlings | other
+  notes          String?
+  active         Boolean         @default(true)
+  purchaseOrders PurchaseOrder[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model PurchaseOrder {
+  id           String              @id @default(cuid())
+  poNumber     String              @unique
+  supplierId   String
+  supplier     Supplier            @relation(fields: [supplierId], references: [id])
+  status       String              @default("draft") // draft | ordered | received | cancelled
+  items        PurchaseOrderItem[]
+  totalCost    Int                 @default(0)
+  expectedDate DateTime?
+  receivedAt   DateTime?
+  notes        String?
+  createdBy    String?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+}
+
+model PurchaseOrderItem {
+  id              String        @id @default(cuid())
+  purchaseOrderId String
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  description     String
+  quantity        Float
+  unitCost        Int
+  lineTotal       Int
 }
 
 model Subscriber {
