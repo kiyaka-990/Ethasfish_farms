@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { ShoppingBag, Menu, X, User } from 'lucide-react';
-import { UserButton, SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
+import { UserButton, Show, SignInButton } from '@clerk/nextjs';
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
 import { useCart } from '@/lib/cart-store';
@@ -124,19 +124,19 @@ export default function Navbar() {
 function AccountArea() {
   return (
     <>
-      <SignedIn>
+      <Show when="signed-in">
         <Link href="/account" className="p-2.5 rounded-xl glass hover:bg-[var(--surface-strong)] transition-colors hidden sm:inline-flex" aria-label="Your account">
           <User className="w-5 h-5" />
         </Link>
         <UserButton />
-      </SignedIn>
-      <SignedOut>
+      </Show>
+      <Show when="signed-out">
         <SignInButton mode="modal">
           <button className="p-2.5 rounded-xl glass hover:bg-[var(--surface-strong)] transition-colors" aria-label="Sign in">
             <User className="w-5 h-5" />
           </button>
         </SignInButton>
-      </SignedOut>
+      </Show>
     </>
   );
 }
