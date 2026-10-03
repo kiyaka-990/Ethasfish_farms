@@ -6,6 +6,16 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req: NextRequest) {
   try {
+    // Safaricom's callback carries no signature - a shared secret in the
+    // callback URL (set when we register it via stkPush) is what proves
+    // this request is actually from Safaricom and not a forged "payment
+    // succeeded" POST from anyone who saw a CheckoutRequestID.
+    const expected = process.env.MPESA_CALLBACK_SECRET;
+    if (!expected || req.nextUrl.searchParams.get('token') !== expected) {
+      console.warn('M-Pesa callback: missing/invalid token');
+      return NextResponse.json({ ok: true }); // 200 so Safaricom doesn't retry-storm; nothing is processed
+    }
+
     const body = await req.json();
     const stk = body?.Body?.stkCallback;
     if (!stk) return NextResponse.json({ ok: true });

@@ -46,7 +46,15 @@ export async function POST(req: NextRequest) {
       ]);
     }
 
-    return NextResponse.json({ stk, configured: true });
+    // Don't leak CheckoutRequestID/MerchantRequestID to the client - the
+    // callback route trusts whoever presents a valid CheckoutRequestID
+    // (scoped by the callback secret), so the client only needs to know
+    // whether the push was sent.
+    return NextResponse.json({
+      configured: true,
+      success: stk.ResponseCode === '0',
+      message: stk.CustomerMessage || stk.ResponseDescription || stk.errorMessage
+    });
   } catch (e: any) {
     console.error('M-Pesa STK error:', e);
     return NextResponse.json({ error: e.message }, { status: 500 });

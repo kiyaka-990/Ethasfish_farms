@@ -42,18 +42,18 @@ export default function OrderPage() {
       setOrderNumber(data.order.orderNumber);
 
       // Trigger STK push
-      const payRes = await fetch('/api/payments/mpesa/stk', {
+      const payRes = await fetch('/api/payments/mpesa', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orderId: data.order.id })
       });
       const payData = await payRes.json();
-      if (payData.stub) {
-        toast.success('Order placed (M-Pesa stub mode — no real STK)');
-      } else if (payRes.ok) {
-        toast.success('STK push sent! Check your phone.');
+      if (payData.configured === false) {
+        toast.success('Order placed (M-Pesa not configured — sandbox/dev mode)');
+      } else if (payRes.ok && payData.success) {
+        toast.success(payData.message || 'STK push sent! Check your phone.');
       } else {
-        toast.error(payData.error || 'Payment init failed — order saved');
+        toast.error(payData.message || payData.error || 'Payment init failed — order saved');
       }
 
       clear();

@@ -47,8 +47,12 @@ function normalizePhone(phone: string): string {
 export async function stkPush(params: STKPushParams): Promise<STKPushResponse> {
   const shortcode = process.env.MPESA_SHORTCODE!;
   const passkey = process.env.MPESA_PASSKEY!;
-  const callback = process.env.MPESA_CALLBACK_URL!;
-  if (!shortcode || !passkey || !callback) throw new Error('M-Pesa env vars missing');
+  const callbackSecret = process.env.MPESA_CALLBACK_SECRET!;
+  if (!shortcode || !passkey || !process.env.MPESA_CALLBACK_URL || !callbackSecret) throw new Error('M-Pesa env vars missing');
+  // The callback secret is appended server-side only - Safaricom calls this
+  // exact URL back, so a mismatched/missing token means the request isn't
+  // really from Safaricom (see /api/payments/mpesa/callback).
+  const callback = `${process.env.MPESA_CALLBACK_URL}?token=${encodeURIComponent(callbackSecret)}`;
 
   const token = await getMpesaToken();
   const timestamp = new Date().toISOString().replace(/[-T:.Z]/g, '').slice(0, 14);
