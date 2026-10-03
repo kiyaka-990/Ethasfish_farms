@@ -29,7 +29,7 @@ export default function AdminContentPage() {
   function addSlide() {
     setSlides(s => [...s, {
       id: `slide-${Date.now()}`,
-      media: { type: 'image', url: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1600&q=80' },
+      media: { type: 'image', url: 'https://images.unsplash.com/photo-1758656911249-c0f1af7dcaec?w=1600&q=80' },
       badge: 'New',
       titlePre: 'Your headline',
       titleAccent: 'goes here.',

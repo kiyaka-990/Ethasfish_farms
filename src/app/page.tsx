@@ -69,9 +69,9 @@ export default async function HomePage() {
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { Icon: Microscope, title: 'Hatchery & Fingerlings', desc: 'Disease-free Nile Tilapia fingerlings from our certified hatchery.', img: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=600&q=80' },
-              { Icon: Wheat, title: 'Quality Fish Feeds', desc: 'High-protein 25% crude protein floating pellets for every growth stage.', img: 'https://images.unsplash.com/photo-1574781330855-d0db8cc6a79c?w=600&q=80' },
-              { Icon: GraduationCap, title: 'Aquaculture Consultancy', desc: 'Expert advice on pond design, stocking, feeding, and harvest.', img: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&q=80' }
+              { Icon: Microscope, title: 'Hatchery & Fingerlings', desc: 'Disease-free Nile Tilapia fingerlings from our certified hatchery.', img: 'https://images.unsplash.com/photo-1769771861175-2cdcdf5108db?w=600&q=80' },
+              { Icon: Wheat, title: 'Quality Fish Feeds', desc: 'High-protein 25% crude protein floating pellets for every growth stage.', img: 'https://images.unsplash.com/photo-1731552466988-26d1dbeff4ee?w=600&q=80' },
+              { Icon: GraduationCap, title: 'Aquaculture Consultancy', desc: 'Expert advice on pond design, stocking, feeding, and harvest.', img: 'https://images.unsplash.com/photo-1758535012952-67e5f5f133e7?w=600&q=80' }
             ].map(({ Icon, title, desc, img }, i) => (
               <Link key={title} href="/services" className="glass-card-interactive rounded-3xl overflow-hidden animate-fade-up" style={{ animationDelay: `${i * 100}ms` }}>
                 <div className="relative h-48 overflow-hidden">

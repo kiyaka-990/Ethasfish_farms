@@ -28,9 +28,9 @@ interface Product {
 }
 
 const productImages: Record<string, string> = {
-  whole: 'https://images.unsplash.com/photo-1535399831218-d4ed3eaa61b1?w=600&q=80',
-  fillet: 'https://images.unsplash.com/photo-1574781330855-d0db8cc6a79c?w=600&q=80',
-  fingerling: 'https://images.unsplash.com/photo-1536431311719-398b6704d4cc?w=600&q=80'
+  whole: 'https://images.unsplash.com/photo-1738850305638-b2f1765a4a87?w=600&q=80',
+  fillet: 'https://images.unsplash.com/photo-1633244092661-4519a1ffc67e?w=600&q=80',
+  fingerling: 'https://images.unsplash.com/photo-1769771861175-2cdcdf5108db?w=600&q=80'
 };
 
 export default function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {

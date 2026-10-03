@@ -3,10 +3,10 @@ import { MapPin, Clock, Phone, Heart, Brain, Bone, Dumbbell } from 'lucide-react
 export const metadata = { title: 'Our Farm at Othany East' };
 
 const galleryImages = [
-  { src: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=800&q=80', caption: 'Lake Victoria offshore cages' },
-  { src: 'https://images.unsplash.com/photo-1518545300995-3c3e3a72e64a?w=800&q=80', caption: 'Freshwater rearing ponds' },
-  { src: 'https://images.unsplash.com/photo-1535399831218-d4ed3eaa61b1?w=800&q=80', caption: 'Premium harvest-ready tilapia' },
-  { src: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=800&q=80', caption: 'Hatchery & fingerling production' }
+  { src: 'https://images.unsplash.com/photo-1758656911249-c0f1af7dcaec?w=800&q=80', caption: 'Lake Victoria offshore cages' },
+  { src: 'https://images.unsplash.com/photo-1731552466988-26d1dbeff4ee?w=800&q=80', caption: 'Freshwater rearing ponds' },
+  { src: 'https://images.unsplash.com/photo-1738850305638-b2f1765a4a87?w=800&q=80', caption: 'Premium harvest-ready tilapia' },
+  { src: 'https://images.unsplash.com/photo-1769771861175-2cdcdf5108db?w=800&q=80', caption: 'Hatchery & fingerling production' }
 ];
 
 const nutrients = [
@@ -24,16 +24,16 @@ export default function FarmPage() {
     <div>
       {/* HERO with parallax image */}
       <section className="relative h-[60vh] min-h-[420px] overflow-hidden">
-        <div className="absolute inset-0 bg-cover bg-center animate-ken-burns" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1600&q=85')" }} />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--bg-primary)]/40 to-[var(--bg-primary)]" />
+        <div className="absolute inset-0 bg-cover bg-center animate-ken-burns" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1758656911249-c0f1af7dcaec?w=1600&q=85')" }} />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/40 to-[var(--bg-primary)]" />
         <div className="absolute inset-0 flex items-center justify-center text-center px-4">
           <div>
-            <span className="badge mb-4 backdrop-blur-md">Ethasfish Farms</span>
-            <h1 className="font-display text-5xl md:text-7xl font-bold leading-tight">
+            <span className="badge mb-4 backdrop-blur-md !bg-white/10 !border-white/25 !text-white">Ethasfish Farms</span>
+            <h1 className="font-display text-5xl md:text-7xl font-bold leading-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.35)]">
               Sustainable aquaculture<br/>
               <span className="gradient-text">on Lake Victoria</span>
             </h1>
-            <p className="mt-4 text-secondary max-w-xl mx-auto">Othany East · Seme Sub-County · Kisumu County</p>
+            <p className="mt-4 text-white/85 max-w-xl mx-auto [text-shadow:0_1px_12px_rgba(0,0,0,0.3)]">Othany East · Seme Sub-County · Kisumu County</p>
           </div>
         </div>
       </section>

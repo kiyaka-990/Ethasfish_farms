@@ -25,7 +25,7 @@ async function main() {
       name: 'Whole Tilapia',
       type: 'whole',
       description: 'Gutted and scaled, ready to cook. Sustainably raised in Lake Victoria offshore cages — hormone-free, chemical-free, and packed in zero-plastic packaging.',
-      imageUrl: '/images/whole.svg',
+      imageUrl: 'https://images.unsplash.com/photo-1738850305638-b2f1765a4a87?w=600&q=80',
       badge: 'Best Seller',
       sortOrder: 1,
       variants: [
@@ -39,7 +39,7 @@ async function main() {
       name: 'Filleted Tilapia',
       type: 'fillet',
       description: 'Boneless, cleaned fillets — pan, grill, or oven-ready. Approximately 150g per fillet from offshore-cage tilapia.',
-      imageUrl: '/images/fillet.svg',
+      imageUrl: 'https://images.unsplash.com/photo-1633244092661-4519a1ffc67e?w=600&q=80',
       badge: 'Premium',
       sortOrder: 2,
       variants: [
@@ -53,7 +53,7 @@ async function main() {
       name: 'Nile Tilapia Fingerlings',
       type: 'fingerling',
       description: 'Disease-free Nile Tilapia fingerlings, 3–5cm, from our certified hatchery — ideal for stocking ponds and cages.',
-      imageUrl: '/images/fingerling.svg',
+      imageUrl: 'https://images.unsplash.com/photo-1769771861175-2cdcdf5108db?w=600&q=80',
       badge: 'Aquaculture',
       sortOrder: 3,
       variants: [

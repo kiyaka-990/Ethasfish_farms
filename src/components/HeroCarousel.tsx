@@ -18,7 +18,7 @@ export interface HeroSlide {
 export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
   {
     id: 'lake-to-table',
-    media: { type: 'image', url: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=1600&q=80' },
+    media: { type: 'image', url: 'https://images.unsplash.com/photo-1758656911249-c0f1af7dcaec?w=1600&q=80' },
     badge: 'Fresh from Lake Victoria',
     titlePre: 'Premium Nile Tilapia',
     titleAccent: 'Lake-to-Table.',
@@ -28,7 +28,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
   },
   {
     id: 'hatchery',
-    media: { type: 'image', url: 'https://images.unsplash.com/photo-1545816250-e12bedba42ba?w=1600&q=80' },
+    media: { type: 'image', url: 'https://images.unsplash.com/photo-1769771861175-2cdcdf5108db?w=1600&q=80' },
     badge: 'Hatchery & Fingerlings',
     titlePre: 'Disease-free fingerlings,',
     titleAccent: 'ready to stock.',
@@ -38,7 +38,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
   },
   {
     id: 'consultancy',
-    media: { type: 'image', url: 'https://images.unsplash.com/photo-1518545300995-3c3e3a72e64a?w=1600&q=80' },
+    media: { type: 'image', url: 'https://images.unsplash.com/photo-1758535012952-67e5f5f133e7?w=1600&q=80' },
     badge: 'Aquaculture Consultancy',
     titlePre: 'From pond design to',
     titleAccent: 'profitable harvest.',
@@ -48,7 +48,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
   },
   {
     id: 'order-online',
-    media: { type: 'image', url: 'https://images.unsplash.com/photo-1580651207-26d76d3eecd6?w=1600&q=80' },
+    media: { type: 'image', url: 'https://images.unsplash.com/photo-1735053671690-97833aac117a?w=1600&q=80' },
     badge: 'Order Online',
     titlePre: 'Pay with M-Pesa,',
     titleAccent: 'delivered fresh.',
@@ -109,8 +109,8 @@ export default function HeroCarousel({ slides = DEFAULT_HERO_SLIDES }: { slides?
                   className="object-cover animate-ken-burns"
                 />
               )}
-              <div className="absolute inset-0 bg-gradient-to-b from-[var(--bg-primary)]/40 via-[var(--bg-primary)]/60 to-[var(--bg-primary)]/95" />
-              <div className="absolute inset-0 bg-gradient-to-r from-[var(--bg-primary)]/60 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/45 to-[#051a13]/90" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-transparent" />
             </div>
           );
         })}
@@ -127,15 +127,15 @@ export default function HeroCarousel({ slides = DEFAULT_HERO_SLIDES }: { slides?
             aria-hidden={i !== active}
           >
             <div className="inline-flex items-center gap-2 mb-6">
-              <span className="badge">
+              <span className="badge !bg-white/10 !border-white/25 !text-white">
                 <Sparkles className="w-3 h-3" /> {s.badge}
               </span>
             </div>
-            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] tracking-tight">
+            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] tracking-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.35)]">
               {s.titlePre}<br />
               <span className="gradient-text">{s.titleAccent}</span>
             </h1>
-            <p className="mt-7 text-lg md:text-xl text-secondary max-w-2xl mx-auto leading-relaxed">{s.subtitle}</p>
+            <p className="mt-7 text-lg md:text-xl text-white/85 max-w-2xl mx-auto leading-relaxed [text-shadow:0_1px_12px_rgba(0,0,0,0.3)]">{s.subtitle}</p>
             <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
               <Link href={s.primaryHref} className="btn-primary text-base">
                 {s.primaryLabel} <ArrowRight className="w-4 h-4" />

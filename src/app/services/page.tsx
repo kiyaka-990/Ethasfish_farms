@@ -9,7 +9,7 @@ const services = [
     Icon: Microscope,
     title: 'Hatchery & Fingerlings',
     tagline: 'Disease-free Nile Tilapia fingerlings — direct from our hatchery',
-    image: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1769771861175-2cdcdf5108db?w=1200&q=80',
     description: 'Our dedicated Nile Tilapia hatchery produces certified, disease-free fingerlings ready for stocking. We carefully select brood stock, manage incubation in controlled tanks, and grade fingerlings before delivery.',
     bullets: [
       '3–5cm size, ready to stock',
@@ -25,7 +25,7 @@ const services = [
     Icon: Wheat,
     title: 'Quality Fish Feeds',
     tagline: 'High-protein floating pellets for every growth stage',
-    image: 'https://images.unsplash.com/photo-1565374391884-ce0a8d6e3ddb?w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1731552466988-26d1dbeff4ee?w=1200&q=80',
     description: 'Premium fish feed formulated specifically for Nile Tilapia. Our 25% crude protein floating pellets are tested in our own ponds and proven to deliver ~100g growth in three months.',
     bullets: [
       'Starter, grower, and finisher pellet sizes',
@@ -41,7 +41,7 @@ const services = [
     Icon: GraduationCap,
     title: 'Aquaculture Consultancy',
     tagline: 'From pond design to profitable harvest — we guide you',
-    image: 'https://images.unsplash.com/photo-1544942479-2e9d96e4f0e3?w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1758535012952-67e5f5f133e7?w=1200&q=80',
     description: 'Whether you\'re starting a small backyard pond or a commercial cage operation, our team provides end-to-end consultancy. We share what works — and what doesn\'t — based on real Lake Victoria experience.',
     bullets: [
       'Site assessment & feasibility studies',
