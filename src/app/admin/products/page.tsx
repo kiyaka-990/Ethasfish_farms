@@ -4,7 +4,7 @@ import { Loader2, Save, Trash2, Plus, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 import MediaPicker from '@/components/admin/MediaPicker';
 
-const emptyProduct = { name: '', slug: '', type2: 'whole', description: '', badge: '', imageUrl: '' };
+const emptyProduct = { name: '', slug: '', type2: 'whole', description: '', badge: '', imageUrl: '', videoUrl: '' };
 const emptyVariant = { label: '', weight: '', perItem: '', priceKsh: 0, stock: 0 };
 
 export default function AdminProductsPage() {
@@ -30,7 +30,7 @@ export default function AdminProductsPage() {
     const res = await fetch('/api/admin/products', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'updateProduct', productId: p.id, name: p.name, description: p.description, badge: p.badge, active: p.active, imageUrl: p.imageUrl })
+      body: JSON.stringify({ type: 'updateProduct', productId: p.id, name: p.name, description: p.description, badge: p.badge, active: p.active, imageUrl: p.imageUrl, videoUrl: p.videoUrl })
     });
     setSavingId(null);
     if (res.ok) toast.success('Product saved · chatbot updated');
@@ -124,8 +124,18 @@ export default function AdminProductsPage() {
           </button>
         </div>
         <textarea className="input-glass resize-none" rows={2} placeholder="Description" value={newProduct.description} onChange={e => setNewProduct({ ...newProduct, description: e.target.value })} />
-        <MediaPicker accept="image" onPick={url => setNewProduct({ ...newProduct, imageUrl: url })} />
-        {newProduct.imageUrl && <p className="text-[11px] text-muted truncate">Image: {newProduct.imageUrl}</p>}
+        <div className="grid sm:grid-cols-2 gap-3">
+          <div>
+            <p className="text-[10px] uppercase tracking-wider text-muted mb-1">Image</p>
+            <MediaPicker accept="image" onPick={url => setNewProduct({ ...newProduct, imageUrl: url })} />
+            {newProduct.imageUrl && <p className="text-[11px] text-muted truncate mt-1">{newProduct.imageUrl}</p>}
+          </div>
+          <div>
+            <p className="text-[10px] uppercase tracking-wider text-muted mb-1">Video (optional)</p>
+            <MediaPicker accept="video" onPick={url => setNewProduct({ ...newProduct, videoUrl: url })} />
+            {newProduct.videoUrl && <p className="text-[11px] text-muted truncate mt-1">{newProduct.videoUrl}</p>}
+          </div>
+        </div>
       </div>
 
       {loading ? (
@@ -137,11 +147,21 @@ export default function AdminProductsPage() {
               <div className="flex items-start justify-between gap-4 mb-5">
                 <div className="flex-1 grid md:grid-cols-[120px_1fr] gap-4">
                   <div className="space-y-2">
-                    {p.imageUrl && (
+                    {p.videoUrl ? (
+                      <video src={p.videoUrl} className="w-full h-20 object-cover rounded-xl" muted loop autoPlay playsInline />
+                    ) : p.imageUrl && (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={p.imageUrl} alt="" className="w-full h-20 object-cover rounded-xl" />
                     )}
+                    <p className="text-[9px] uppercase tracking-wider text-muted">Image</p>
                     <MediaPicker accept="image" onPick={url => updateProductField(p.id, 'imageUrl', url)} />
+                    <p className="text-[9px] uppercase tracking-wider text-muted">Video (shown instead of image if set)</p>
+                    <MediaPicker accept="video" onPick={url => updateProductField(p.id, 'videoUrl', url)} />
+                    {p.videoUrl && (
+                      <button onClick={() => updateProductField(p.id, 'videoUrl', '')} className="text-[10px] text-red-500/80 hover:text-red-500">
+                        Remove video
+                      </button>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <input className="input-glass !py-2 font-display font-bold" value={p.name} onChange={e => updateProductField(p.id, 'name', e.target.value)} />
