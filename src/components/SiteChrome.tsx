@@ -6,6 +6,8 @@ import CartDrawer from './CartDrawer';
 import ChatWidget from './ChatWidget';
 import WhatsAppButton from './WhatsAppButton';
 import ScrollToTop from './ScrollToTop';
+import AnnouncementBar from './AnnouncementBar';
+import CookieConsent from './CookieConsent';
 
 // The admin portal (/admin/*) has its own complete, self-contained layout
 // (sidebar or mobile drawer with logo, nav, and profile) - wrapping it in
@@ -22,13 +24,15 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
 
   return (
     <>
+      <AnnouncementBar />
       <Navbar />
-      <main id="main" className="flex-1 pt-16">{children}</main>
+      <main id="main" className="flex-1 pt-[calc(4rem+var(--promo-bar-h,0px))]">{children}</main>
       <Footer />
       <CartDrawer />
       <ChatWidget />
       <WhatsAppButton />
       <ScrollToTop />
+      <CookieConsent />
     </>
   );
 }

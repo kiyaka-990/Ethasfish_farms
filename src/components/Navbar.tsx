@@ -39,7 +39,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'py-2' : 'py-4'}`}>
+    <header className={`fixed top-[var(--promo-bar-h,0px)] left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'py-2' : 'py-4'}`}>
       <div className="mx-auto max-w-7xl px-4">
         <nav
           className={`flex items-center justify-between gap-6 px-4 md:px-6 py-3 rounded-2xl transition-all duration-500 ${scrolled ? 'glass-strong' : 'glass'}`}

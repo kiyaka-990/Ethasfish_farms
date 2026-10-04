@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { UserButton, SignOutButton } from '@clerk/nextjs';
 import { LogOut } from 'lucide-react';
 import { getStaffSession, CLERK_ENABLED } from '@/lib/identity';
-import { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings, Megaphone } from 'lucide-react';
 import Logo from '@/components/Logo';
 import ThemeToggle from '@/components/ThemeToggle';
 import AdminMobileNav from './AdminMobileNav';
@@ -44,6 +44,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: '/admin/orders', icon: 'ShoppingBag' as const, label: 'Orders' },
     { href: '/admin/leads', icon: 'UserPlus' as const, label: 'Leads' },
     { href: '/admin/products', icon: 'Package' as const, label: 'Products' },
+    { href: '/admin/promotions', icon: 'Megaphone' as const, label: 'Promotions' },
     ...(staff.role === 'admin' ? [
       { href: '/admin/agents', icon: 'Bot' as const, label: 'AI Agents' },
       { href: '/admin/invoices', icon: 'FileText' as const, label: 'Invoices' },
@@ -59,7 +60,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     ] : [])
   ];
 
-  const ICON_MAP = { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings };
+  const ICON_MAP = { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings, Megaphone };
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">

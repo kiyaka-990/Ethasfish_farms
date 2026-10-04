@@ -379,3 +379,21 @@ model BusinessSettings {
   kraPin    String? // shown on receipts once VAT-registered
   updatedAt DateTime @updatedAt
 }
+
+// ===================== MARKETING =====================
+// Site-wide promo banner entries ("New harvest in!", "20% off fillets").
+// Staff-level (not admin-only) by design - branch sales managers should be
+// able to announce their own sale/harvest without needing an admin.
+model Promotion {
+  id        String    @id @default(cuid())
+  type      String    @default("announcement") // sale | harvest | announcement | restock
+  message   String
+  ctaLabel  String?
+  ctaHref   String?
+  active    Boolean   @default(true)
+  startsAt  DateTime?
+  endsAt    DateTime?
+  createdBy String? // StaffProfile.id
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
