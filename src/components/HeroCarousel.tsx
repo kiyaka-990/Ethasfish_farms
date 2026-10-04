@@ -1,6 +1,37 @@
+import { Fragment } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
+
+// Pure CSS per-letter reveal, no client JS needed - each character gets a
+// staggered animation-delay so the headline writes itself on. `start`
+// offsets the delay so a second run of text (e.g. the accent line)
+// continues the stagger instead of restarting it. Each word is wrapped
+// in its own inline-block so the browser can still only break lines
+// between words, not mid-word between individually-animated letters.
+function AnimatedLetters({ text, start = 0, step = 0.025 }: { text: string; start?: number; step?: number }) {
+  const words = text.split(' ');
+  let i = 0;
+  return (
+    <>
+      {words.map((word, wi) => {
+        const letters = word.split('').map(ch => {
+          const el = <span key={i} className="animate-letter" style={{ animationDelay: `${start + i * step}s` }}>{ch}</span>;
+          i++;
+          return el;
+        });
+        const needsSpace = wi < words.length - 1;
+        if (needsSpace) i++; // keep the stagger continuous across the space too
+        return (
+          <Fragment key={wi}>
+            <span className="inline-block">{letters}</span>
+            {needsSpace ? ' ' : ''}
+          </Fragment>
+        );
+      })}
+    </>
+  );
+}
 
 export interface HeroSlide {
   id: string;
@@ -54,11 +85,16 @@ export default function HeroCarousel({ slides = DEFAULT_HERO_SLIDES }: { slides?
 
       <div className="relative max-w-4xl mx-auto px-4 text-center z-10">
         <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] tracking-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.35)]">
-          {s.titlePre}<br />
-          <span className="gradient-text">{s.titleAccent}</span>
+          <AnimatedLetters text={s.titlePre} start={0.2} /><br />
+          <span className="gradient-text"><AnimatedLetters text={s.titleAccent} start={0.2 + s.titlePre.length * 0.025} /></span>
         </h1>
-        <p className="mt-7 text-lg md:text-xl text-white/85 max-w-2xl mx-auto leading-relaxed [text-shadow:0_1px_12px_rgba(0,0,0,0.3)]">{s.subtitle}</p>
-        <div className="mt-9">
+        <p
+          className="mt-7 text-lg md:text-xl text-white/85 max-w-2xl mx-auto leading-relaxed [text-shadow:0_1px_12px_rgba(0,0,0,0.3)] animate-fade-up"
+          style={{ animationDelay: `${0.2 + (s.titlePre.length + s.titleAccent.length) * 0.025 + 0.3}s` }}
+        >
+          {s.subtitle}
+        </p>
+        <div className="mt-9 animate-fade-up" style={{ animationDelay: `${0.2 + (s.titlePre.length + s.titleAccent.length) * 0.025 + 0.5}s` }}>
           <Link href={s.primaryHref} className="btn-primary text-base">
             {s.primaryLabel} <ArrowRight className="w-4 h-4" />
           </Link>

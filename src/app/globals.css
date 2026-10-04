@@ -250,6 +250,7 @@ body::after {
 @keyframes slide-in-left { 0% {opacity:0;transform:translateX(-40px)} 100% {opacity:1;transform:translateX(0)} }
 @keyframes ken-burns { 0% {transform:scale(1) translate(0,0)} 100% {transform:scale(1.15) translate(-2%,-2%)} }
 @keyframes blob { 0%,100% {border-radius:60% 40% 30% 70%/60% 30% 70% 40%} 50% {border-radius:30% 60% 70% 40%/50% 60% 30% 60%} }
+@keyframes letterUp { 0% {opacity:0;transform:translateY(60%) rotate(6deg);filter:blur(5px)} 100% {opacity:1;transform:translateY(0) rotate(0);filter:blur(0)} }
 
 .animate-float { animation: float 8s ease-in-out infinite; }
 .animate-float-delay { animation: float 10s ease-in-out infinite 2s; }
@@ -260,6 +261,7 @@ body::after {
 .animate-slide-left { animation: slide-in-left 0.8s ease-out backwards; }
 .animate-ken-burns { animation: ken-burns 20s ease-out infinite alternate; }
 .animate-blob { animation: blob 12s ease-in-out infinite; }
+.animate-letter { display: inline-block; animation: letterUp 0.7s cubic-bezier(.22,.9,.3,1) backwards; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
