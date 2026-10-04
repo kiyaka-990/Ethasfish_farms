@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireStaff, identityErrorStatus } from '@/lib/identity';
+import { requireStaff, requireAdmin, identityErrorStatus } from '@/lib/identity';
 import { logActivity } from '@/lib/audit';
 import { clearBotCache } from '@/lib/chatbot';
 
@@ -21,7 +21,7 @@ export async function GET() {
 
 export async function PATCH(req: NextRequest) {
   try {
-    const staff = await requireStaff();
+    const staff = await requireAdmin();
     const body = await req.json();
     const { type, productId, variantId } = body;
 
@@ -67,7 +67,7 @@ export async function PATCH(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const staff = await requireStaff();
+    const staff = await requireAdmin();
     const body = await req.json();
 
     if (body.type === 'createVariant') {
@@ -114,7 +114,7 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
-    const staff = await requireStaff();
+    const staff = await requireAdmin();
     const variantId = req.nextUrl.searchParams.get('variantId');
     const productId = req.nextUrl.searchParams.get('productId');
 

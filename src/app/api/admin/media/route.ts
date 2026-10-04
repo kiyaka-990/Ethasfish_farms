@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { put, del } from '@vercel/blob';
 import { prisma } from '@/lib/prisma';
-import { requireStaff, identityErrorStatus } from '@/lib/identity';
+import { requireAdmin, identityErrorStatus } from '@/lib/identity';
 import { logActivity } from '@/lib/audit';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    await requireStaff();
+    await requireAdmin();
     const media = await prisma.media.findMany({ orderBy: { createdAt: 'desc' }, take: 200 });
     return NextResponse.json({ media });
   } catch (e: any) {
@@ -18,7 +18,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const staff = await requireStaff();
+    const staff = await requireAdmin();
     const form = await req.formData();
     const file = form.get('file') as File | null;
     const alt = (form.get('alt') as string) || null;
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
-    const staff = await requireStaff();
+    const staff = await requireAdmin();
     const id = req.nextUrl.searchParams.get('id');
     if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
 

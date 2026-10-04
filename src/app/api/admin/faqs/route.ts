@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireStaff, identityErrorStatus } from '@/lib/identity';
+import { requireAdmin, identityErrorStatus } from '@/lib/identity';
 import { logActivity } from '@/lib/audit';
 import { clearBotCache } from '@/lib/chatbot';
 
@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    await requireStaff();
+    await requireAdmin();
     const faqs = await prisma.faqEntry.findMany({ orderBy: { createdAt: 'desc' } });
     return NextResponse.json({ faqs });
   } catch (e: any) {
@@ -18,7 +18,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const staff = await requireStaff();
+    const staff = await requireAdmin();
     const body = await req.json();
     const created = await prisma.faqEntry.create({
       data: {
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
-    const staff = await requireStaff();
+    const staff = await requireAdmin();
     const body = await req.json();
     if (!body.id) return NextResponse.json({ error: 'id required' }, { status: 400 });
     const updated = await prisma.faqEntry.update({
@@ -62,7 +62,7 @@ export async function PATCH(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   try {
-    const staff = await requireStaff();
+    const staff = await requireAdmin();
     const id = req.nextUrl.searchParams.get('id');
     if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
     await prisma.faqEntry.delete({ where: { id } });

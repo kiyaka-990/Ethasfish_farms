@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireStaff, identityErrorStatus } from '@/lib/identity';
+import { requireAdmin, identityErrorStatus } from '@/lib/identity';
 import { logActivity } from '@/lib/audit';
 import { generateDocNumber } from '@/lib/utils';
 
@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    await requireStaff();
+    await requireAdmin();
     const purchaseOrders = await prisma.purchaseOrder.findMany({
       include: { items: true, supplier: true },
       orderBy: { createdAt: 'desc' },
@@ -22,7 +22,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const staff = await requireStaff();
+    const staff = await requireAdmin();
     const body = await req.json();
     const items: Array<{ description: string; quantity: number; unitCost: number }> = body.items || [];
     if (!body.supplierId || items.length === 0) {
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
-    const staff = await requireStaff();
+    const staff = await requireAdmin();
     const body = await req.json();
     if (!body.id) return NextResponse.json({ error: 'id required' }, { status: 400 });
 

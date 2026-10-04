@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireStaff, identityErrorStatus } from '@/lib/identity';
+import { requireAdmin, identityErrorStatus } from '@/lib/identity';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,7 +22,7 @@ async function totals(since?: Date) {
 
 export async function GET() {
   try {
-    await requireStaff();
+    await requireAdmin();
     const [allTime, thisMonth] = await Promise.all([totals(), totals(startOfMonth())]);
     return NextResponse.json({ allTime, thisMonth });
   } catch (e: any) {

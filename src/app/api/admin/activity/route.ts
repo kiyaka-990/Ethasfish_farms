@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireStaff, identityErrorStatus } from '@/lib/identity';
+import { requireAdmin, identityErrorStatus } from '@/lib/identity';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 // for a full websocket/SSE feed - see roadmap).
 export async function GET(req: NextRequest) {
   try {
-    await requireStaff();
+    await requireAdmin();
     const since = req.nextUrl.searchParams.get('since');
     const logs = await prisma.auditLog.findMany({
       where: since ? { createdAt: { gt: new Date(since) } } : undefined,

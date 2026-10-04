@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireStaff, identityErrorStatus } from '@/lib/identity';
+import { requireAdmin, identityErrorStatus } from '@/lib/identity';
 import { logActivity } from '@/lib/audit';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    await requireStaff();
+    await requireAdmin();
     const suppliers = await prisma.supplier.findMany({ where: { active: true }, orderBy: { name: 'asc' } });
     return NextResponse.json({ suppliers });
   } catch (e: any) {
@@ -17,7 +17,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const staff = await requireStaff();
+    const staff = await requireAdmin();
     const body = await req.json();
     if (!body.name) return NextResponse.json({ error: 'name required' }, { status: 400 });
 
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
-    const staff = await requireStaff();
+    const staff = await requireAdmin();
     const body = await req.json();
     if (!body.id) return NextResponse.json({ error: 'id required' }, { status: 400 });
 

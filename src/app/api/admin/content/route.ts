@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { requireStaff, identityErrorStatus } from '@/lib/identity';
+import { requireAdmin, identityErrorStatus } from '@/lib/identity';
 import { logActivity } from '@/lib/audit';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: NextRequest) {
   try {
-    await requireStaff();
+    await requireAdmin();
     const key = req.nextUrl.searchParams.get('key');
     if (key) {
       const row = await prisma.siteContent.findUnique({ where: { key } });
@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
 
 export async function PATCH(req: NextRequest) {
   try {
-    const staff = await requireStaff();
+    const staff = await requireAdmin();
     const { key, label, data } = await req.json();
     if (!key || data === undefined) return NextResponse.json({ error: 'key and data required' }, { status: 400 });
 

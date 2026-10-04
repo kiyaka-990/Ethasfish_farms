@@ -97,7 +97,7 @@ export default async function AdminHomePage() {
         )}
       </div>
 
-      <RecentActivity />
+      {admin.role === 'admin' && <RecentActivity />}
     </div>
   );
 }

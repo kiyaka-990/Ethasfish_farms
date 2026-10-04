@@ -32,23 +32,30 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   // so this array stays serializable when passed into AdminMobileNav, a
   // Client Component - the desktop <aside> below resolves components
   // locally via ICON_MAP since it never crosses that boundary.
+  // Branch/outlet sales managers get the day-to-day till tools; everything
+  // with business-wide financial or public-site impact (pricing edits,
+  // accounting, purchasing, the CMS, cross-branch activity) is admin-only.
+  // This list is a convenience for navigation only - the real boundary is
+  // requireAdmin() on each of those API routes.
   const navItems = [
     { href: '/admin', icon: 'LayoutDashboard' as const, label: 'Dashboard' },
     { href: '/admin/assistant', icon: 'Sparkles' as const, label: 'Assistant' },
-    { href: '/admin/agents', icon: 'Bot' as const, label: 'AI Agents' },
     { href: '/admin/pos', icon: 'Store' as const, label: 'Point of Sale' },
     { href: '/admin/orders', icon: 'ShoppingBag' as const, label: 'Orders' },
-    { href: '/admin/invoices', icon: 'FileText' as const, label: 'Invoices' },
     { href: '/admin/leads', icon: 'UserPlus' as const, label: 'Leads' },
     { href: '/admin/products', icon: 'Package' as const, label: 'Products' },
-    { href: '/admin/inventory', icon: 'Boxes' as const, label: 'Inventory' },
-    { href: '/admin/expenses', icon: 'Wallet' as const, label: 'Accounting' },
-    { href: '/admin/purchasing', icon: 'Truck' as const, label: 'Purchasing' },
-    { href: '/admin/content', icon: 'LayoutTemplate' as const, label: 'Site Content' },
-    { href: '/admin/media', icon: 'ImageIcon' as const, label: 'Media Library' },
-    { href: '/admin/faqs', icon: 'MessageSquare' as const, label: 'Bot FAQs' },
-    { href: '/admin/activity', icon: 'Activity' as const, label: 'Activity Log' },
-    ...(staff.role === 'admin' ? [{ href: '/admin/staff', icon: 'Users' as const, label: 'Staff' }] : [])
+    ...(staff.role === 'admin' ? [
+      { href: '/admin/agents', icon: 'Bot' as const, label: 'AI Agents' },
+      { href: '/admin/invoices', icon: 'FileText' as const, label: 'Invoices' },
+      { href: '/admin/inventory', icon: 'Boxes' as const, label: 'Inventory' },
+      { href: '/admin/expenses', icon: 'Wallet' as const, label: 'Accounting' },
+      { href: '/admin/purchasing', icon: 'Truck' as const, label: 'Purchasing' },
+      { href: '/admin/content', icon: 'LayoutTemplate' as const, label: 'Site Content' },
+      { href: '/admin/media', icon: 'ImageIcon' as const, label: 'Media Library' },
+      { href: '/admin/faqs', icon: 'MessageSquare' as const, label: 'Bot FAQs' },
+      { href: '/admin/activity', icon: 'Activity' as const, label: 'Activity Log' },
+      { href: '/admin/staff', icon: 'Users' as const, label: 'Staff' }
+    ] : [])
   ];
 
   const ICON_MAP = { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store };
