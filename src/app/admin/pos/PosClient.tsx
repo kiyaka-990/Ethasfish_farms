@@ -4,6 +4,7 @@ import { Search, Plus, Minus, X, Loader2, Banknote, Smartphone, Printer, Receipt
 import toast from 'react-hot-toast';
 import { fmtKsh } from '@/lib/utils';
 import PosAssistant from './PosAssistant';
+import InstallPosButton from './InstallPosButton';
 
 interface Variant { id: string; label: string; weight: string; priceKsh: number; stock: number; active: boolean; }
 interface Product { id: string; name: string; type: string; imageUrl?: string | null; active: boolean; variants: Variant[]; }
@@ -135,9 +136,12 @@ export default function PosClient() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <h1 className="font-display text-3xl font-bold text-primary flex items-center gap-2">
-          <ShoppingCart className="w-6 h-6 text-[var(--accent)]" /> Point of Sale
-        </h1>
+        <div className="flex items-center gap-3 flex-wrap">
+          <h1 className="font-display text-3xl font-bold text-primary flex items-center gap-2">
+            <ShoppingCart className="w-6 h-6 text-[var(--accent)]" /> Point of Sale
+          </h1>
+          <InstallPosButton />
+        </div>
         <div className="relative w-full sm:w-72">
           <Search className="w-4 h-4 text-muted absolute left-3 top-1/2 -translate-y-1/2" />
           <input
