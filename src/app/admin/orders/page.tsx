@@ -89,7 +89,12 @@ export default function AdminOrdersPage() {
             <div key={o.id} className="glass-strong rounded-2xl p-5">
               <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
                 <div>
-                  <p className="font-mono text-sm font-semibold text-primary">{o.orderNumber}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="font-mono text-sm font-semibold text-primary">{o.orderNumber}</p>
+                    {o.channel === 'pos' && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-[var(--accent)]/10 text-[var(--accent)] font-medium">POS</span>
+                    )}
+                  </div>
                   <p className="text-xs text-muted">{new Date(o.createdAt).toLocaleString('en-KE')}</p>
                 </div>
                 <div className="text-right">

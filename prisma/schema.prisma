@@ -92,6 +92,7 @@ model Order {
   status          String           @default("pending") // pending | paid | preparing | out_for_delivery | delivered | cancelled
   paymentStatus   String           @default("unpaid") // unpaid | processing | paid | failed
   paymentMethod   String           @default("mpesa")
+  channel         String           @default("online") // online | pos
   mpesaRef        String?
   mpesaCheckoutId String?
   items           OrderItem[]

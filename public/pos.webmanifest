@@ -1,0 +1,13 @@
+{
+  "name": "Ethasfish POS",
+  "short_name": "Ethasfish POS",
+  "description": "Counter sales point-of-sale for Ethasfish Farms",
+  "start_url": "/admin/pos",
+  "scope": "/admin/pos",
+  "display": "standalone",
+  "background_color": "#F3F7FC",
+  "theme_color": "#1C6EA8",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
