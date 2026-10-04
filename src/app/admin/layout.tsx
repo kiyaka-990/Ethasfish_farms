@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { UserButton } from '@clerk/nextjs';
 import { getStaffSession, CLERK_ENABLED } from '@/lib/identity';
-import { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles } from 'lucide-react';
 import Logo from '@/components/Logo';
 import AdminMobileNav from './AdminMobileNav';
 
@@ -32,6 +32,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   // locally via ICON_MAP since it never crosses that boundary.
   const navItems = [
     { href: '/admin', icon: 'LayoutDashboard' as const, label: 'Dashboard' },
+    { href: '/admin/assistant', icon: 'Sparkles' as const, label: 'Assistant' },
     { href: '/admin/agents', icon: 'Bot' as const, label: 'AI Agents' },
     { href: '/admin/orders', icon: 'ShoppingBag' as const, label: 'Orders' },
     { href: '/admin/invoices', icon: 'FileText' as const, label: 'Invoices' },
@@ -47,7 +48,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     ...(staff.role === 'admin' ? [{ href: '/admin/staff', icon: 'Users' as const, label: 'Staff' }] : [])
   ];
 
-  const ICON_MAP = { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot };
+  const ICON_MAP = { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles };
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">

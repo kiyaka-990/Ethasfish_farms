@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { UserButton } from '@clerk/nextjs';
 import {
   Menu, X, LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate,
-  Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot
+  Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles
 } from 'lucide-react';
 import Logo from '@/components/Logo';
 
@@ -15,7 +15,7 @@ import Logo from '@/components/Logo';
 // the icon set here must mirror the one used server-side in admin/layout.tsx.
 const ICONS = {
   LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate,
-  ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot
+  ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles
 };
 
 interface NavItem { href: string; icon: keyof typeof ICONS; label: string; }
