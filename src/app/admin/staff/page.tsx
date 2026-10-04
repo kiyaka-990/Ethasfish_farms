@@ -35,6 +35,13 @@ export default function AdminStaffPage() {
     if (res.ok) load(); else toast.error('Failed');
   }
 
+  async function saveField(s: Staff, field: 'name' | 'email', value: string) {
+    if (!value.trim() || value === s[field]) return;
+    const res = await fetch('/api/admin/staff', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: s.id, [field]: value }) });
+    if (res.ok) { toast.success('Saved'); load(); }
+    else { const d = await res.json().catch(() => ({})); toast.error(d.error || 'Failed'); load(); }
+  }
+
   async function toggleActive(s: Staff) {
     const res = await fetch('/api/admin/staff', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: s.id, active: !s.active }) });
     if (res.ok) load(); else toast.error('Failed');
@@ -88,8 +95,22 @@ export default function AdminStaffPage() {
             <tbody>
               {staff.map(s => (
                 <tr key={s.id} className="border-b border-[var(--border-color)] last:border-0">
-                  <td className="px-4 py-3 text-primary">{s.name}</td>
-                  <td className="px-4 py-3 text-secondary">{s.email}</td>
+                  <td className="px-4 py-3 text-primary">
+                    <input
+                      defaultValue={s.name}
+                      onBlur={e => saveField(s, 'name', e.target.value)}
+                      className="bg-transparent outline-none focus:ring-1 focus:ring-[var(--accent)] rounded px-1 -mx-1 w-full"
+                    />
+                  </td>
+                  <td className="px-4 py-3 text-secondary">
+                    <input
+                      defaultValue={s.email}
+                      disabled={!s.clerkUserId.startsWith('pending:')}
+                      onBlur={e => saveField(s, 'email', e.target.value)}
+                      title={s.clerkUserId.startsWith('pending:') ? 'Edit the invite email before they sign in' : 'Already signed in - remove and re-invite to change the email'}
+                      className="bg-transparent outline-none focus:ring-1 focus:ring-[var(--accent)] rounded px-1 -mx-1 w-full disabled:opacity-60 disabled:cursor-not-allowed"
+                    />
+                  </td>
                   <td className="px-4 py-3">
                     <select className="input-glass !py-1.5 text-xs" value={s.role} onChange={e => setRole(s.id, e.target.value)}>
                       <option value="sales_manager">Sales Manager</option>

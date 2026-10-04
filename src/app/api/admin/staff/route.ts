@@ -41,14 +41,32 @@ export async function POST(req: NextRequest) {
 export async function PATCH(req: NextRequest) {
   try {
     const admin = await requireAdmin();
-    const { id, role, active } = await req.json();
+    const { id, role, active, name, email } = await req.json();
     if (!id) return NextResponse.json({ error: 'id required' }, { status: 400 });
+
+    const existing = await prisma.staffProfile.findUnique({ where: { id } });
+    if (!existing) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+
+    // Changing the email on an invite that hasn't been claimed yet also
+    // needs to update the pending clerkUserId marker (it encodes the
+    // email identity.ts matches against on first sign-in) - once claimed
+    // (a real Clerk user id, not "pending:...") the email is locked in.
+    const isPending = existing.clerkUserId.startsWith('pending:');
+    const newEmail = email?.trim().toLowerCase();
+    if (newEmail && !isPending && newEmail !== existing.email) {
+      return NextResponse.json({ error: 'Cannot change the email of a staff member who has already signed in - remove and re-invite instead' }, { status: 400 });
+    }
 
     const updated = await prisma.staffProfile.update({
       where: { id },
-      data: { ...(role ? { role } : {}), ...(active !== undefined ? { active } : {}) }
+      data: {
+        ...(role ? { role } : {}),
+        ...(active !== undefined ? { active } : {}),
+        ...(name?.trim() ? { name: name.trim() } : {}),
+        ...(newEmail ? { email: newEmail, ...(isPending ? { clerkUserId: `pending:${newEmail}:${Date.now()}` } : {}) } : {})
+      }
     });
-    await logActivity({ actorType: 'staff', actorId: admin.clerkUserId, actorName: admin.name, action: 'staff.update', entityType: 'StaffProfile', entityId: updated.id, summary: `updated ${updated.name}${role ? ` → role: ${role}` : ''}${active !== undefined ? ` → active: ${active}` : ''}` });
+    await logActivity({ actorType: 'staff', actorId: admin.clerkUserId, actorName: admin.name, action: 'staff.update', entityType: 'StaffProfile', entityId: updated.id, summary: `updated ${updated.name}${role ? ` → role: ${role}` : ''}${active !== undefined ? ` → active: ${active}` : ''}${newEmail ? ` → email: ${newEmail}` : ''}` });
     return NextResponse.json({ staff: updated });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: identityErrorStatus(e) });
