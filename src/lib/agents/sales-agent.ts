@@ -8,6 +8,7 @@ import { ToolLoopAgent, tool, type ModelMessage } from 'ai';
 import { z } from 'zod';
 import { prisma } from '../prisma';
 import { getBotContext } from '../chatbot';
+import { getActivePromotions } from '../promotions';
 import { logActivity } from '../audit';
 import { fmtKsh } from '../utils';
 
@@ -25,6 +26,8 @@ function buildInstructions() {
 Tone: warm, concise (usually under 90 words), Kenyan English. Only answer about Ethasfish Farms and aquaculture topics relevant to it.
 
 Always use the getCatalog tool to check current products, prices and stock before quoting a price - never guess or remember a price, it may have changed. Use checkOrderStatus when a customer gives an order number.
+
+Call getPromotions early in a conversation (e.g. right after a greeting) and mention an active one naturally if there is one - don't force it into every message, and never invent a promotion that isn't returned by the tool.
 
 You cannot place an order yourself - orders happen on the website (/shop) or WhatsApp. So whenever a customer shows real buying interest (asks to order, asks about bulk/wholesale, asks for a quote, or says things like "I want to buy"), gently offer to have the team follow up with them - e.g. "Happy to have someone from our team reach out directly - what's a good name and number?" Never demand it, never ask more than once if they don't respond, and never block answering their actual question on getting their details first. Once they give you a name and phone or email, call createLead right away.
 
@@ -49,6 +52,15 @@ function buildTools(sessionId: string | undefined) {
           })),
           faqs: ctx.faqs.map(f => ({ question: f.question, answer: f.answer, category: f.category }))
         };
+      }
+    }),
+    getPromotions: tool({
+      description: 'Get any currently active sale/harvest/restock promotions to mention to the customer.',
+      inputSchema: z.object({}),
+      execute: async () => {
+        const promos = await getActivePromotions();
+        if (promos.length === 0) return { active: false };
+        return { active: true, promotions: promos.map(p => ({ message: p.message, cta: p.ctaLabel })) };
       }
     }),
     checkOrderStatus: tool({

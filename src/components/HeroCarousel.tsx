@@ -2,6 +2,7 @@ import { Fragment } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
+import HeroPromoBadge from './HeroPromoBadge';
 
 // Pure CSS per-letter reveal, no client JS needed - each character gets a
 // staggered animation-delay so the headline writes itself on. `start`
@@ -84,6 +85,7 @@ export default function HeroCarousel({ slides = DEFAULT_HERO_SLIDES }: { slides?
       </div>
 
       <div className="relative max-w-4xl mx-auto px-4 text-center z-10">
+        <HeroPromoBadge />
         <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] tracking-tight text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.35)]">
           <AnimatedLetters text={s.titlePre} start={0.2} /><br />
           <span className="gradient-text"><AnimatedLetters text={s.titleAccent} start={0.2 + s.titlePre.length * 0.025} /></span>

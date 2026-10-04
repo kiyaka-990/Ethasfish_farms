@@ -4,6 +4,7 @@
 // a sophisticated rule + retrieval engine.
 
 import { prisma } from './prisma';
+import { getActivePromotions } from './promotions';
 
 interface BotContext {
   products: Array<{
@@ -14,6 +15,7 @@ interface BotContext {
     variants: Array<{ label: string; weight: string; perItem: string | null; priceKsh: number; stock: number }>;
   }>;
   faqs: Array<{ question: string; answer: string; keywords: string[]; category: string }>;
+  promotions: Array<{ type: string; message: string; ctaLabel: string | null; ctaHref: string | null }>;
 }
 
 let cache: { data: BotContext; ts: number } | null = null;
@@ -22,12 +24,15 @@ const CACHE_MS = 30_000; // refresh every 30s so admins see updates fast
 export async function getBotContext(): Promise<BotContext> {
   if (cache && Date.now() - cache.ts < CACHE_MS) return cache.data;
 
-  const products = await prisma.product.findMany({
-    where: { active: true },
-    include: { variants: { where: { active: true }, orderBy: { sortOrder: 'asc' } } },
-    orderBy: { sortOrder: 'asc' }
-  });
-  const faqs = await prisma.faqEntry.findMany({ where: { active: true } });
+  const [products, faqs, promotions] = await Promise.all([
+    prisma.product.findMany({
+      where: { active: true },
+      include: { variants: { where: { active: true }, orderBy: { sortOrder: 'asc' } } },
+      orderBy: { sortOrder: 'asc' }
+    }),
+    prisma.faqEntry.findMany({ where: { active: true } }),
+    getActivePromotions()
+  ]);
 
   const data: BotContext = {
     products: products.map(p => ({
@@ -37,7 +42,8 @@ export async function getBotContext(): Promise<BotContext> {
       badge: p.badge,
       variants: p.variants.map(v => ({ label: v.label, weight: v.weight, perItem: v.perItem, priceKsh: v.priceKsh, stock: v.stock }))
     })),
-    faqs: faqs.map(f => ({ question: f.question, answer: f.answer, keywords: f.keywords.split(',').map(k => k.trim().toLowerCase()), category: f.category }))
+    faqs: faqs.map(f => ({ question: f.question, answer: f.answer, keywords: f.keywords.split(',').map(k => k.trim().toLowerCase()), category: f.category })),
+    promotions: promotions.map(p => ({ type: p.type, message: p.message, ctaLabel: p.ctaLabel, ctaHref: p.ctaHref }))
   };
   cache = { data, ts: Date.now() };
   return data;
@@ -93,6 +99,7 @@ function detectIntent(msg: string): { intent: string; data?: any } {
     if (m.includes('aquaculture') || m.includes('consult')) return { intent: 'services', data: { kind: 'consultancy' } };
     return { intent: 'price' };
   }
+  if (/\b(promo|promotion|discount|deals?|on sale|special offer|current offer|any offers?|what.?s on offer|new harvest)\b/.test(m)) return { intent: 'promotion' };
   if (/\b(stock|available|in stock|do you have)\b/.test(m)) return { intent: 'stock' };
   if (/\b(menu|catalog|catalogue|product|products|sell|offer|what.*have|range)\b/.test(m)) return { intent: 'catalog' };
   if (/\b(bulk|wholesale|cooperative|co-?op|restaurant|hotel|reseller|supply.*regularly|large quantity)\b/.test(m)) return { intent: 'bulk' };
@@ -154,6 +161,13 @@ function buildCatalog(ctx: BotContext): string {
     .join('\n\n');
 }
 
+function buildPromotionsText(ctx: BotContext): string {
+  if (ctx.promotions.length === 0) return 'No active promotions right now — but ask me anytime, or check back soon! You can also message us on WhatsApp to hear about upcoming offers first.';
+  return ctx.promotions
+    .map(p => `🎉 ${p.message}${p.ctaLabel ? ` (${p.ctaLabel}${p.ctaHref ? `: ${p.ctaHref}` : ''})` : ''}`)
+    .join('\n');
+}
+
 function buildStockReport(ctx: BotContext): string {
   const lines: string[] = [];
   for (const p of ctx.products) {
@@ -178,6 +192,7 @@ function buildMenu(): string {
     '',
     '*Shop*',
     '  • Products & prices — "show me your products"',
+    '  • Current promotions — "any offers?"',
     '  • Stock availability — "is fillet in stock?"',
     '  • How to order — "how do I order?"',
     '  • Track an order — "track my order"',
@@ -255,8 +270,13 @@ async function replyFor(intent: string, data: any, ctx: BotContext, bestFaq: { f
       return { text: `I can keep helping, or you can reach our team directly on WhatsApp: +${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '254700000000'} — they usually reply within minutes during business hours (Mon–Sat, 7am–6pm).`, intent };
     case 'complaint':
       return { text: 'I\'m really sorry to hear that — that\'s not the experience we want for you. Please message us on WhatsApp with your order number so our team can fix it right away: ' + `+${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '254700000000'}`, intent };
-    case 'greeting':
-      return { text: greetings[Math.floor(Math.random() * greetings.length)], intent };
+    case 'greeting': {
+      const base = greetings[Math.floor(Math.random() * greetings.length)];
+      const promo = ctx.promotions[0];
+      return { text: promo ? `${base}\n\n🎉 By the way: ${promo.message}${promo.ctaLabel ? ` (${promo.ctaLabel})` : ''}` : base, intent };
+    }
+    case 'promotion':
+      return { text: buildPromotionsText(ctx), intent };
     case 'thanks':
       return { text: thanksReplies[Math.floor(Math.random() * thanksReplies.length)], intent };
     case 'bye':

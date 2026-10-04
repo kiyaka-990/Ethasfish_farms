@@ -7,6 +7,7 @@ interface Msg { role: 'user' | 'bot'; content: string; }
 
 const quickReplies = [
   'Show me your products',
+  'Any current offers?',
   'What are the prices?',
   'Tell me about your services',
   'How do I order?',
