@@ -26,21 +26,27 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const staff = await getStaffSession();
   if (!staff) redirect('/sign-in?redirect_url=/admin');
 
+  // `icon` is a plain string here (not a component reference) specifically
+  // so this array stays serializable when passed into AdminMobileNav, a
+  // Client Component - the desktop <aside> below resolves components
+  // locally via ICON_MAP since it never crosses that boundary.
   const navItems = [
-    { href: '/admin', Icon: LayoutDashboard, label: 'Dashboard' },
-    { href: '/admin/orders', Icon: ShoppingBag, label: 'Orders' },
-    { href: '/admin/invoices', Icon: FileText, label: 'Invoices' },
-    { href: '/admin/leads', Icon: UserPlus, label: 'Leads' },
-    { href: '/admin/products', Icon: Package, label: 'Products' },
-    { href: '/admin/inventory', Icon: Boxes, label: 'Inventory' },
-    { href: '/admin/expenses', Icon: Wallet, label: 'Accounting' },
-    { href: '/admin/purchasing', Icon: Truck, label: 'Purchasing' },
-    { href: '/admin/content', Icon: LayoutTemplate, label: 'Site Content' },
-    { href: '/admin/media', Icon: ImageIcon, label: 'Media Library' },
-    { href: '/admin/faqs', Icon: MessageSquare, label: 'Bot FAQs' },
-    { href: '/admin/activity', Icon: Activity, label: 'Activity Log' },
-    ...(staff.role === 'admin' ? [{ href: '/admin/staff', Icon: Users, label: 'Staff' }] : [])
+    { href: '/admin', icon: 'LayoutDashboard' as const, label: 'Dashboard' },
+    { href: '/admin/orders', icon: 'ShoppingBag' as const, label: 'Orders' },
+    { href: '/admin/invoices', icon: 'FileText' as const, label: 'Invoices' },
+    { href: '/admin/leads', icon: 'UserPlus' as const, label: 'Leads' },
+    { href: '/admin/products', icon: 'Package' as const, label: 'Products' },
+    { href: '/admin/inventory', icon: 'Boxes' as const, label: 'Inventory' },
+    { href: '/admin/expenses', icon: 'Wallet' as const, label: 'Accounting' },
+    { href: '/admin/purchasing', icon: 'Truck' as const, label: 'Purchasing' },
+    { href: '/admin/content', icon: 'LayoutTemplate' as const, label: 'Site Content' },
+    { href: '/admin/media', icon: 'ImageIcon' as const, label: 'Media Library' },
+    { href: '/admin/faqs', icon: 'MessageSquare' as const, label: 'Bot FAQs' },
+    { href: '/admin/activity', icon: 'Activity' as const, label: 'Activity Log' },
+    ...(staff.role === 'admin' ? [{ href: '/admin/staff', icon: 'Users' as const, label: 'Staff' }] : [])
   ];
+
+  const ICON_MAP = { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck };
 
   return (
     <div className="flex flex-col lg:flex-row min-h-[calc(100vh-4rem)]">
@@ -58,12 +64,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </div>
         </div>
 
-        {navItems.map(({ href, Icon, label }) => (
-          <Link key={href} href={href} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-secondary hover:text-primary hover:bg-[var(--surface)] transition-colors">
-            <Icon className="w-4 h-4" />
-            {label}
-          </Link>
-        ))}
+        {navItems.map(({ href, icon, label }) => {
+          const Icon = ICON_MAP[icon];
+          return (
+            <Link key={href} href={href} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-secondary hover:text-primary hover:bg-[var(--surface)] transition-colors">
+              <Icon className="w-4 h-4" />
+              {label}
+            </Link>
+          );
+        })}
 
         <div className="mt-auto flex items-center gap-3 px-3 py-3 rounded-xl glass-soft">
           <UserButton />

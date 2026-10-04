@@ -3,10 +3,22 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { UserButton } from '@clerk/nextjs';
-import { Menu, X, type LucideIcon } from 'lucide-react';
+import {
+  Menu, X, LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate,
+  Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck
+} from 'lucide-react';
 import Logo from '@/components/Logo';
 
-interface NavItem { href: string; Icon: LucideIcon; label: string; }
+// Server Components can't pass component/function references as props to
+// Client Components (not serializable across the RSC boundary) - this map
+// lets AdminLayout hand over plain icon-name strings instead, which is why
+// the icon set here must mirror the one used server-side in admin/layout.tsx.
+const ICONS = {
+  LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate,
+  ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck
+};
+
+interface NavItem { href: string; icon: keyof typeof ICONS; label: string; }
 
 // The desktop sidebar is `hidden lg:flex` - below that breakpoint there
 // was no navigation at all, just bare page content (e.g. landing on
@@ -44,17 +56,20 @@ export default function AdminMobileNav({ navItems, staffName, staffEmail, portal
               </button>
             </div>
 
-            {navItems.map(({ href, Icon, label }) => (
-              <Link
-                key={href}
-                href={href}
-                onClick={() => setOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors ${pathname === href ? 'bg-[var(--surface-strong)] text-primary' : 'text-secondary hover:text-primary hover:bg-[var(--surface)]'}`}
-              >
-                <Icon className="w-4 h-4" />
-                {label}
-              </Link>
-            ))}
+            {navItems.map(({ href, icon, label }) => {
+              const Icon = ICONS[icon];
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => setOpen(false)}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors ${pathname === href ? 'bg-[var(--surface-strong)] text-primary' : 'text-secondary hover:text-primary hover:bg-[var(--surface)]'}`}
+                >
+                  <Icon className="w-4 h-4" />
+                  {label}
+                </Link>
+              );
+            })}
 
             <div className="mt-auto flex items-center gap-3 px-3 py-3 rounded-xl glass-soft">
               <UserButton />
