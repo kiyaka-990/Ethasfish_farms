@@ -2,11 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter, Space_Grotesk } from 'next/font/google';
 import { Toaster } from 'react-hot-toast';
 import './globals.css';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import CartDrawer from '@/components/CartDrawer';
-import ChatWidget from '@/components/ChatWidget';
-import WhatsAppButton from '@/components/WhatsAppButton';
+import SiteChrome from '@/components/SiteChrome';
 import AccessibilityProvider from '@/components/AccessibilityProvider';
 import AccessibilityMenu from '@/components/AccessibilityMenu';
 import ScrollProgressBar from '@/components/ScrollProgressBar';
@@ -55,12 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <a href="#main" className="skip-link">Skip to main content</a>
             <ScrollProgressBar />
             <CursorGlow />
-            <Navbar />
-            <main id="main" className="flex-1 pt-16">{children}</main>
-            <Footer />
-            <CartDrawer />
-            <ChatWidget />
-            <WhatsAppButton />
+            <SiteChrome>{children}</SiteChrome>
             <AccessibilityMenu />
             <Toaster position="bottom-center" toastOptions={{
               style: { background: 'var(--surface-strong)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', backdropFilter: 'blur(20px)', borderRadius: '12px', fontSize: '14px' }

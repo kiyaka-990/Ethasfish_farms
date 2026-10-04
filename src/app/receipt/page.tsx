@@ -38,7 +38,7 @@ export default async function ReceiptPage({ searchParams }: { searchParams: Prom
             <Logo size={48} showText={false} />
             <h1 className="font-display text-xl font-bold mt-3 text-primary">Ethasfish Farms</h1>
             <p className="text-xs text-muted mt-0.5">Othany East, Seme · Kisumu County</p>
-            <p className="text-xs text-muted">+254 700 000 000 · hello@ethasfish.co.ke</p>
+            <p className="text-xs text-muted">+254 737 548998 · info@ethasfarms.co.ke</p>
           </div>
 
           {/* Status */}

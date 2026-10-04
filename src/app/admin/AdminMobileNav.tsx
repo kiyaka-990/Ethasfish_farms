@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { UserButton } from '@clerk/nextjs';
 import {
   Menu, X, LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate,
-  Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck
+  Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot
 } from 'lucide-react';
 import Logo from '@/components/Logo';
 
@@ -15,7 +15,7 @@ import Logo from '@/components/Logo';
 // the icon set here must mirror the one used server-side in admin/layout.tsx.
 const ICONS = {
   LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate,
-  ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck
+  ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot
 };
 
 interface NavItem { href: string; icon: keyof typeof ICONS; label: string; }
@@ -35,7 +35,7 @@ export default function AdminMobileNav({ navItems, staffName, staffEmail, portal
 
   return (
     <div className="lg:hidden">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-color)] sticky top-16 z-40 bg-[var(--bg-primary)]">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-color)] sticky top-0 z-40 bg-[var(--bg-primary)]">
         <Logo size={30} />
         <button onClick={() => setOpen(true)} className="p-2 rounded-xl hover:bg-[var(--surface)] text-primary" aria-label="Open admin menu">
           <Menu className="w-5 h-5" />

@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { UserButton } from '@clerk/nextjs';
 import { getStaffSession, CLERK_ENABLED } from '@/lib/identity';
-import { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot } from 'lucide-react';
 import Logo from '@/components/Logo';
 import AdminMobileNav from './AdminMobileNav';
 
@@ -32,6 +32,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   // locally via ICON_MAP since it never crosses that boundary.
   const navItems = [
     { href: '/admin', icon: 'LayoutDashboard' as const, label: 'Dashboard' },
+    { href: '/admin/agents', icon: 'Bot' as const, label: 'AI Agents' },
     { href: '/admin/orders', icon: 'ShoppingBag' as const, label: 'Orders' },
     { href: '/admin/invoices', icon: 'FileText' as const, label: 'Invoices' },
     { href: '/admin/leads', icon: 'UserPlus' as const, label: 'Leads' },
@@ -46,22 +47,22 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     ...(staff.role === 'admin' ? [{ href: '/admin/staff', icon: 'Users' as const, label: 'Staff' }] : [])
   ];
 
-  const ICON_MAP = { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck };
+  const ICON_MAP = { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-[calc(100vh-4rem)]">
+    <div className="flex flex-col lg:flex-row min-h-screen">
       <AdminMobileNav
         navItems={navItems}
         staffName={staff.name}
         staffEmail={staff.email}
         portalLabel={staff.role === 'admin' ? 'Admin Portal' : 'Sales Portal'}
       />
-      <aside className="hidden lg:flex w-64 flex-col p-4 gap-2 border-r border-[var(--border-color)] sticky top-16 self-start h-[calc(100vh-4rem)]">
+      <aside className="hidden lg:flex w-64 flex-col p-4 gap-2 border-r border-[var(--border-color)] sticky top-0 self-start h-screen">
         <div className="px-3 py-4 flex items-center justify-between">
-          <div>
+          <Link href="/">
             <Logo size={36} />
             <p className="text-[10px] uppercase tracking-wider text-muted mt-3">{staff.role === 'admin' ? 'Admin Portal' : 'Sales Portal'}</p>
-          </div>
+          </Link>
         </div>
 
         {navItems.map(({ href, icon, label }) => {

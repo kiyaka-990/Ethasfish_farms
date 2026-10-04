@@ -45,7 +45,7 @@ function buildTools(sessionId: string | undefined) {
             name: p.name,
             type: p.type,
             description: p.description,
-            variants: p.variants.map(v => ({ label: v.label, weight: v.weight, price: fmtKsh(v.priceKsh), inStock: v.stock > 0, stock: v.stock }))
+            variants: p.variants.map(v => ({ label: v.label, weight: v.weight, price: v.priceKsh > 0 ? fmtKsh(v.priceKsh) : 'Quote on request - no fixed price, ask the customer to share contact info so the team can quote', inStock: v.stock > 0, stock: v.stock }))
           })),
           faqs: ctx.faqs.map(f => ({ question: f.question, answer: f.answer, category: f.category }))
         };

@@ -89,6 +89,8 @@ function detectIntent(msg: string): { intent: string; data?: any } {
     if (m.includes('whole')) return { intent: 'price', data: { type: 'whole' } };
     if (m.includes('fillet')) return { intent: 'price', data: { type: 'fillet' } };
     if (m.includes('finger')) return { intent: 'price', data: { type: 'fingerling' } };
+    if (m.includes('feed') || m.includes('pellet')) return { intent: 'price', data: { type: 'feed' } };
+    if (m.includes('aquaculture') || m.includes('consult')) return { intent: 'services', data: { kind: 'consultancy' } };
     return { intent: 'price' };
   }
   if (/\b(stock|available|in stock|do you have)\b/.test(m)) return { intent: 'stock' };
@@ -133,6 +135,7 @@ function buildPriceList(ctx: BotContext, type?: string): string {
   for (const p of products) {
     lines.push(`*${p.name}*`);
     for (const v of p.variants) {
+      if (v.priceKsh <= 0) { lines.push(`  • ${v.label} — _message us on WhatsApp for a quote_`); continue; }
       const stockHint = v.stock <= 0 ? ' _(out of stock)_' : v.stock < 10 ? ` _(only ${v.stock} left!)_` : '';
       lines.push(`  • ${v.label} (${v.weight}) — ${fmtKsh(v.priceKsh)}${stockHint}`);
     }
@@ -143,7 +146,11 @@ function buildPriceList(ctx: BotContext, type?: string): string {
 
 function buildCatalog(ctx: BotContext): string {
   return ctx.products
-    .map(p => `*${p.name}*${p.badge ? ` _(${p.badge})_` : ''} — from ${fmtKsh(Math.min(...p.variants.map(v => v.priceKsh)))}\n${p.description}`)
+    .map(p => {
+      const prices = p.variants.map(v => v.priceKsh).filter(n => n > 0);
+      const priceLine = prices.length > 0 ? `from ${fmtKsh(Math.min(...prices))}` : 'quote on request';
+      return `*${p.name}*${p.badge ? ` _(${p.badge})_` : ''} — ${priceLine}\n${p.description}`;
+    })
     .join('\n\n');
 }
 

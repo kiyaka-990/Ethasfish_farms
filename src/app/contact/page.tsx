@@ -42,20 +42,21 @@ export default function ContactPage() {
             <p className="text-sm font-semibold text-primary">Chat instantly</p>
           </a>
 
-          <a href="tel:+254700000000" className="glass-card-interactive rounded-2xl p-5 text-center group">
+          <a href="tel:+254737548998" className="glass-card-interactive rounded-2xl p-5 text-center group">
             <div className="w-12 h-12 rounded-2xl mx-auto mb-3 bg-gradient-to-br from-[var(--accent)]/20 to-[var(--accent-light)]/10 flex items-center justify-center transition-transform group-hover:scale-110">
               <Phone className="w-5 h-5 text-[var(--accent)]" />
             </div>
             <p className="text-xs uppercase tracking-wider text-muted mb-1">Phone</p>
-            <p className="text-sm font-semibold text-primary">+254 700 000 000</p>
+            <p className="text-sm font-semibold text-primary">+254 737 548998</p>
+            <p className="text-xs text-muted">+254 712 696427</p>
           </a>
 
-          <a href="mailto:hello@ethasfish.co.ke" className="glass-card-interactive rounded-2xl p-5 text-center group">
+          <a href="mailto:info@ethasfarms.co.ke" className="glass-card-interactive rounded-2xl p-5 text-center group">
             <div className="w-12 h-12 rounded-2xl mx-auto mb-3 bg-gradient-to-br from-[var(--accent)]/20 to-[var(--accent-light)]/10 flex items-center justify-center transition-transform group-hover:scale-110">
               <Mail className="w-5 h-5 text-[var(--accent)]" />
             </div>
             <p className="text-xs uppercase tracking-wider text-muted mb-1">Email</p>
-            <p className="text-sm font-semibold text-primary">hello@ethasfish.co.ke</p>
+            <p className="text-sm font-semibold text-primary">info@ethasfarms.co.ke</p>
           </a>
 
           <div className="glass-card-interactive rounded-2xl p-5 text-center">

@@ -40,8 +40,9 @@ export default function Footer() {
                 <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0 text-[var(--accent)]" />
                 <span>Othany East, Seme,<br/>Kisumu County, Kenya</span>
               </li>
-              <li className="flex items-center gap-2 text-secondary"><Phone className="w-4 h-4 text-[var(--accent)]" /><a href="tel:+254700000000" className="hover:text-primary">+254 700 000 000</a></li>
-              <li className="flex items-center gap-2 text-secondary"><Mail className="w-4 h-4 text-[var(--accent)]" /><a href="mailto:hello@ethasfish.co.ke" className="hover:text-primary">hello@ethasfish.co.ke</a></li>
+              <li className="flex items-center gap-2 text-secondary"><Phone className="w-4 h-4 text-[var(--accent)]" /><a href="tel:+254737548998" className="hover:text-primary">+254 737 548998</a></li>
+              <li className="flex items-center gap-2 text-secondary"><Phone className="w-4 h-4 text-[var(--accent)] opacity-0" /><a href="tel:+254712696427" className="hover:text-primary">+254 712 696427</a></li>
+              <li className="flex items-center gap-2 text-secondary"><Mail className="w-4 h-4 text-[var(--accent)]" /><a href="mailto:info@ethasfarms.co.ke" className="hover:text-primary">info@ethasfarms.co.ke</a></li>
             </ul>
           </div>
         </div>

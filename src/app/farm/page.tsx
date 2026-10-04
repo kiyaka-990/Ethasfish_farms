@@ -185,7 +185,7 @@ export default function FarmPage() {
           <div className="p-6 grid sm:grid-cols-3 gap-4 text-sm">
             <div className="flex items-start gap-2"><MapPin className="w-4 h-4 text-[var(--accent)] mt-0.5 flex-shrink-0"/><div className="text-secondary">Othany East, Seme<br/>Kisumu County</div></div>
             <div className="flex items-start gap-2"><Clock className="w-4 h-4 text-[var(--accent)] mt-0.5 flex-shrink-0"/><div className="text-secondary">Mon–Sat<br/>7:00am – 6:00pm</div></div>
-            <div className="flex items-start gap-2"><Phone className="w-4 h-4 text-[var(--accent)] mt-0.5 flex-shrink-0"/><div className="text-secondary">+254 700 000 000<br/>WhatsApp accepted</div></div>
+            <div className="flex items-start gap-2"><Phone className="w-4 h-4 text-[var(--accent)] mt-0.5 flex-shrink-0"/><div className="text-secondary">+254 737 548998 / +254 712 696427<br/>WhatsApp accepted</div></div>
           </div>
         </div>
       </section>
