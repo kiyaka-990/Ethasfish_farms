@@ -50,9 +50,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${sans.variable} ${display.variable}`} suppressHydrationWarning>
       <body className="min-h-screen flex flex-col">
-        <AppClerkProvider>
-          <a href="#main" className="skip-link">Skip to main content</a>
-          <AccessibilityProvider>
+        <AccessibilityProvider>
+          <AppClerkProvider>
+            <a href="#main" className="skip-link">Skip to main content</a>
             <ScrollProgressBar />
             <CursorGlow />
             <Navbar />
@@ -65,8 +65,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Toaster position="bottom-center" toastOptions={{
               style: { background: 'var(--surface-strong)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', backdropFilter: 'blur(20px)', borderRadius: '12px', fontSize: '14px' }
             }} />
-          </AccessibilityProvider>
-        </AppClerkProvider>
+          </AppClerkProvider>
+        </AccessibilityProvider>
       </body>
     </html>
   );
