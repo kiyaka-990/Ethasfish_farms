@@ -5,6 +5,7 @@ import { LogOut } from 'lucide-react';
 import { getStaffSession, CLERK_ENABLED } from '@/lib/identity';
 import { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles } from 'lucide-react';
 import Logo from '@/components/Logo';
+import ThemeToggle from '@/components/ThemeToggle';
 import AdminMobileNav from './AdminMobileNav';
 
 export const dynamic = 'force-dynamic';
@@ -60,11 +61,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         portalLabel={staff.role === 'admin' ? 'Admin Portal' : 'Sales Portal'}
       />
       <aside className="hidden lg:flex w-64 flex-col p-4 gap-2 border-r border-[var(--border-color)] sticky top-0 self-start h-screen">
-        <div className="px-3 py-4 flex items-center justify-between">
+        <div className="px-3 py-4 flex items-start justify-between">
           <Link href="/">
             <Logo size={36} />
             <p className="text-[10px] uppercase tracking-wider text-muted mt-3">{staff.role === 'admin' ? 'Admin Portal' : 'Sales Portal'}</p>
           </Link>
+          <ThemeToggle className="!p-2" />
         </div>
 
         {navItems.map(({ href, icon, label }) => {

@@ -8,6 +8,7 @@ import {
   Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, LogOut
 } from 'lucide-react';
 import Logo from '@/components/Logo';
+import ThemeToggle from '@/components/ThemeToggle';
 
 // Server Components can't pass component/function references as props to
 // Client Components (not serializable across the RSC boundary) - this map
@@ -37,9 +38,12 @@ export default function AdminMobileNav({ navItems, staffName, staffEmail, portal
     <div className="lg:hidden">
       <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-color)] sticky top-0 z-40 bg-[var(--bg-primary)]">
         <Logo size={30} />
-        <button onClick={() => setOpen(true)} className="p-2 rounded-xl hover:bg-[var(--surface)] text-primary" aria-label="Open admin menu">
-          <Menu className="w-5 h-5" />
-        </button>
+        <div className="flex items-center gap-1.5">
+          <ThemeToggle className="!p-2" />
+          <button onClick={() => setOpen(true)} className="p-2 rounded-xl hover:bg-[var(--surface)] text-primary" aria-label="Open admin menu">
+            <Menu className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       {open && (
