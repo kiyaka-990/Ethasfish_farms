@@ -60,8 +60,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         staffEmail={staff.email}
         portalLabel={staff.role === 'admin' ? 'Admin Portal' : 'Sales Portal'}
       />
-      <aside className="hidden lg:flex w-64 flex-col p-4 gap-2 border-r border-[var(--border-color)] sticky top-0 self-start h-screen">
-        <div className="px-3 py-4 flex items-start justify-between">
+      <aside className="hidden lg:flex w-64 flex-col border-r border-[var(--border-color)] sticky top-0 self-start h-screen">
+        <div className="shrink-0 px-4 py-4 flex items-start justify-between">
           <Link href="/">
             <Logo size={36} />
             <p className="text-[10px] uppercase tracking-wider text-muted mt-3">{staff.role === 'admin' ? 'Admin Portal' : 'Sales Portal'}</p>
@@ -69,27 +69,31 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <ThemeToggle className="!p-2" />
         </div>
 
-        {navItems.map(({ href, icon, label }) => {
-          const Icon = ICON_MAP[icon];
-          return (
-            <Link key={href} href={href} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-secondary hover:text-primary hover:bg-[var(--surface)] transition-colors">
-              <Icon className="w-4 h-4" />
-              {label}
-            </Link>
-          );
-        })}
+        <div className="flex-1 min-h-0 overflow-y-auto px-4 flex flex-col gap-2">
+          {navItems.map(({ href, icon, label }) => {
+            const Icon = ICON_MAP[icon];
+            return (
+              <Link key={href} href={href} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-secondary hover:text-primary hover:bg-[var(--surface)] transition-colors">
+                <Icon className="w-4 h-4" />
+                {label}
+              </Link>
+            );
+          })}
+        </div>
 
-        <div className="mt-auto flex items-center gap-3 px-3 py-3 rounded-xl glass-soft">
-          <UserButton />
-          <div className="min-w-0 flex-1">
-            <p className="text-sm text-primary truncate">{staff.name}</p>
-            <p className="text-[11px] text-muted truncate">{staff.email}</p>
+        <div className="shrink-0 p-4">
+          <div className="flex items-center gap-3 px-3 py-3 rounded-xl glass-soft">
+            <UserButton />
+            <div className="min-w-0 flex-1">
+              <p className="text-sm text-primary truncate">{staff.name}</p>
+              <p className="text-[11px] text-muted truncate">{staff.email}</p>
+            </div>
+            <SignOutButton>
+              <button className="p-2 rounded-lg hover:bg-[var(--surface-strong)] text-muted hover:text-red-500 transition-colors shrink-0" aria-label="Sign out" title="Sign out">
+                <LogOut className="w-4 h-4" />
+              </button>
+            </SignOutButton>
           </div>
-          <SignOutButton>
-            <button className="p-2 rounded-lg hover:bg-[var(--surface-strong)] text-muted hover:text-red-500 transition-colors shrink-0" aria-label="Sign out" title="Sign out">
-              <LogOut className="w-4 h-4" />
-            </button>
-          </SignOutButton>
         </div>
       </aside>
 

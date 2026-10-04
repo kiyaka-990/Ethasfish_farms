@@ -49,8 +49,8 @@ export default function AdminMobileNav({ navItems, staffName, staffEmail, portal
       {open && (
         <div className="fixed inset-0 z-50 flex">
           <div className="absolute inset-0 bg-black/50" onClick={() => setOpen(false)} />
-          <div className="relative w-72 max-w-[85vw] h-full bg-[var(--bg-tertiary)] flex flex-col p-4 gap-2 overflow-y-auto">
-            <div className="flex items-center justify-between px-1 py-2 mb-2">
+          <div className="relative w-72 max-w-[85vw] h-full bg-[var(--bg-tertiary)] flex flex-col">
+            <div className="shrink-0 flex items-center justify-between px-4 pt-4 pb-2">
               <div>
                 <Logo size={32} />
                 <p className="text-[10px] uppercase tracking-wider text-muted mt-2">{portalLabel}</p>
@@ -60,32 +60,36 @@ export default function AdminMobileNav({ navItems, staffName, staffEmail, portal
               </button>
             </div>
 
-            {navItems.map(({ href, icon, label }) => {
-              const Icon = ICONS[icon];
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  onClick={() => setOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors ${pathname === href ? 'bg-[var(--surface-strong)] text-primary' : 'text-secondary hover:text-primary hover:bg-[var(--surface)]'}`}
-                >
-                  <Icon className="w-4 h-4" />
-                  {label}
-                </Link>
-              );
-            })}
+            <div className="flex-1 min-h-0 overflow-y-auto px-4 flex flex-col gap-2">
+              {navItems.map(({ href, icon, label }) => {
+                const Icon = ICONS[icon];
+                return (
+                  <Link
+                    key={href}
+                    href={href}
+                    onClick={() => setOpen(false)}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors ${pathname === href ? 'bg-[var(--surface-strong)] text-primary' : 'text-secondary hover:text-primary hover:bg-[var(--surface)]'}`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {label}
+                  </Link>
+                );
+              })}
+            </div>
 
-            <div className="mt-auto flex items-center gap-3 px-3 py-3 rounded-xl glass-soft">
-              <UserButton />
-              <div className="min-w-0 flex-1">
-                <p className="text-sm text-primary truncate">{staffName}</p>
-                <p className="text-[11px] text-muted truncate">{staffEmail}</p>
+            <div className="shrink-0 p-4">
+              <div className="flex items-center gap-3 px-3 py-3 rounded-xl glass-soft">
+                <UserButton />
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm text-primary truncate">{staffName}</p>
+                  <p className="text-[11px] text-muted truncate">{staffEmail}</p>
+                </div>
+                <SignOutButton>
+                  <button className="p-2 rounded-lg hover:bg-[var(--surface-strong)] text-muted hover:text-red-500 transition-colors shrink-0" aria-label="Sign out" title="Sign out">
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </SignOutButton>
               </div>
-              <SignOutButton>
-                <button className="p-2 rounded-lg hover:bg-[var(--surface-strong)] text-muted hover:text-red-500 transition-colors shrink-0" aria-label="Sign out" title="Sign out">
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </SignOutButton>
             </div>
           </div>
         </div>
