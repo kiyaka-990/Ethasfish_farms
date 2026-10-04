@@ -1,6 +1,6 @@
 'use client';
 import { useRef, useEffect, useState } from 'react';
-import { MessageCircle, X, Send, Menu as MenuIcon, Fish } from 'lucide-react';
+import { MessageCircle, X, Send, Menu as MenuIcon, Fish, RotateCcw } from 'lucide-react';
 import { useChatUI } from '@/lib/chat-store';
 
 interface Msg { role: 'user' | 'bot'; content: string; }
@@ -15,15 +15,22 @@ const quickReplies = [
   'Talk to a human'
 ];
 
+const WELCOME: Msg = { role: 'bot', content: "Hi! I'm the Ethasfish Farms assistant. Ask me about fresh tilapia, hatchery services, fish feeds, consultancy, or your order." };
+function newSessionId() { return `s_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`; }
+
 export default function ChatWidget() {
   const { isOpen: open, close, toggle } = useChatUI();
-  const [messages, setMessages] = useState<Msg[]>([
-    { role: 'bot', content: "Hi! I'm the Ethasfish Farms assistant. Ask me about fresh tilapia, hatchery services, fish feeds, consultancy, or your order." }
-  ]);
+  const [messages, setMessages] = useState<Msg[]>([WELCOME]);
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
   const [showMenu, setShowMenu] = useState(true);
-  const [sessionId] = useState(() => `s_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`);
+  const [sessionId, setSessionId] = useState(newSessionId);
+
+  function startNewChat() {
+    setMessages([WELCOME]);
+    setSessionId(newSessionId());
+    setShowMenu(true);
+  }
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -87,6 +94,9 @@ export default function ChatWidget() {
               <p className="text-[11px] text-muted">AI-powered · usually replies instantly</p>
             </div>
             <span className="relative w-1.5 h-1.5 rounded-full bg-green-500 shrink-0" aria-hidden />
+            <button onClick={startNewChat} disabled={messages.length <= 1} className="relative p-1.5 rounded-lg hover:bg-[var(--surface)] text-muted disabled:opacity-30 transition-colors" aria-label="New chat" title="New chat">
+              <RotateCcw className="w-4 h-4" />
+            </button>
             <button onClick={() => setShowMenu(v => !v)} className={`relative p-1.5 rounded-lg hover:bg-[var(--surface)] transition-colors ${showMenu ? 'text-[var(--accent)]' : 'text-muted'}`} aria-label="Toggle quick menu" aria-pressed={showMenu}>
               <MenuIcon className="w-4 h-4" />
             </button>

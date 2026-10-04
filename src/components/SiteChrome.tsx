@@ -5,6 +5,7 @@ import Footer from './Footer';
 import CartDrawer from './CartDrawer';
 import ChatWidget from './ChatWidget';
 import WhatsAppButton from './WhatsAppButton';
+import ScrollToTop from './ScrollToTop';
 
 // The admin portal (/admin/*) has its own complete, self-contained layout
 // (sidebar or mobile drawer with logo, nav, and profile) - wrapping it in
@@ -27,6 +28,7 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
       <CartDrawer />
       <ChatWidget />
       <WhatsAppButton />
+      <ScrollToTop />
     </>
   );
 }
