@@ -4,10 +4,23 @@ import { requireStaff, identityErrorStatus, Unauthorized, Forbidden } from '@/li
 import { logActivity } from '@/lib/audit';
 import { generateOrderNumber, fmtKsh, normalizeKenyanPhone } from '@/lib/utils';
 import { buildReceiptText } from '@/lib/receipt';
+import { getTaxSettings, vatPortion } from '@/lib/settings';
 
 export const dynamic = 'force-dynamic';
 
 interface CartItemInput { variantId: string; quantity: number; }
+
+// Staff-level (not admin-only) read of just the VAT rate, so the POS cart
+// can show a live breakdown - editing it stays admin-only via /api/admin/settings.
+export async function GET() {
+  try {
+    await requireStaff();
+    const { vatRate } = await getTaxSettings();
+    return NextResponse.json({ vatRate });
+  } catch (e: any) {
+    return NextResponse.json({ error: e.message }, { status: identityErrorStatus(e) });
+  }
+}
 
 // In-person counter sale: unlike the online checkout flow, payment is
 // already confirmed face-to-face (cash in hand, or the customer showing
@@ -66,6 +79,9 @@ export async function POST(req: NextRequest) {
     if (paymentMethod === 'cash' && (typeof cashReceived !== 'number' || cashReceived < total)) {
       return NextResponse.json({ error: 'Cash received must cover the total' }, { status: 400 });
     }
+    const taxSettings = await getTaxSettings();
+    const { vatRate } = taxSettings;
+    const vatAmount = vatPortion(subtotal, vatRate);
 
     const order = await prisma.$transaction(async (tx) => {
       const created = await tx.order.create({
@@ -77,6 +93,8 @@ export async function POST(req: NextRequest) {
           subtotal,
           deliveryFee: 0,
           total,
+          vatRate,
+          vatAmount,
           channel: 'pos',
           status: 'paid',
           paymentStatus: 'paid',
@@ -129,7 +147,10 @@ export async function POST(req: NextRequest) {
       deliveryFee: 0,
       total: order.total,
       mpesaRef: order.mpesaRef,
-      servedAt: staff.name
+      servedAt: staff.name,
+      vatRate: order.vatRate,
+      vatAmount: order.vatAmount,
+      kraPin: taxSettings.kraPin
     });
 
     return NextResponse.json({ order, receiptText });

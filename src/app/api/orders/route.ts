@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { generateOrderNumber, normalizeKenyanPhone } from '@/lib/utils';
+import { getTaxSettings, vatPortion } from '@/lib/settings';
 
 export const dynamic = 'force-dynamic';
 
@@ -51,6 +52,8 @@ export async function POST(req: NextRequest) {
 
     const deliveryFee = 200;
     const total = subtotal + deliveryFee;
+    const { vatRate } = await getTaxSettings();
+    const vatAmount = vatPortion(subtotal, vatRate);
 
     // Create order with items, decrement stock atomically
     const order = await prisma.$transaction(async (tx) => {
@@ -65,6 +68,8 @@ export async function POST(req: NextRequest) {
           subtotal,
           deliveryFee,
           total,
+          vatRate,
+          vatAmount,
           items: { create: orderItemData }
         },
         include: { items: true }

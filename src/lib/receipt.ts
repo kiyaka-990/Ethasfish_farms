@@ -14,6 +14,9 @@ interface ReceiptPayload {
   total: number;
   mpesaRef?: string | null;
   servedAt?: string;
+  vatRate?: number;
+  vatAmount?: number;
+  kraPin?: string | null;
 }
 
 export function buildReceiptText(p: ReceiptPayload): string {
@@ -42,6 +45,8 @@ export function buildReceiptText(p: ReceiptPayload): string {
     `Subtotal :: ${fmtKsh(p.subtotal)}`,
     `Delivery :: ${fmtKsh(p.deliveryFee)}`,
     `*Grand Total :: ${fmtKsh(p.total)}*`,
+    p.vatAmount ? `(Includes VAT ${p.vatRate}% :: ${fmtKsh(p.vatAmount)})` : null,
+    p.kraPin ? `KRA PIN :: ${p.kraPin}` : null,
     ``,
     `All transactions are done in real-time.`,
     `Always pay through the official Ethasfish till number.`,

@@ -26,6 +26,7 @@ export default function PosClient() {
   const [customerPhone, setCustomerPhone] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [receipt, setReceipt] = useState<{ text: string; orderNumber: string } | null>(null);
+  const [vatRate, setVatRate] = useState(0);
   const printRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -33,6 +34,8 @@ export default function PosClient() {
       .then(r => r.json())
       .then(d => setProducts((d.products || []).filter((p: Product) => p.active)))
       .finally(() => setLoading(false));
+
+    fetch('/api/admin/pos').then(r => r.json()).then(d => setVatRate(d.vatRate || 0)).catch(() => {});
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/pos-sw.js', { scope: '/admin/pos/' }).catch(() => {});
@@ -51,6 +54,7 @@ export default function PosClient() {
   }, [products, query]);
 
   const total = useMemo(() => cart.reduce((s, l) => s + l.unitPrice * l.quantity, 0), [cart]);
+  const vatAmount = vatRate ? Math.round(total - total / (1 + vatRate / 100)) : 0;
   const change = method === 'cash' ? Math.max(0, (Number(cashReceived) || 0) - total) : 0;
   const cashShort = method === 'cash' && (Number(cashReceived) || 0) < total;
 
@@ -200,9 +204,14 @@ export default function PosClient() {
               ))}
             </div>
           )}
-          <div className="border-t border-[var(--border-color)] pt-3 flex items-center justify-between mb-4">
-            <span className="text-secondary text-sm">Total</span>
-            <span className="font-display font-bold text-xl text-primary">{fmtKsh(total)}</span>
+          <div className="border-t border-[var(--border-color)] pt-3 mb-4">
+            <div className="flex items-center justify-between">
+              <span className="text-secondary text-sm">Total</span>
+              <span className="font-display font-bold text-xl text-primary">{fmtKsh(total)}</span>
+            </div>
+            {vatAmount > 0 && (
+              <p className="text-[11px] text-muted text-right mt-0.5">Includes VAT ({vatRate}%): {fmtKsh(vatAmount)}</p>
+            )}
           </div>
           <button
             onClick={() => setCheckoutOpen(true)}

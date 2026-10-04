@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { requireStaff, identityErrorStatus } from '@/lib/identity';
 import { logActivity } from '@/lib/audit';
 import { dispatchReceipt } from '@/lib/receipt';
+import { getTaxSettings } from '@/lib/settings';
 
 export const dynamic = 'force-dynamic';
 
@@ -14,6 +15,7 @@ export async function POST(req: NextRequest) {
     const order = await prisma.order.findUnique({ where: { id: orderId }, include: { items: true } });
     if (!order) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
 
+    const { kraPin } = await getTaxSettings();
     const result = await dispatchReceipt({
       customerName: order.customerName,
       customerPhone: order.customerPhone,
@@ -29,7 +31,10 @@ export async function POST(req: NextRequest) {
       deliveryFee: order.deliveryFee,
       total: order.total,
       mpesaRef: order.mpesaRef,
-      servedAt: order.deliveryAddress
+      servedAt: order.deliveryAddress,
+      vatRate: order.vatRate,
+      vatAmount: order.vatAmount,
+      kraPin
     }, order.customerEmail);
 
     await logActivity({ actorType: 'staff', actorId: staff.clerkUserId, actorName: staff.name, action: 'order.receipt_resent', entityType: 'Order', entityId: order.id, summary: `resent receipt for order ${order.orderNumber}` });

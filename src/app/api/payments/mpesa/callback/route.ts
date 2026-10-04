@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { dispatchReceipt } from '@/lib/receipt';
+import { getTaxSettings } from '@/lib/settings';
 
 export const dynamic = 'force-dynamic';
 
@@ -49,6 +50,7 @@ export async function POST(req: NextRequest) {
       ]);
 
       // Send receipt - via WhatsApp + SMS + Email (best-effort, non-blocking)
+      const { kraPin } = await getTaxSettings();
       dispatchReceipt({
         customerName: order.customerName,
         customerPhone: order.customerPhone,
@@ -64,7 +66,10 @@ export async function POST(req: NextRequest) {
         deliveryFee: order.deliveryFee,
         total: order.total,
         mpesaRef: refStr,
-        servedAt: order.deliveryAddress
+        servedAt: order.deliveryAddress,
+        vatRate: order.vatRate,
+        vatAmount: order.vatAmount,
+        kraPin
       }, order.customerEmail).catch(e => console.error('[receipt] dispatch failed:', e));
 
     } else {

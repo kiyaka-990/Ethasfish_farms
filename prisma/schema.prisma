@@ -89,6 +89,8 @@ model Order {
   subtotal        Int
   deliveryFee     Int              @default(200)
   total           Int
+  vatRate         Int              @default(0) // percent; 0 while not VAT-registered. Prices are VAT-inclusive - this is informational, not added to total.
+  vatAmount       Int              @default(0) // VAT portion already contained within subtotal
   status          String           @default("pending") // pending | paid | preparing | out_for_delivery | delivered | cancelled
   paymentStatus   String           @default("unpaid") // unpaid | processing | paid | failed
   paymentMethod   String           @default("mpesa")
@@ -364,4 +366,16 @@ model Subscriber {
   email     String?  @unique
   phone     String?  @unique
   createdAt DateTime @default(now())
+}
+
+// ===================== TAX / COMPLIANCE =====================
+// Single-row settings table (id is always "singleton"). vatRate 0 means
+// VAT is off - Order/POS totals stay untouched either way since Kenyan
+// retail prices are VAT-inclusive; a nonzero rate only changes what
+// portion of the existing price is broken out as VAT on receipts.
+model BusinessSettings {
+  id        String   @id @default("singleton")
+  vatRate   Int      @default(0) // percent, e.g. 16. 0 = not VAT-registered yet.
+  kraPin    String? // shown on receipts once VAT-registered
+  updatedAt DateTime @updatedAt
 }

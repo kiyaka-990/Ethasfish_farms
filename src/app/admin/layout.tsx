@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { UserButton, SignOutButton } from '@clerk/nextjs';
 import { LogOut } from 'lucide-react';
 import { getStaffSession, CLERK_ENABLED } from '@/lib/identity';
-import { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings } from 'lucide-react';
 import Logo from '@/components/Logo';
 import ThemeToggle from '@/components/ThemeToggle';
 import AdminMobileNav from './AdminMobileNav';
@@ -54,11 +54,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       { href: '/admin/media', icon: 'ImageIcon' as const, label: 'Media Library' },
       { href: '/admin/faqs', icon: 'MessageSquare' as const, label: 'Bot FAQs' },
       { href: '/admin/activity', icon: 'Activity' as const, label: 'Activity Log' },
-      { href: '/admin/staff', icon: 'Users' as const, label: 'Staff' }
+      { href: '/admin/staff', icon: 'Users' as const, label: 'Staff' },
+      { href: '/admin/settings', icon: 'Settings' as const, label: 'Settings' }
     ] : [])
   ];
 
-  const ICON_MAP = { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store };
+  const ICON_MAP = { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings };
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
