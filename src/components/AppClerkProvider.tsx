@@ -28,6 +28,10 @@ function ClerkThemedProvider({ children }: { children: React.ReactNode }) {
       signInFallbackRedirectUrl="/account"
       signUpFallbackRedirectUrl="/account"
       afterSignOutUrl="/"
+      localization={{
+        signIn: { start: { title: 'Sign in to Ethasfish Farms', titleCombined: 'Sign in to Ethasfish Farms' } },
+        signUp: { start: { title: 'Create your Ethasfish Farms account', titleCombined: 'Create your Ethasfish Farms account' } }
+      }}
       appearance={{
         theme: theme === 'dark' ? dark : undefined,
         variables: {
