@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { UserButton } from '@clerk/nextjs';
+import { UserButton, SignOutButton } from '@clerk/nextjs';
+import { LogOut } from 'lucide-react';
 import { getStaffSession, CLERK_ENABLED } from '@/lib/identity';
 import { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles } from 'lucide-react';
 import Logo from '@/components/Logo';
@@ -78,10 +79,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
         <div className="mt-auto flex items-center gap-3 px-3 py-3 rounded-xl glass-soft">
           <UserButton />
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <p className="text-sm text-primary truncate">{staff.name}</p>
             <p className="text-[11px] text-muted truncate">{staff.email}</p>
           </div>
+          <SignOutButton>
+            <button className="p-2 rounded-lg hover:bg-[var(--surface-strong)] text-muted hover:text-red-500 transition-colors shrink-0" aria-label="Sign out" title="Sign out">
+              <LogOut className="w-4 h-4" />
+            </button>
+          </SignOutButton>
         </div>
       </aside>
 
