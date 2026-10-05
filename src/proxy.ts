@@ -23,7 +23,14 @@ async function buildProxy(): Promise<ProxyHandler> {
   const { clerkMiddleware, createRouteMatcher } = await import('@clerk/nextjs/server');
   const isProtectedRoute = createRouteMatcher(['/admin(.*)', '/account(.*)']);
   return clerkMiddleware(async (clerkAuth, req) => {
-    if (isProtectedRoute(req)) await clerkAuth.protect();
+    if (isProtectedRoute(req)) {
+      // Without an explicit unauthenticatedUrl, Clerk falls back to its own
+      // hosted Account Portal (the raw *.accounts.dev domain, unbranded) -
+      // this keeps a signed-out visitor on our own branded /sign-in instead.
+      const signInUrl = new URL('/sign-in', req.url);
+      signInUrl.searchParams.set('redirect_url', req.url);
+      await clerkAuth.protect({ unauthenticatedUrl: signInUrl.toString() });
+    }
     return NextResponse.next();
   }) as unknown as ProxyHandler;
 }
