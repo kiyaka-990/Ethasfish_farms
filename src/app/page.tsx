@@ -7,6 +7,11 @@ import HeroCarousel, { DEFAULT_HERO_SLIDES } from '@/components/HeroCarousel';
 import Reveal from '@/components/Reveal';
 import NewsletterSignup from '@/components/NewsletterSignup';
 
+// Rendered per request, not baked at build time: the hero (edited from
+// Admin > Site Content) and the product list must reflect CMS/DB changes
+// immediately, otherwise edits only go live on the next rebuild/redeploy.
+export const dynamic = 'force-dynamic';
+
 async function getProducts() {
   return prisma.product.findMany({
     where: { active: true },

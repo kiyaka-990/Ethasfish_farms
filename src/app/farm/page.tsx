@@ -1,12 +1,20 @@
 import { MapPin, Clock, Phone, Heart, Brain, Bone, Dumbbell } from 'lucide-react';
+import { getSiteContent } from '@/lib/content';
+
+// Rendered per request so gallery edits from Admin > Site Content appear
+// immediately instead of waiting for a rebuild/redeploy.
+export const dynamic = 'force-dynamic';
 
 export const metadata = { title: 'Our Farm at Othany East' };
 
-const galleryImages = [
-  { src: 'https://images.unsplash.com/photo-1758656911249-c0f1af7dcaec?w=800&q=80', caption: 'Lake Victoria offshore cages' },
-  { src: 'https://images.unsplash.com/photo-1731552466988-26d1dbeff4ee?w=800&q=80', caption: 'Freshwater rearing ponds' },
-  { src: 'https://images.unsplash.com/photo-1738850305638-b2f1765a4a87?w=800&q=80', caption: 'Premium harvest-ready tilapia' },
-  { src: 'https://images.unsplash.com/photo-1769771861175-2cdcdf5108db?w=800&q=80', caption: 'Hatchery & fingerling production' }
+export interface GalleryItem { type: 'image' | 'video'; url: string; caption: string }
+
+// Fallback shown until an admin customizes Admin > Site Content > Farm Gallery.
+const DEFAULT_GALLERY: GalleryItem[] = [
+  { type: 'image', url: 'https://images.unsplash.com/photo-1758656911249-c0f1af7dcaec?w=800&q=80', caption: 'Lake Victoria offshore cages' },
+  { type: 'image', url: 'https://images.unsplash.com/photo-1731552466988-26d1dbeff4ee?w=800&q=80', caption: 'Freshwater rearing ponds' },
+  { type: 'image', url: 'https://images.unsplash.com/photo-1738850305638-b2f1765a4a87?w=800&q=80', caption: 'Premium harvest-ready tilapia' },
+  { type: 'image', url: 'https://images.unsplash.com/photo-1769771861175-2cdcdf5108db?w=800&q=80', caption: 'Hatchery & fingerling production' }
 ];
 
 const nutrients = [
@@ -19,7 +27,11 @@ const nutrients = [
   { label: 'Total Fat', value: '2.3g', pct: 15 }
 ];
 
-export default function FarmPage() {
+export default async function FarmPage() {
+  const gallery = await getSiteContent<{ items: GalleryItem[] }>('farm.gallery', { items: DEFAULT_GALLERY });
+  // An accidentally-saved empty gallery shouldn't leave a hole on the page.
+  const galleryImages = gallery.items?.length ? gallery.items : DEFAULT_GALLERY;
+
   return (
     <div>
       {/* HERO with parallax image */}
@@ -78,7 +90,11 @@ export default function FarmPage() {
           <div className="grid grid-cols-2 gap-3">
             {galleryImages.map((g, i) => (
               <div key={i} className="relative h-44 md:h-52 rounded-2xl overflow-hidden glass-card-interactive group animate-fade-up" style={{animationDelay:`${i*100}ms`}}>
-                <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{ backgroundImage: `url('${g.src}')` }} />
+                {g.type === 'video' ? (
+                  <video src={g.url} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" muted loop autoPlay playsInline />
+                ) : (
+                  <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{ backgroundImage: `url('${g.url}')` }} />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-primary)]/80 via-transparent to-transparent" />
                 <p className="absolute bottom-2 left-3 right-3 text-xs text-white font-medium drop-shadow">{g.caption}</p>
               </div>
