@@ -274,6 +274,71 @@ model InvoiceItem {
 
 // ===================== ERP: INVENTORY =====================
 
+// ===================== ERP: FISH STOCK =====================
+// Fresh-fish stock is tracked separately from shop ProductVariant stock.
+// Fish are harvested from a source - a numbered cage, a numbered pond,
+// or the hatchery - counted in pieces AND weighed in kg, pooled as farm
+// stock, then distributed to outlets and sold there in pieces and/or
+// kilograms. Balances are always derived:
+//   farm stock   = harvests - distributions
+//   outlet stock = distributions - sales
+model Outlet {
+  id             String              @id @default(cuid())
+  name           String              @unique // "Kisumu" | "Nairobi" (more can be added)
+  active         Boolean             @default(true)
+  lowStockPieces Int                 @default(30) // alert when in-stock pieces fall to/below this (0 = that alert off)
+  lowStockKg     Float               @default(15) // alert when in-stock kg fall to/below this (0 = that alert off)
+  distributions  StockDistribution[]
+  sales          OutletSale[]
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+}
+
+model Harvest {
+  id           String   @id @default(cuid())
+  sourceType   String   @default("cage") // cage | pond | hatchery
+  sourceNumber String   // "3", "P2", "H1" - cages and ponds are numbered
+  pieces       Int      // counted fish
+  weightKg     Float    // weighed on the scales
+  note         String?
+  recordedBy   String? // StaffProfile.name or agent name
+  createdAt    DateTime @default(now())
+
+  @@index([sourceType, sourceNumber])
+  @@index([createdAt])
+}
+
+model StockDistribution {
+  id         String   @id @default(cuid())
+  outletId   String
+  outlet     Outlet   @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  pieces     Int      @default(0)
+  weightKg   Float    @default(0)
+  estimated  Boolean  @default(false) // true when kg (or pieces) was derived from average weight, not measured
+  note       String?
+  recordedBy String?
+  createdAt  DateTime @default(now())
+
+  @@index([outletId])
+  @@index([createdAt])
+}
+
+model OutletSale {
+  id         String   @id @default(cuid())
+  outletId   String
+  outlet     Outlet   @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  pieces     Int      @default(0) // sold by count...
+  weightKg   Float    @default(0) // ...and/or by weight
+  estimated  Boolean  @default(false) // true when kg (or pieces) was derived from average weight, not weighed
+  amountKsh  Int      @default(0) // cash taken at the outlet
+  channel    String   @default("counter") // counter | wholesale | mobile | market
+  note       String?
+  recordedBy String?
+  createdAt  DateTime @default(now())
+
+  @@index([outletId, createdAt])
+}
+
 model InventoryItem {
   id           String              @id @default(cuid())
   name         String

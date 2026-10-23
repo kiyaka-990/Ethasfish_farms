@@ -9,6 +9,9 @@ Premium Nile Tilapia from Lake Victoria — modern e-commerce platform, an agent
 - **Autonomous AI sales agent** ("Fin") — real LLM tool-calling via the Vercel AI Gateway: reads live prices/stock/FAQs, checks order status, and captures sales leads, instead of a hardcoded script. Falls back to the original deterministic rule-based bot if the model is ever unreachable
 - **Admin CMS** — `/admin/content` lets staff edit the homepage hero carousel (copy, links, images **and video**) without touching code; `/admin/media` is a drag-and-drop media library backed by Vercel Blob
 - **Full product CRUD** — create/edit/delete products and sizes, with image uploads, from `/admin/products`
+- **Fish stock management** (`/admin/stock`) — fresh-fish stock tracked separately from shop stock: harvests from **numbered cages, numbered ponds and the hatchery**, each counted in pieces *and* weighed in kg; distributions to outlets (Kisumu, Nairobi); and outlet sales in pieces and/or kg. Balances (farm = harvests − distributions, outlet = distributions − sales) are always derived from the event tables, with overdraw protection and full audit logging
+- **Low-stock alerts** — every outlet has a tunable alert threshold (pieces and kg, admin-editable from the Stock tab; 0 turns a dimension off). Outlets that have been stocked and run down trigger a banner on `/admin/stock`, a LOW badge on the outlet card, and a proactive warning from the stockist agent even when nobody asked
+- **Stockist agent** — the Stock tab has its own AI chat that answers live stock questions, warns about low outlets, *and* records harvests, distributions and sales through the same validated `src/lib/stock.ts` code paths as the forms, so it can never record something the forms would reject
 - **Staff management** (`/admin/staff`, admin-only) — invite teammates by email with a role; they get portal access the moment they sign in with that address
 - **Secure activity log** (`/admin/activity`) — every staff action and every AI agent tool-call is written to an append-only audit trail and shown live (polling today; WebSocket/SSE push is the next step — see Roadmap)
 - **Customer accounts** (`/account`) — order history for signed-in customers, separate from the staff portal
@@ -104,6 +107,7 @@ A web version is also available at `/receipt?order=ORDER_NUMBER` — printable &
 | `/admin` | Staff dashboard + live activity feed |
 | `/admin/orders` | Manage orders, update status, resend receipts |
 | `/admin/products` | Full product + variant CRUD, image uploads |
+| `/admin/stock` | Fish stock: harvests (numbered cages/ponds/hatchery), outlet distributions & sales, stockist AI agent |
 | `/admin/content` | Edit homepage hero carousel (CMS) |
 | `/admin/media` | Media library (Vercel Blob) |
 | `/admin/faqs` | Manage chatbot FAQ entries |

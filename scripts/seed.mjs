@@ -139,6 +139,15 @@ async function main() {
   }
   console.log(`✓ ${faqs.length} FAQ entries`);
 
+  // Fish-stock outlets - the two standing outlets stock gets distributed
+  // to. Idempotent so re-seeding an existing DB is safe. The app also
+  // lazily creates these on first Stock-tab load (lib/stock.ts).
+  for (const name of ['Kisumu', 'Nairobi']) {
+    const existingOutlet = await prisma.outlet.findUnique({ where: { name } });
+    if (!existingOutlet) await prisma.outlet.create({ data: { name } });
+  }
+  console.log('✓ Stock outlets: Kisumu, Nairobi');
+
   console.log('🎉 Done! Run `npm run dev` and visit http://localhost:3000');
   console.log(`   Admin portal: http://localhost:3000/admin — sign in with ${adminEmail} to claim the admin seat`);
 }
