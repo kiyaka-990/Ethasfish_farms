@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { UserButton, SignOutButton } from '@clerk/nextjs';
 import {
   Menu, X, LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate,
-  Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings, Megaphone, Fish, LogOut
+  Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings, Megaphone, Fish, HandCoins, BookOpen, LogOut
 } from 'lucide-react';
 import Logo from '@/components/Logo';
 import ThemeToggle from '@/components/ThemeToggle';
@@ -16,10 +16,10 @@ import ThemeToggle from '@/components/ThemeToggle';
 // the icon set here must mirror the one used server-side in admin/layout.tsx.
 const ICONS = {
   LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate,
-  ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings, Megaphone, Fish
+  ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings, Megaphone, Fish, HandCoins, BookOpen
 };
 
-interface NavItem { href: string; icon: keyof typeof ICONS; label: string; }
+interface NavItem { href: string; icon: keyof typeof ICONS; label: string; download?: boolean; }
 
 // The desktop sidebar is `hidden lg:flex` - below that breakpoint there
 // was no navigation at all, just bare page content (e.g. landing on
@@ -61,14 +61,23 @@ export default function AdminMobileNav({ navItems, staffName, staffEmail, portal
             </div>
 
             <div className="flex-1 min-h-0 overflow-y-auto px-4 flex flex-col gap-2">
-              {navItems.map(({ href, icon, label }) => {
+              {navItems.map(({ href, icon, label, download }) => {
                 const Icon = ICONS[icon];
+                const cls = `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors ${pathname === href ? 'bg-[var(--surface-strong)] text-primary' : 'text-secondary hover:text-primary hover:bg-[var(--surface)]'}`;
+                if (download) {
+                  return (
+                    <a key={href} href={href} download onClick={() => setOpen(false)} className={cls}>
+                      <Icon className="w-4 h-4" />
+                      {label}
+                    </a>
+                  );
+                }
                 return (
                   <Link
                     key={href}
                     href={href}
                     onClick={() => setOpen(false)}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors ${pathname === href ? 'bg-[var(--surface-strong)] text-primary' : 'text-secondary hover:text-primary hover:bg-[var(--surface)]'}`}
+                    className={cls}
                   >
                     <Icon className="w-4 h-4" />
                     {label}

@@ -17,6 +17,7 @@ interface ReceiptPayload {
   vatRate?: number;
   vatAmount?: number;
   kraPin?: string | null;
+  dueDate?: Date | string | null;
 }
 
 export function buildReceiptText(p: ReceiptPayload): string {
@@ -35,7 +36,8 @@ export function buildReceiptText(p: ReceiptPayload): string {
     `Order :: ${p.orderNumber}`,
     `Date :: ${date}`,
     `Time :: ${time}`,
-    `Status :: ${p.status === 'paid' ? '*PAID*' : p.status.toUpperCase()}`,
+    `Status :: ${p.status === 'paid' ? '*PAID*' : p.status === 'credit' ? '*PAY LATER (CREDIT)*' : p.status.toUpperCase()}`,
+    p.status === 'credit' && p.dueDate ? `Pay by :: ${new Date(p.dueDate).toLocaleDateString('en-GB')}` : null,
     p.servedAt ? `Served at :: ${p.servedAt}` : null,
     p.mpesaRef ? `M-Pesa Ref :: ${p.mpesaRef}` : null,
     ``,

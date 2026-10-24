@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { UserButton, SignOutButton } from '@clerk/nextjs';
 import { LogOut } from 'lucide-react';
 import { getStaffSession, CLERK_ENABLED } from '@/lib/identity';
-import { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings, Megaphone, Fish } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings, Megaphone, Fish, HandCoins, BookOpen } from 'lucide-react';
 import Logo from '@/components/Logo';
 import ThemeToggle from '@/components/ThemeToggle';
 import AdminMobileNav from './AdminMobileNav';
@@ -42,6 +42,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: '/admin/assistant', icon: 'Sparkles' as const, label: 'Assistant' },
     { href: '/admin/pos', icon: 'Store' as const, label: 'Point of Sale' },
     { href: '/admin/orders', icon: 'ShoppingBag' as const, label: 'Orders' },
+    { href: '/admin/credit', icon: 'HandCoins' as const, label: 'Credit' },
     { href: '/admin/leads', icon: 'UserPlus' as const, label: 'Leads' },
     { href: '/admin/products', icon: 'Package' as const, label: 'Products' },
     { href: '/admin/promotions', icon: 'Megaphone' as const, label: 'Promotions' },
@@ -58,10 +59,13 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       { href: '/admin/activity', icon: 'Activity' as const, label: 'Activity Log' },
       { href: '/admin/staff', icon: 'Users' as const, label: 'Staff' },
       { href: '/admin/settings', icon: 'Settings' as const, label: 'Settings' }
-    ] : [])
+    ] : []),
+    // Not a route - `download` makes both nav renderers emit a plain <a
+    // with the download attribute so the PDF saves instead of navigating.
+    { href: '/manual/ethasfish-portal-manual.pdf', icon: 'BookOpen' as const, label: 'Portal Manual', download: true }
   ];
 
-  const ICON_MAP = { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings, Megaphone, Fish };
+  const ICON_MAP = { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings, Megaphone, Fish, HandCoins, BookOpen };
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
@@ -81,10 +85,19 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </div>
 
         <div className="flex-1 min-h-0 overflow-y-auto px-4 flex flex-col gap-2">
-          {navItems.map(({ href, icon, label }) => {
+          {navItems.map(({ href, icon, label, download }) => {
             const Icon = ICON_MAP[icon];
+            const cls = 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-secondary hover:text-primary hover:bg-[var(--surface)] transition-colors';
+            if (download) {
+              return (
+                <a key={href} href={href} download className={cls}>
+                  <Icon className="w-4 h-4" />
+                  {label}
+                </a>
+              );
+            }
             return (
-              <Link key={href} href={href} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-secondary hover:text-primary hover:bg-[var(--surface)] transition-colors">
+              <Link key={href} href={href} className={cls}>
                 <Icon className="w-4 h-4" />
                 {label}
               </Link>

@@ -20,7 +20,12 @@ export async function POST(req: NextRequest) {
       customerName: order.customerName,
       customerPhone: order.customerPhone,
       orderNumber: order.orderNumber,
-      status: order.status,
+      // Credit orders carry status 'pending' (nothing collected yet) - the
+      // receipt must still spell out the credit terms, not "PENDING".
+      status: order.paymentMethod === 'credit' && order.paymentStatus !== 'paid'
+        ? 'credit'
+        : order.status,
+      dueDate: order.dueDate,
       items: order.items.map((it: any) => ({
         productName: it.productName,
         variantLabel: it.variantLabel,

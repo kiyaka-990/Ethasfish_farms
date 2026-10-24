@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Search, Plus, Minus, X, Loader2, Banknote, Smartphone, Printer, ReceiptText, ShoppingCart } from 'lucide-react';
+import { Search, Plus, Minus, X, Loader2, Banknote, Smartphone, Printer, ReceiptText, ShoppingCart, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { fmtKsh } from '@/lib/utils';
 import PosAssistant from './PosAssistant';
@@ -18,14 +18,20 @@ export default function PosClient() {
   const [query, setQuery] = useState('');
   const [cart, setCart] = useState<CartLine[]>([]);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
-  const [method, setMethod] = useState<'cash' | 'mpesa'>('cash');
+  const [method, setMethod] = useState<'cash' | 'mpesa' | 'credit'>('cash');
   const [cashReceived, setCashReceived] = useState('');
   const [mpesaRef, setMpesaRef] = useState('');
   const [showCustomer, setShowCustomer] = useState(false);
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
+  const defaultDueDate = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 7);
+    return d.toISOString().slice(0, 10);
+  };
+  const [dueDate, setDueDate] = useState(defaultDueDate);
   const [submitting, setSubmitting] = useState(false);
-  const [receipt, setReceipt] = useState<{ text: string; orderNumber: string } | null>(null);
+  const [receipt, setReceipt] = useState<{ text: string; orderNumber: string; method: string } | null>(null);
   const [vatRate, setVatRate] = useState(0);
   const printRef = useRef<HTMLDivElement>(null);
 
@@ -94,6 +100,7 @@ export default function PosClient() {
     setShowCustomer(false);
     setCustomerName('');
     setCustomerPhone('');
+    setDueDate(defaultDueDate());
     setReceipt(null);
   }
 
@@ -101,6 +108,10 @@ export default function PosClient() {
     if (cart.length === 0) return;
     if (method === 'mpesa' && !mpesaRef.trim()) return toast.error('Enter the M-Pesa reference code');
     if (cashShort) return toast.error('Cash received is less than the total');
+    if (method === 'credit') {
+      if (!customerName.trim() || !customerPhone.trim()) return toast.error('Credit sales need the customer name and phone');
+      if (!dueDate) return toast.error('Pick the date payment is due');
+    }
 
     setSubmitting(true);
     try {
@@ -113,13 +124,14 @@ export default function PosClient() {
           cashReceived: method === 'cash' ? Number(cashReceived) : undefined,
           mpesaRef: method === 'mpesa' ? mpesaRef.trim() : undefined,
           customerName: customerName.trim() || undefined,
-          customerPhone: customerPhone.trim() || undefined
+          customerPhone: customerPhone.trim() || undefined,
+          dueDate: method === 'credit' ? dueDate : undefined
         })
       });
       const data = await res.json();
       if (!res.ok) { toast.error(data.error || 'Sale failed'); return; }
-      setReceipt({ text: data.receiptText, orderNumber: data.order.orderNumber });
-      toast.success('Sale complete');
+      setReceipt({ text: data.receiptText, orderNumber: data.order.orderNumber, method });
+      toast.success(method === 'credit' ? 'Given on credit - balance due' : 'Sale complete');
       fetch('/api/admin/products').then(r => r.json()).then(d => setProducts((d.products || []).filter((p: Product) => p.active)));
     } catch {
       toast.error('Connection issue - try again');
@@ -238,7 +250,18 @@ export default function PosClient() {
               <button onClick={() => setMethod('mpesa')} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium border transition-colors ${method === 'mpesa' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[var(--border-color)] text-secondary'}`}>
                 <Smartphone className="w-4 h-4" /> M-Pesa
               </button>
+              <button onClick={() => { setMethod('credit'); setShowCustomer(true); }} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium border transition-colors ${method === 'credit' ? 'border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]' : 'border-[var(--border-color)] text-secondary'}`}>
+                <Clock className="w-4 h-4" /> Credit
+              </button>
             </div>
+
+            {method === 'credit' && (
+              <div className="glass-soft rounded-xl p-3 mb-4 text-[11px] text-secondary leading-relaxed">
+                Customer takes the goods now and pays by the due date below.
+                Name and phone are required so the debt can be chased - the order
+                stays <strong className="text-amber-500">unpaid</strong> until staff record the payment in Orders.
+              </div>
+            )}
 
             {method === 'cash' ? (
               <div className="space-y-3 mb-4">
@@ -261,7 +284,7 @@ export default function PosClient() {
                   </p>
                 )}
               </div>
-            ) : (
+            ) : method === 'mpesa' ? (
               <div className="mb-4">
                 <input
                   value={mpesaRef}
@@ -271,25 +294,36 @@ export default function PosClient() {
                 />
                 <p className="text-[11px] text-muted mt-1.5">Ask the customer to show the confirmation SMS from paying your till, then enter the reference code here.</p>
               </div>
+            ) : (
+              <div className="mb-4">
+                <label className="text-[11px] uppercase tracking-wider text-muted">Payment due date *</label>
+                <input
+                  type="date"
+                  value={dueDate}
+                  min={new Date().toISOString().slice(0, 10)}
+                  onChange={e => setDueDate(e.target.value)}
+                  className="w-full mt-1 px-3.5 py-2.5 text-sm rounded-xl border border-[var(--border-color)] bg-transparent text-primary outline-none focus:border-[var(--accent)]"
+                />
+              </div>
             )}
 
-            <button onClick={() => setShowCustomer(v => !v)} className="text-xs text-[var(--accent)] mb-3">
+            <button onClick={() => setShowCustomer(v => !v)} className={`text-xs text-[var(--accent)] mb-3 ${method === 'credit' ? 'hidden' : ''}`}>
               {showCustomer ? 'Hide' : '+ Add'} customer details (optional)
             </button>
-            {showCustomer && (
+            {(showCustomer || method === 'credit') && (
               <div className="space-y-2 mb-4">
-                <input value={customerName} onChange={e => setCustomerName(e.target.value)} placeholder="Customer name" className="w-full px-3.5 py-2 text-sm rounded-xl border border-[var(--border-color)] bg-transparent text-primary outline-none focus:border-[var(--accent)]" />
-                <input value={customerPhone} onChange={e => setCustomerPhone(e.target.value)} placeholder="Phone (07... )" className="w-full px-3.5 py-2 text-sm rounded-xl border border-[var(--border-color)] bg-transparent text-primary outline-none focus:border-[var(--accent)]" />
+                <input value={customerName} onChange={e => setCustomerName(e.target.value)} placeholder={method === 'credit' ? 'Customer name *' : 'Customer name'} className="w-full px-3.5 py-2 text-sm rounded-xl border border-[var(--border-color)] bg-transparent text-primary outline-none focus:border-[var(--accent)]" />
+                <input value={customerPhone} onChange={e => setCustomerPhone(e.target.value)} placeholder={method === 'credit' ? 'Phone (07...) *' : 'Phone (07...)'} className="w-full px-3.5 py-2 text-sm rounded-xl border border-[var(--border-color)] bg-transparent text-primary outline-none focus:border-[var(--accent)]" />
               </div>
             )}
 
             <button
               onClick={completeSale}
-              disabled={submitting || (method === 'cash' && cashShort) || (method === 'mpesa' && !mpesaRef.trim())}
+              disabled={submitting || (method === 'cash' && cashShort) || (method === 'mpesa' && !mpesaRef.trim()) || (method === 'credit' && (!customerName.trim() || !customerPhone.trim() || !dueDate))}
               className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-br from-[var(--accent-light)] to-[var(--accent)] disabled:opacity-40 flex items-center justify-center gap-2"
             >
               {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <ReceiptText className="w-4 h-4" />}
-              Complete Sale
+              {method === 'credit' ? `Give on Credit · ${fmtKsh(total)}` : 'Complete Sale'}
             </button>
           </div>
         </div>
@@ -298,7 +332,9 @@ export default function PosClient() {
       {receipt && (
         <div className="fixed inset-0 z-[90] flex items-center justify-center bg-black/50 p-4">
           <div className="glass-strong rounded-2xl p-6 w-full max-w-sm max-h-[90vh] overflow-y-auto">
-            <p className="font-display font-bold text-lg text-primary mb-1">Sale Complete</p>
+            <p className="font-display font-bold text-lg text-primary mb-1">
+              {receipt.method === 'credit' ? 'Given on Credit' : 'Sale Complete'}
+            </p>
             <p className="text-xs text-muted mb-4">{receipt.orderNumber}</p>
             <div ref={printRef} className="bg-[var(--surface)] rounded-xl p-4 mb-4">
               <pre className="text-[11.5px] whitespace-pre-wrap text-primary font-mono">{receipt.text}</pre>

@@ -92,8 +92,10 @@ model Order {
   vatRate         Int              @default(0) // percent; 0 while not VAT-registered. Prices are VAT-inclusive - this is informational, not added to total.
   vatAmount       Int              @default(0) // VAT portion already contained within subtotal
   status          String           @default("pending") // pending | paid | preparing | out_for_delivery | delivered | cancelled
-  paymentStatus   String           @default("unpaid") // unpaid | processing | paid | failed
-  paymentMethod   String           @default("mpesa")
+  paymentStatus   String           @default("unpaid") // unpaid | processing | partially_paid | paid | failed
+  paymentMethod   String           @default("mpesa") // mpesa | cash | credit
+  dueDate         DateTime?        // credit sales: when the balance is expected by. Shown overdue after this passes while still unpaid.
+  paidAt          DateTime?        // when the balance was fully settled (credit or manual record payment).
   channel         String           @default("online") // online | pos
   mpesaRef        String?
   mpesaCheckoutId String?

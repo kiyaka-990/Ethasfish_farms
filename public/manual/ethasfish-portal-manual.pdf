@@ -1,0 +1,224 @@
+%PDF-1.4
+%ту╧╙
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [6 0 R 8 0 R 10 0 R 12 0 R] /Count 4 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 1293 >>
+stream
+0.11 0.43 0.66 rg 56 779.89 44 5 re f
+BT /F2 13 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 741.89 Tm (ETHASFISH FARMS) Tj ET
+BT /F1 34 Tf 0.04 0.12 0.23 rg 1 0 0 1 56.00 695.89 Tm (Portal User Manual) Tj ET
+BT /F3 12 Tf 0.36 0.44 0.57 rg 1 0 0 1 56.00 671.89 Tm (Staff guide to the POS, Orders, Credit ledger, Stock and CMS tools) Tj ET
+BT /F3 10.5 Tf 0.5 0.55 0.62 rg 1 0 0 1 56.00 651.89 Tm (Version 2.0 ╖ October 2026) Tj ET
+0.85 G 1 w 56 633.89 m 539.28 633.89 l S
+BT /F2 11 Tf 0.17 0.19 0.24 rg 1 0 0 1 56.00 584.89 Tm (What's inside) Tj ET
+BT /F3 10.5 Tf 0.36 0.44 0.57 rg 1 0 0 1 56.00 564.89 Tm (1. Getting Started   2. Dashboard   3. Point of Sale   4. Orders) Tj ET
+BT /F3 10.5 Tf 0.36 0.44 0.57 rg 1 0 0 1 56.00 550.89 Tm (5. Credit Ledger   6. Fish Stock   7. Products, Media & Site Content) Tj ET
+BT /F3 10.5 Tf 0.36 0.44 0.57 rg 1 0 0 1 56.00 536.89 Tm (8. Invoices & Accounting   9. Receipts   10. AI Assistant & Agents   11. Quick Glossary) Tj ET
+BT /F3 10 Tf 0.5 0.55 0.62 rg 1 0 0 1 56.00 496.89 Tm (This PDF lives in the portal sidebar - look for "Portal Manual" to) Tj ET
+BT /F3 10 Tf 0.5 0.55 0.62 rg 1 0 0 1 56.00 482.89 Tm (download the latest copy at any time.) Tj ET
+BT /F3 8 Tf 0.55 0.58 0.63 rg 1 0 0 1 205.00 34 Tm (Ethasfish Farms ╖ Portal User Manual ╖ Page 1 of 4) Tj ET
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 9 0 R >>
+endobj
+9 0 obj
+<< /Length 6976 >>
+stream
+BT /F2 15 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 763.89 Tm (1. Getting Started) Tj ET
+0.85 G 0.8 w 56 755.89 m 539.28 755.89 l S
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 56.00 735.89 Tm (Sign in at /sign-in with your staff account. Admins see every section in this manual; sales) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 56.00 721.89 Tm (managers get the day-to-day till tools - Dashboard, Assistant, Point of Sale, Orders, Credit, Leads,) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 56.00 707.89 Tm (Products, Promotions and Stock.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 687.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 687.89 Tm (Desktop shows a sidebar on the left; on phones and tablets tap the menu icon at the top to open) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 673.89 Tm (the same navigation.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 659.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 659.89 Tm (Use the sun/moon button to switch light/dark theme - your choice is remembered.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 645.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 645.89 Tm (Sign out from the icon at the bottom of the sidebar \(or the one inside the mobile menu\).) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 631.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 631.89 Tm (Accounting, Purchasing, Invoices, Site Content, Media, Bot FAQs, Activity Log, Staff and Settings) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 617.89 Tm (are admin-only sections.) Tj ET
+BT /F2 15 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 595.89 Tm (2. Dashboard \(/admin\)) Tj ET
+0.85 G 0.8 w 56 587.89 m 539.28 587.89 l S
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 567.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 567.89 Tm (Four cards - Total orders, Pending, This month \(revenue from paid orders only\) and Active) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 553.89 Tm (products.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 539.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 539.89 Tm (Recent Orders shows the last 8 orders with their status and payment colour; "View all" jumps to) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 525.89 Tm (Orders.) Tj ET
+BT /F2 15 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 503.89 Tm (3. Point of Sale \(/admin/pos\)) Tj ET
+0.85 G 0.8 w 56 495.89 m 539.28 495.89 l S
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 475.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 475.89 Tm (Search or tap a product variant to add it to the cart; + / - adjusts quantity and can never exceed) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 461.89 Tm (the live stock figure.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 447.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 447.89 Tm (Press Charge and pick how the customer pays: Cash \(quick notes, change due\), M-Pesa \(enter) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 433.89 Tm (the reference from the customer's confirmation SMS\), or Credit.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 419.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 419.89 Tm (Credit: customer name, phone and a payment due date are required. The sale is saved unpaid and) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 405.89 Tm (the printed receipt says PAY LATER with the due date.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 391.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 391.89 Tm (The till shares stock with the online shop - every POS sale reduces website stock instantly, and) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 377.89 Tm (the website does the same for the till.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 363.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 363.89 Tm (Print the receipt from the confirmation popup, or install the POS as its own app with the "Install) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 349.89 Tm (App" button.) Tj ET
+BT /F2 15 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 327.89 Tm (4. Orders \(/admin/orders\)) Tj ET
+0.85 G 0.8 w 56 319.89 m 539.28 319.89 l S
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 299.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 299.89 Tm (Filter by fulfilment status \(pending, paid, preparing, out_for_delivery, delivered, cancelled\) or by) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 285.89 Tm (payment: All / Owed / Credit / Paid.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 271.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 271.89 Tm (POS sales carry a POS badge, credit sales show a CREDIT badge, and anything unpaid past its due) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 257.89 Tm (date gets a red OVERDUE outline with the number of days late.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 243.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 243.89 Tm (Record Payment accepts any amount up to the outstanding balance \(cash, mpesa, bank or) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 229.89 Tm (mobile\) with an optional reference. Part-payments are allowed - the balance stays owed until it) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 215.89 Tm (is settled in full.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 201.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 201.89 Tm (Resend Receipt pushes the receipt again through WhatsApp / SMS / email when those channels) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 187.89 Tm (are configured; View Receipt opens the printable copy.) Tj ET
+BT /F2 15 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 165.89 Tm (5. Credit Ledger \(/admin/credit\)) Tj ET
+0.85 G 0.8 w 56 157.89 m 539.28 157.89 l S
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 137.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 137.89 Tm (Three totals across the top - total owed, how much of it is overdue, and how many customers) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 123.89 Tm (owe anything.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 109.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 109.89 Tm (Tap a customer row to expand their open orders with due dates; Record Payment settles an order) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 95.89 Tm (without leaving the page.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 81.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 81.89 Tm (The ledger fills itself from POS credit sales and unpaid orders - every payment recorded here also) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 67.89 Tm (appears on the order in Orders.) Tj ET
+BT /F3 8 Tf 0.55 0.58 0.63 rg 1 0 0 1 205.00 34 Tm (Ethasfish Farms ╖ Portal User Manual ╖ Page 2 of 4) Tj ET
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 11 0 R >>
+endobj
+11 0 obj
+<< /Length 6948 >>
+stream
+BT /F2 15 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 763.89 Tm (6. Fish Stock \(/admin/stock\)) Tj ET
+0.85 G 0.8 w 56 755.89 m 539.28 755.89 l S
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 735.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 735.89 Tm (Record harvests from numbered cages, ponds or the hatchery \(pieces + kilograms\) - this builds) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 721.89 Tm (up farm stock.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 707.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 707.89 Tm (Distribute farm stock to outlets, then record outlet sales in pieces and/or kilograms. Balances are) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 693.89 Tm (always derived: farm = harvests - distributions; outlet = distributions - sales.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 679.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 679.89 Tm (Low-stock alerts fire when an outlet drops to its per-outlet piece/kg thresholds \(set them on the) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 665.89 Tm (outlet; 0 turns an alert off\).) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 651.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 651.89 Tm (The Stockist Agent \(chat on the Stock tab\) answers stock questions and can record harvests,) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 637.89 Tm (distributions and sales for you.) Tj ET
+BT /F2 15 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 615.89 Tm (7. Products, Media & Site Content) Tj ET
+0.85 G 0.8 w 56 607.89 m 539.28 607.89 l S
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 587.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 587.89 Tm (/admin/products - products and their variants \(label, pieces, weight, price, stock\). A price of 0) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 573.89 Tm (means quote-only: it is hidden from the till.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 559.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 559.89 Tm (/admin/media - drag & drop images and videos; reuse them anywhere with Upload / Library in the) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 545.89 Tm (media picker.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 531.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 531.89 Tm (/admin/content - edit the homepage, hero slides, stats and the farm gallery. Saves go live) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 517.89 Tm (immediately - no redeploy needed.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 503.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 503.89 Tm (Product stock and fish stock are separate on purpose: packed variants track shop stock, while) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 489.89 Tm (the fish ledger tracks pieces/kg at the farm and outlets.) Tj ET
+BT /F2 15 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 467.89 Tm (8. Invoices & Accounting \(admin\)) Tj ET
+0.85 G 0.8 w 56 459.89 m 539.28 459.89 l S
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 439.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 439.89 Tm (/admin/invoices - raise an invoice with an optional due date; move it draft -> sent -> paid, or) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 425.89 Tm (overdue / void; print from the invoice page.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 411.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 411.89 Tm (/admin/expenses - log expenses; the accounting summary counts paid orders only.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 397.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 397.89 Tm (/admin/settings - VAT rate and KRA PIN \(0% while not VAT-registered; prices are treated as) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 383.89 Tm (VAT-inclusive either way\).) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 369.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 369.89 Tm (/admin/purchasing - supplier purchase orders. /admin/staff - who can sign in. /admin/activity -) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 355.89 Tm (every action, with who did it.) Tj ET
+BT /F2 15 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 333.89 Tm (9. Receipts & Notifications) Tj ET
+0.85 G 0.8 w 56 325.89 m 539.28 325.89 l S
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 305.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 305.89 Tm (Receipts go out via WhatsApp, SMS \(Africa's Talking\) and email \(Resend\) - each channel is) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 291.89 Tm (skipped quietly when its API key is not set.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 277.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 277.89 Tm (Every receipt includes the order number and a track link \(/track\) the customer can open any time) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 263.89 Tm (to check status.) Tj ET
+BT /F2 15 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 241.89 Tm (10. AI Assistant & Agents) Tj ET
+0.85 G 0.8 w 56 233.89 m 539.28 233.89 l S
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 213.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 213.89 Tm (/admin/assistant answers read-only questions about the business; the Stockist Agent on the) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 199.89 Tm (Stock tab can also write stock movements through validated tools.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 185.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 185.89 Tm (/admin/agents \(admin\) lists every run - model, tokens used and which tools were called.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 171.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 171.89 Tm (Premium models need Vercel AI Gateway credits; without them the agents fall back to a free-tier) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 157.89 Tm (model \(or the rule-based storefront bot\).) Tj ET
+BT /F2 15 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 135.89 Tm (11. Quick Glossary) Tj ET
+0.85 G 0.8 w 56 127.89 m 539.28 127.89 l S
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 107.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 107.89 Tm (Order status - pending, paid, preparing, out_for_delivery, delivered, cancelled: where the goods) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 93.89 Tm (are.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 79.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 79.89 Tm (Payment status - unpaid, processing, partially_paid, paid, failed: where the money is. Revenue) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 65.89 Tm (figures count paid orders only.) Tj ET
+BT /F3 8 Tf 0.55 0.58 0.63 rg 1 0 0 1 205.00 34 Tm (Ethasfish Farms ╖ Portal User Manual ╖ Page 3 of 4) Tj ET
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 13 0 R >>
+endobj
+13 0 obj
+<< /Length 632 >>
+stream
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 771.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 771.89 Tm (Channel - online \(website checkout\) or pos \(till\). Method - mpesa, cash or credit.) Tj ET
+BT /F3 10.5 Tf 0.11 0.43 0.66 rg 1 0 0 1 56.00 757.89 Tm (Х) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 757.89 Tm (Credit terms - due date set at the sale; the order turns overdue once that date passes while still) Tj ET
+BT /F3 10.5 Tf 0.17 0.19 0.24 rg 1 0 0 1 71.00 743.89 Tm (unpaid.) Tj ET
+BT /F3 8 Tf 0.55 0.58 0.63 rg 1 0 0 1 205.00 34 Tm (Ethasfish Farms ╖ Portal User Manual ╖ Page 4 of 4) Tj ET
+endstream
+endobj
+xref
+0 14
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000141 00000 n 
+0000000238 00000 n 
+0000000340 00000 n 
+0000000437 00000 n 
+0000000589 00000 n 
+0000001934 00000 n 
+0000002086 00000 n 
+0000009114 00000 n 
+0000009268 00000 n 
+0000016269 00000 n 
+0000016423 00000 n 
+trailer
+<< /Size 14 /Root 1 0 R >>
+startxref
+17107
+%%EOF

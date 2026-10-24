@@ -26,20 +26,40 @@ export async function GET() {
 // already confirmed face-to-face (cash in hand, or the customer showing
 // their M-Pesa confirmation SMS) - so there's no async STK push/webhook,
 // the order is created already paid, and there's no delivery fee.
+// Exception: `credit` (buy now, pay later) hands the goods over now but
+// records the order as unpaid with a due date, for staff to collect later.
 export async function POST(req: NextRequest) {
   try {
     const staff = await requireStaff();
     const body = await req.json();
-    const { items, paymentMethod, cashReceived, mpesaRef, customerName, customerPhone } = body;
+    const { items, paymentMethod, cashReceived, mpesaRef, customerName, customerPhone, dueDate } = body;
 
     if (!Array.isArray(items) || items.length === 0) {
       return NextResponse.json({ error: 'Cart is empty' }, { status: 400 });
     }
-    if (paymentMethod !== 'cash' && paymentMethod !== 'mpesa') {
-      return NextResponse.json({ error: 'paymentMethod must be cash or mpesa' }, { status: 400 });
+    if (paymentMethod !== 'cash' && paymentMethod !== 'mpesa' && paymentMethod !== 'credit') {
+      return NextResponse.json({ error: 'paymentMethod must be cash, mpesa or credit' }, { status: 400 });
     }
     if (paymentMethod === 'mpesa' && !mpesaRef?.trim()) {
       return NextResponse.json({ error: 'M-Pesa reference is required' }, { status: 400 });
+    }
+
+    // Credit sales must be attributable to a real person with a deadline,
+    // otherwise there's no way to chase the money later.
+    let dueDateObj: Date | null = null;
+    if (paymentMethod === 'credit') {
+      if (!customerName?.trim() || !customerPhone?.trim()) {
+        return NextResponse.json({ error: 'Credit sales need the customer name and phone' }, { status: 400 });
+      }
+      dueDateObj = dueDate ? new Date(dueDate) : null;
+      if (!dueDateObj || isNaN(dueDateObj.getTime())) {
+        return NextResponse.json({ error: 'Credit sales need a valid payment due date' }, { status: 400 });
+      }
+      const startOfToday = new Date();
+      startOfToday.setHours(0, 0, 0, 0);
+      if (dueDateObj < startOfToday) {
+        return NextResponse.json({ error: 'Due date cannot be in the past' }, { status: 400 });
+      }
     }
 
     let normalPhone: string | null = null;
@@ -79,6 +99,11 @@ export async function POST(req: NextRequest) {
     if (paymentMethod === 'cash' && (typeof cashReceived !== 'number' || cashReceived < total)) {
       return NextResponse.json({ error: 'Cash received must cover the total' }, { status: 400 });
     }
+    // Credit POS sales require a named customer (checked above); make sure
+    // the phone normalized OK before anything is written.
+    if (paymentMethod === 'credit' && !normalPhone) {
+      return NextResponse.json({ error: 'Credit sales need a valid customer phone number' }, { status: 400 });
+    }
     const taxSettings = await getTaxSettings();
     const { vatRate } = taxSettings;
     const vatAmount = vatPortion(subtotal, vatRate);
@@ -96,19 +121,24 @@ export async function POST(req: NextRequest) {
           vatRate,
           vatAmount,
           channel: 'pos',
-          status: 'paid',
-          paymentStatus: 'paid',
+          status: paymentMethod === 'credit' ? 'pending' : 'paid',
+          paymentStatus: paymentMethod === 'credit' ? 'unpaid' : 'paid',
           paymentMethod,
           mpesaRef: paymentMethod === 'mpesa' ? mpesaRef.trim() : null,
+          dueDate: dueDateObj,
           items: { create: orderItemData },
-          payments: {
-            create: {
-              method: paymentMethod,
-              amount: total,
-              status: 'success',
-              reference: paymentMethod === 'mpesa' ? mpesaRef.trim() : null
+          // No Payment row for credit - nothing has been received yet.
+          // Recording the repayment later creates it (see /api/admin/orders PATCH).
+          ...(paymentMethod === 'credit' ? {} : {
+            payments: {
+              create: {
+                method: paymentMethod,
+                amount: total,
+                status: 'success',
+                reference: paymentMethod === 'mpesa' ? mpesaRef.trim() : null
+              }
             }
-          }
+          })
         },
         include: { items: true }
       });
@@ -128,14 +158,17 @@ export async function POST(req: NextRequest) {
       action: 'pos.sale',
       entityType: 'Order',
       entityId: order.id,
-      summary: `POS sale ${order.orderNumber} - ${fmtKsh(total)} (${paymentMethod}) by ${staff.name}`
+      summary: paymentMethod === 'credit'
+        ? `POS credit sale ${order.orderNumber} - ${fmtKsh(total)} on credit, due ${dueDateObj!.toLocaleDateString('en-GB')} by ${staff.name}`
+        : `POS sale ${order.orderNumber} - ${fmtKsh(total)} (${paymentMethod}) by ${staff.name}`
     });
 
     const receiptText = buildReceiptText({
       customerName: order.customerName,
       customerPhone: order.customerPhone,
       orderNumber: order.orderNumber,
-      status: 'paid',
+      status: paymentMethod === 'credit' ? 'credit' : 'paid',
+      dueDate: dueDateObj,
       items: order.items.map(i => ({
         productName: i.productName,
         variantLabel: i.variantLabel,
