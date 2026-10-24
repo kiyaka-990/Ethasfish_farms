@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ethasfish Farms — Operations Manual</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0e1b26;
+    --ink-soft: #33475a;
+    --muted: #6b7f92;
+    --line: #e3eaf1;
+    --paper: #ffffff;
+    --wash: #f4f8fb;
+    --accent: #1c6ea8;
+    --accent-deep: #124f7a;
+    --accent-light: #3b93ce;
+    --gold: #b8860b;
+    --amber: #d97706;
+    --amber-wash: #fef6e7;
+  }
+
+  html, body {
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    color: var(--ink);
+    background: var(--paper);
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .page {
+    width: 210mm;
+    height: 297mm;
+    padding: 18mm 18mm 16mm;
+    background: var(--paper);
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+    display: flex;
+    flex-direction: column;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  /* ---------- running header / footer ---------- */
+  .runner {
+    position: absolute;
+    left: 18mm; right: 18mm;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 7.5pt; letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+  }
+  .runner.top { top: 9mm; }
+  .runner.bottom { bottom: 9mm; border-top: 1px solid var(--line); padding-top: 3mm; }
+  .runner .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); display: inline-block; margin-right: 6px; vertical-align: middle; }
+
+  /* ---------- cover ---------- */
+  .cover {
+    background:
+      radial-gradient(1100px 620px at 78% -12%, #1c6ea8 0%, rgba(28,110,168,0) 62%),
+      linear-gradient(158deg, #0b1a26 0%, #10293c 46%, #123a56 100%);
+    color: #fff;
+    justify-content: space-between;
+  }
+  .cover .runner { color: rgba(255,255,255,.55); }
+  .cover .runner.bottom { border-top: 1px solid rgba(255,255,255,.18); }
+
+  .cover-mark { display: flex; align-items: center; gap: 14px; margin-top: 26mm; }
+  .cover-mark .glyph {
+    width: 58px; height: 58px; border-radius: 16px;
+    background: linear-gradient(140deg, #3b93ce, #124f7a);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 14px 34px rgba(0,0,0,.38);
+  }
+  .cover-mark .glyph svg { width: 32px; height: 32px; }
+  .cover-mark .who { font-size: 10pt; letter-spacing: .34em; text-transform: uppercase; color: #9fc6e2; }
+
+  .cover h1 {
+    font-size: 46pt; line-height: 1.02; font-weight: 800; letter-spacing: -.02em;
+    margin-bottom: 7mm;
+  }
+  .cover h1 em { font-style: normal; color: #7fc0ea; }
+  .cover .sub {
+    font-size: 13pt; color: #cfe2f0; max-width: 128mm; line-height: 1.6; font-weight: 300;
+  }
+  .cover .rule { width: 46mm; height: 4px; border-radius: 4px; background: linear-gradient(90deg, #3b93ce, rgba(59,147,206,0)); margin: 9mm 0; }
+
+  .cover-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin-top: 4mm; }
+  .cover-chip {
+    background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14);
+    border-radius: 12px; padding: 4.5mm; backdrop-filter: blur(2px);
+  }
+  .cover-chip .k { font-size: 7.5pt; letter-spacing: .18em; text-transform: uppercase; color: #8fb6d4; }
+  .cover-chip .v { font-size: 11pt; font-weight: 600; margin-top: 1.5mm; color: #fff; }
+
+  .cover-wave { position: absolute; left: 0; right: 0; bottom: 0; height: 46mm; opacity: .5; }
+
+  /* ---------- section opener ---------- */
+  .opener { justify-content: center; }
+  .opener .num {
+    font-size: 96pt; font-weight: 800; letter-spacing: -.04em; line-height: 1;
+    background: linear-gradient(140deg, #3b93ce, #124f7a);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .opener h2 { font-size: 30pt; font-weight: 800; letter-spacing: -.01em; margin: 3mm 0 4mm; }
+  .opener .lede { font-size: 12pt; color: var(--ink-soft); max-width: 130mm; line-height: 1.65; font-weight: 300; }
+  .opener .stripe { width: 34mm; height: 4px; border-radius: 4px; background: linear-gradient(90deg, var(--accent), rgba(28,110,168,0)); margin-bottom: 6mm; }
+
+  /* ---------- content ---------- */
+  .kicker { font-size: 8pt; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+  h3.title { font-size: 21pt; font-weight: 800; letter-spacing: -.01em; margin: 2mm 0 3mm; }
+  p.body { font-size: 10pt; line-height: 1.62; color: var(--ink-soft); }
+  p.body + p.body { margin-top: 3mm; }
+
+  .steps { counter-reset: step; margin-top: 5mm; display: grid; gap: 3mm; }
+  .step { display: flex; gap: 4mm; align-items: flex-start; }
+  .step .n {
+    counter-increment: step; flex: 0 0 auto;
+    width: 8mm; height: 8mm; border-radius: 50%;
+    background: linear-gradient(140deg, #3b93ce, #124f7a); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 9pt; font-weight: 700; margin-top: .5mm;
+  }
+  .step .n::before { content: counter(step); }
+  .step .txt { font-size: 9.5pt; line-height: 1.55; color: var(--ink-soft); }
+  .step .txt b { color: var(--ink); font-weight: 700; }
+
+  .callout {
+    margin-top: 4mm; border-radius: 12px; padding: 4mm 4.5mm;
+    background: var(--wash); border-left: 3.5px solid var(--accent);
+    font-size: 9pt; line-height: 1.55; color: var(--ink-soft);
+  }
+  .callout.warn { background: var(--amber-wash); border-left-color: var(--amber); }
+  .callout b { color: var(--ink); }
+
+  .fig {
+    margin-top: 5mm; border-radius: 14px; overflow: hidden;
+    border: 1px solid var(--line); background: #fff;
+    box-shadow: 0 10px 26px rgba(14,27,38,.09);
+  }
+  .fig .bar {
+    display: flex; align-items: center; gap: 5px;
+    padding: 2.6mm 4mm; background: #f7fafc; border-bottom: 1px solid var(--line);
+  }
+  .fig .bar i { width: 7px; height: 7px; border-radius: 50%; display: block; }
+  .fig .bar i:nth-child(1) { background: #ff5f57; }
+  .fig .bar i:nth-child(2) { background: #febc2e; }
+  .fig .bar i:nth-child(3) { background: #28c840; }
+  .fig .bar span { margin-left: 3mm; font-size: 7.5pt; color: var(--muted); letter-spacing: .06em; }
+  .fig img { width: 100%; display: block; }
+  .cap { margin-top: 2.5mm; font-size: 8pt; color: var(--muted); font-style: italic; }
+  .cap b { color: var(--ink-soft); font-style: normal; font-weight: 700; }
+
+  /* two-column text */
+  .cols2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; margin-top: 4mm; }
+  .cols2 p { font-size: 9.5pt; line-height: 1.6; color: var(--ink-soft); }
+
+  /* quick reference table */
+  table.qr { width: 100%; border-collapse: collapse; margin-top: 5mm; font-size: 9pt; }
+  table.qr th {
+    text-align: left; font-size: 7.5pt; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--muted); padding: 0 3mm 2.5mm; border-bottom: 2px solid var(--line); font-weight: 700;
+  }
+  table.qr td { padding: 3mm 3mm; border-bottom: 1px solid var(--line); color: var(--ink-soft); vertical-align: top; line-height: 1.45; }
+  table.qr td:first-child { font-weight: 700; color: var(--ink); white-space: nowrap; }
+  table.qr tr:nth-child(even) td { background: var(--wash); }
+
+  /* checklist */
+  .checklist { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5mm 6mm; margin-top: 4mm; }
+  .check { display: flex; gap: 3mm; align-items: flex-start; font-size: 9pt; color: var(--ink-soft); line-height: 1.5; }
+  .check .box { flex: 0 0 auto; width: 4.6mm; height: 4.6mm; border-radius: 1.4mm; border: 1.6px solid var(--accent); margin-top: .6mm; }
+
+  .tag {
+    display: inline-block; font-size: 7pt; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--accent); background: rgba(28,110,168,.09); border: 1px solid rgba(28,110,168,.2);
+    padding: 1mm 2.6mm; border-radius: 999px;
+  }
+  .tag.amber { color: var(--amber); background: rgba(217,119,6,.09); border-color: rgba(217,119,6,.25); }
+
+  .fill { flex: 1 1 auto; }
+
+  /* TOC */
+  .toc { display: grid; gap: 3.2mm; margin-top: 8mm; }
+  .toc a { display: flex; align-items: baseline; gap: 4mm; text-decoration: none; color: inherit; }
+  .toc .no { font-size: 10pt; font-weight: 800; color: var(--accent); width: 10mm; }
+  .toc .nm { font-size: 12pt; font-weight: 700; color: var(--ink); }
+  .toc .dots { flex: 1; border-bottom: 1.5px dotted #c9d6e2; transform: translateY(-2px); }
+  .toc .pg { font-size: 10pt; font-weight: 700; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════ COVER ══════════════════════════ -->
+<section id="pg01" class="page cover">
+  <div class="runner top">
+    <span><span class="dot"></span>Ethasfish Farms · Kisumu</span>
+    <span>Operations Manual</span>
+  </div>
+
+  <div>
+    <div class="cover-mark">
+      <div class="glyph">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6.5 12c.9-3.4 3.8-5.5 7.5-5.5 2.9 0 5.4 1.3 6.9 3.4-1.5 2.1-4 3.4-6.9 3.4-3.7 0-6.6-2.1-7.5-5.5Z"/>
+          <path d="M6.5 12c.9 3.4 3.8 5.5 7.5 5.5"/>
+          <circle cx="16.4" cy="10.4" r=".9" fill="#fff" stroke="none"/>
+          <path d="M3 8.5 6.5 12 3 15.5"/>
+        </svg>
+      </div>
+      <div>
+        <div class="who">Ethasfish Farms</div>
+        <div style="font-size:8pt;letter-spacing:.2em;color:rgba(255,255,255,.4);text-transform:uppercase;margin-top:2px;">Lake Victoria · Kenya</div>
+      </div>
+    </div>
+
+    <div style="margin-top:22mm;">
+      <h1>Operations<br><em>Manual</em></h1>
+      <div class="rule"></div>
+      <p class="sub">
+        The complete staff guide to running the Ethasfish portal — from recording a harvest
+        on the cages, through outlet stock and the point of sale, to customer credit and
+        settlements. Every screen in this book is a real capture of the live system.
+      </p>
+    </div>
+  </div>
+
+  <div class="cover-grid">
+    <div class="cover-chip"><div class="k">Audience</div><div class="v">Sales &amp; Admin staff</div></div>
+    <div class="cover-chip"><div class="k">Version</div><div class="v">1.0 — 2026</div></div>
+    <div class="cover-chip"><div class="k">Screens</div><div class="v">15 live captures</div></div>
+  </div>
+
+  <svg class="cover-wave" viewBox="0 0 800 180" preserveAspectRatio="none">
+    <path d="M0 90 C 140 40, 260 140, 400 96 C 540 52, 660 150, 800 96 L800 180 L0 180 Z" fill="rgba(59,147,206,.22)"/>
+    <path d="M0 116 C 150 78, 280 166, 430 122 C 580 78, 680 168, 800 126 L800 180 L0 180 Z" fill="rgba(59,147,206,.3)"/>
+  </svg>
+
+  <div class="runner bottom">
+    <span>Confidential — internal use</span>
+    <span>Page 1</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════ CONTENTS ══════════════════════════ -->
+<section id="pg02" class="page">
+  <div class="runner top"><span><span class="dot"></span>Ethasfish Farms</span><span>Contents</span></div>
+
+  <div class="fill" style="display:flex;flex-direction:column;justify-content:center;">
+    <div class="kicker">What's inside</div>
+    <h3 class="title">Contents</h3>
+    <div class="stripe" style="width:34mm;height:4px;border-radius:4px;background:linear-gradient(90deg,var(--accent),rgba(28,110,168,0));margin:1mm 0 2mm;"></div>
+    <p class="body" style="max-width:130mm;">Nine sections follow the flow of a working day: open the portal, take stock, sell, settle credit, and manage the storefront that customers see.</p>
+
+    <div class="toc">
+      <a><span class="no">01</span><span class="nm">Getting started — the portal at a glance</span><span class="dots"></span><span class="pg">4</span></a>
+      <a><span class="no">02</span><span class="nm">Stock taking — harvest, send-out &amp; outlet sales</span><span class="dots"></span><span class="pg">5</span></a>
+      <a><span class="no">03</span><span class="nm">The stockist assistant — asking and recording by chat</span><span class="dots"></span><span class="pg">7</span></a>
+      <a><span class="no">04</span><span class="nm">Point of sale — ringing up a counter order</span><span class="dots"></span><span class="pg">8</span></a>
+      <a><span class="no">05</span><span class="nm">Credit — buy now, pay later</span><span class="dots"></span><span class="pg">10</span></a>
+      <a><span class="no">06</span><span class="nm">Orders — fulfilment &amp; the owed queue</span><span class="dots"></span><span class="pg">12</span></a>
+      <a><span class="no">07</span><span class="nm">Products — pricing, variants &amp; stock levels</span><span class="dots"></span><span class="pg">13</span></a>
+      <a><span class="no">08</span><span class="nm">Site content — managing what customers see</span><span class="dots"></span><span class="pg">14</span></a>
+      <a><span class="no">09</span><span class="nm">The customer storefront &amp; daily checklist</span><span class="dots"></span><span class="pg">15</span></a>
+    </div>
+
+    <div class="callout" style="margin-top:9mm;">
+      <b>How to use this manual.</b> Each section opens with what the screen is for, then a
+      numbered walkthrough, then a full-width capture of the real interface. Follow the
+      numbers on the page — they match the fields on the screen.
+    </div>
+  </div>
+
+  <div class="runner bottom"><span>Operations Manual · v1.0</span><span>Page 2</span></div>
+</section>
+
+<!-- ══════════════════════════ WELCOME ══════════════════════════ -->
+<section id="pg03" class="page opener">
+  <div class="runner top"><span><span class="dot"></span>Ethasfish Farms</span><span>Welcome</span></div>
+
+  <div class="fill" style="display:flex;flex-direction:column;justify-content:center;">
+    <div class="num">00</div>
+    <div class="stripe"></div>
+    <h2>One system,<br>the whole business.</h2>
+    <p class="lede">
+      Ethasfish Farms runs on a single portal. The fish counted on the cages this morning are the
+      same stock the outlet sells this afternoon, the same products the online shop offers tonight —
+      and the same balances the credit ledger tracks when a customer pays later. Nothing is entered twice.
+    </p>
+
+    <div class="cols2" style="margin-top:9mm;">
+      <p><b>For sales staff.</b> You will live in three places: <b>Stock</b> (harvest, send-out, outlet sales), <b>Point of Sale</b> (counter orders and receipts), and <b>Orders</b> (following up and taking payment).</p>
+      <p><b>For admins.</b> Everything above, plus products and pricing, credit, purchasing, accounting, the media library and the website content your customers browse.</p>
+    </div>
+
+    <div class="callout" style="margin-top:8mm;">
+      <b>Sign in once.</b> The portal uses your staff account. If you can see the Dashboard with
+      today's numbers, you are signed in and everything below is live data — not a demo.
+    </div>
+  </div>
+
+  <div class="runner bottom"><span>Operations Manual · v1.0</span><span>Page 3</span></div>
+</section>
+
+<!-- ══════════════════════════ 01 DASHBOARD ══════════════════════════ -->
+<section id="pg04" class="page">
+  <div class="runner top"><span><span class="dot"></span>01 · Getting started</span><span>Dashboard</span></div>
+
+  <div class="kicker">Section 01</div>
+  <h3 class="title">The dashboard — your morning brief</h3>
+  <p class="body">
+    Open the portal and you land here. Four tiles tell you the state of the business before you
+    touch anything: how many orders exist, how many are still pending, what has taken in this
+    month, and how many products are live. Below them, the eight most recent orders.
+  </p>
+
+  <div class="steps">
+    <div class="step"><div class="n"></div><div class="txt"><b>Total Orders</b> — every order ever placed, online and at the counter.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Pending</b> — orders awaiting fulfilment. Anything here needs attention today.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>This Month</b> — cash actually received this calendar month (paid orders only).</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Active Products</b> — items currently visible and sellable.</div></div>
+  </div>
+
+  <div class="callout"><b>Start every shift here.</b> Glance at Pending, then check the Credit tile in the sidebar if you have debtors — before you start selling.</div>
+
+  <div class="fig" style="margin-top:5mm;">
+    <div class="bar"><i></i><i></i><i></i><span>ethasfish.co.ke/admin — Dashboard</span></div>
+    <img src="assets/01-dashboard.png" alt="Admin dashboard">
+  </div>
+
+  <div class="runner bottom"><span>Getting started</span><span>Page 4</span></div>
+</section>
+
+<!-- ══════════════════════════ 02 STOCK ══════════════════════════ -->
+<section id="pg05" class="page">
+  <div class="runner top"><span><span class="dot"></span>02 · Stock taking</span><span>Harvest</span></div>
+
+  <div class="kicker">Section 02</div>
+  <h3 class="title">Stock taking — from the cage to the counter</h3>
+  <p class="body">
+    The Stock page is the heartbeat of the operation. Fish are <b>harvested</b> from numbered cages,
+    ponds or the hatchery, <b>sent out</b> to an outlet, and <b>sold</b> at that outlet. Every harvest is
+    counted in pieces <b>and</b> weighed in kilograms — both are required, so the average weight
+    stays honest and missing figures can be derived.
+  </p>
+
+  <div style="margin-top:5mm;display:grid;grid-template-columns:1fr 1fr 1fr;gap:4mm;">
+    <div class="callout" style="margin:0;border-left-color:var(--accent);"><b>Record Harvest.</b> Pick cage / pond / hatchery, enter the number, the kg on the scales, save.</div>
+    <div class="callout" style="margin:0;border-left-color:var(--accent);"><b>Send to Outlet.</b> Move stock from farm balance to an outlet. Fill either field; the rest derives.</div>
+    <div class="callout" style="margin:0;border-left-color:var(--accent);"><b>Record Sale.</b> Log what an outlet sold and the cash taken. Stock can't go negative.</div>
+  </div>
+
+  <div class="fig" style="margin-top:5mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/admin/stock — Record Harvest</span></div>
+    <img src="assets/02-stock.png" alt="Stock page">
+  </div>
+
+  <div class="runner bottom"><span>Stock taking</span><span>Page 5</span></div>
+</section>
+
+<!-- ══════════════════════════ 02b SEND + SALE ══════════════════════════ -->
+<section id="pg06" class="page">
+  <div class="runner top"><span><span class="dot"></span>02 · Stock taking</span><span>Send-out &amp; sales</span></div>
+
+  <div class="kicker">Section 02 · continued</div>
+  <h3 class="title">Sending stock out &amp; recording outlet sales</h3>
+  <p class="body">
+    The snapshot tiles at the top of the Stock page update live: farm stock on hand, what was
+    harvested today, revenue collected at outlets, and the current average weight per piece.
+    Below the forms, <b>Stock by Source</b> keeps a running balance for each cage and pond, and
+    the <b>Outlets</b> cards show what each location holds, has sold, and where the low-stock
+    alert sits.
+  </p>
+
+  <div class="steps">
+    <div class="step"><div class="n"></div><div class="txt">Open <b>Send to Outlet</b>, choose the destination, enter pieces and/or kg, save. Farm stock falls, outlet stock rises.</div></div>
+    <div class="step"><div class="n"></div><div class="txt">Open <b>Record Sale</b>, pick the outlet and a channel (counter, wholesale, mobile, market), enter what sold and the cash taken.</div></div>
+    <div class="step"><div class="n"></div><div class="txt">Set each outlet's <b>low-stock alert</b> (admin) so you are warned before a location runs dry.</div></div>
+  </div>
+
+  <div class="fig" style="margin-top:4mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/admin/stock — Send to Outlet</span></div>
+    <img src="assets/03-stock-send-outlet.png" alt="Send to outlet">
+  </div>
+  <div class="fig" style="margin-top:4mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/admin/stock — Record Sale</span></div>
+    <img src="assets/04-stock-record-sale.png" alt="Record sale">
+  </div>
+
+  <div class="runner bottom"><span>Stock taking</span><span>Page 6</span></div>
+</section>
+
+<!-- ══════════════════════════ 03 ASSISTANT ══════════════════════════ -->
+<section id="pg07" class="page">
+  <div class="runner top"><span><span class="dot"></span>03 · Stockist assistant</span><span>Chat</span></div>
+
+  <div class="kicker">Section 03</div>
+  <h3 class="title">The stockist agent — stock by conversation</h3>
+  <p class="body">
+    On the right of the Stock page sits the stockist agent. Ask it anything about stock, or tell
+    it to record something, in plain language. It reads the same live balances you see, and it
+    has permission to write harvests, send-outs and outlet sales — so you can keep working
+    without leaving the conversation.
+  </p>
+
+  <div style="margin-top:5mm;">
+    <span class="tag">Try one of these</span>
+    <div class="steps" style="margin-top:3mm;">
+      <div class="step"><div class="n"></div><div class="txt"><b>“Any low stock?”</b> — lists outlets under their alert threshold.</div></div>
+      <div class="step"><div class="n"></div><div class="txt"><b>“How much stock is on the farm?”</b> — the undistributed balance in pieces and kg.</div></div>
+      <div class="step"><div class="n"></div><div class="txt"><b>“What does the Kisumu outlet have?”</b> — one outlet's on-hand position.</div></div>
+      <div class="step"><div class="n"></div><div class="txt"><b>“Record 120 pieces from pond 3”</b> — writes the harvest and refreshes every figure.</div></div>
+    </div>
+  </div>
+
+  <div class="callout warn"><b>Check before you trust.</b> Anything the agent records shows up immediately in Stock by Source and the outlet cards — give it a glance to confirm it heard you right.</div>
+
+  <div class="callout" style="margin-top:4mm;"><b>Why it matters.</b> Hands wet, scale busy, phone ringing — typing a sentence is faster than hunting through three tabs. The agent does the navigating for you.</div>
+
+  <div class="runner bottom"><span>Stockist assistant</span><span>Page 7</span></div>
+</section>
+
+<!-- ══════════════════════════ 04 POS ══════════════════════════ -->
+<section id="pg08" class="page">
+  <div class="runner top"><span><span class="dot"></span>04 · Point of sale</span><span>Counter</span></div>
+
+  <div class="kicker">Section 04</div>
+  <h3 class="title">Point of sale — ringing up a counter order</h3>
+  <p class="body">
+    The POS is built for speed at the counter. Products appear as a grid of tiles with their live
+    price and variant. Tap to add to the cart, adjust quantities, and check out — the sale writes
+    an order, updates stock, and can print or send a receipt in one move.
+  </p>
+
+  <div class="steps">
+    <div class="step"><div class="n"></div><div class="txt"><b>Find the product.</b> Tap its tile to drop one into the cart; tap again or use the stepper for more.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Pick a variant.</b> Whole fish by size, fillets, fingerlings by pack — each carries its own price.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Check out.</b> Choose how the customer is paying: cash, M-Pesa, or <b>Credit</b> (see Section 05).</div></div>
+  </div>
+
+  <div class="fig" style="margin-top:5mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/admin/pos — product grid</span></div>
+    <img src="assets/05-pos.png" alt="Point of sale">
+  </div>
+
+  <div class="runner bottom"><span>Point of sale</span><span>Page 8</span></div>
+</section>
+
+<!-- ══════════════════════════ 04b POS CREDIT ══════════════════════════ -->
+<section id="pg09" class="page">
+  <div class="runner top"><span><span class="dot"></span>04 · Point of sale</span><span>Credit at the till</span></div>
+
+  <div class="kicker">Section 04 · continued</div>
+  <h3 class="title">Selling on credit at the counter</h3>
+  <p class="body">
+    Some regulars take fish today and pay when the week's money lands. Choose <b>Credit</b> at
+    checkout and the modal asks for what the ledger needs later: the <b>customer's name</b> and
+    <b>phone</b>, and a <b>due date</b> by which they promise to settle. All three are required —
+    an incomplete credit sale cannot slip through.
+  </p>
+
+  <div class="callout warn"><b>Never fudge the due date.</b> It drives the overdue flag on the Orders and Credit pages. If a customer asks for more time, agree it, then update the order — don't leave the original promise blank.</div>
+
+  <div class="fig" style="margin-top:5mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/admin/pos — checkout with Credit selected</span></div>
+    <img src="assets/06-pos-credit.png" alt="POS credit checkout">
+  </div>
+
+  <div class="runner bottom"><span>Point of sale</span><span>Page 9</span></div>
+</section>
+
+<!-- ══════════════════════════ 05 CREDIT ══════════════════════════ -->
+<section id="pg10" class="page">
+  <div class="runner top"><span><span class="dot"></span>05 · Credit</span><span>Ledger</span></div>
+
+  <div class="kicker">Section 05</div>
+  <h3 class="title">Credit ledger — who owes what</h3>
+  <p class="body">
+    The Credit page turns every unpaid credit order into a per-customer balance. Three tiles across
+    the top give you the total owed, how much of it is overdue, and how many customers are
+    carrying a balance. Each customer row expands to the individual orders behind their number,
+    with the due date and days late spelled out.
+  </p>
+
+  <div class="steps">
+    <div class="step"><div class="n"></div><div class="txt"><b>Total owed</b> — every shilling still outstanding across all credit customers.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Overdue</b> — the portion past its due date. Shown in red; chase these first.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Customers owing</b> — how many people to follow up with today.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Expand a row</b> — see each order, its due date, and record a part-payment or full settlement.</div></div>
+  </div>
+
+  <div class="fig" style="margin-top:5mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/admin/credit — ledger with live totals</span></div>
+    <img src="assets/10-credit-ledger.png" alt="Credit ledger">
+  </div>
+
+  <div class="runner bottom"><span>Credit</span><span>Page 10</span></div>
+</section>
+
+<!-- ══════════════════════════ 05b RECORD PAYMENT ══════════════════════════ -->
+<section id="pg11" class="page">
+  <div class="runner top"><span><span class="dot"></span>05 · Credit</span><span>Recording payment</span></div>
+
+  <div class="kicker">Section 05 · continued</div>
+  <h3 class="title">Recording a payment against a debt</h3>
+  <p class="body">
+    When money comes in — full or part — open the customer, hit <b>Record Payment</b>, and enter
+    the amount. Choose how they paid (cash, M-Pesa, bank, mobile) and paste the reference code if
+    there is one. A partial payment chips away at the balance; when the last shilling lands the
+    order flips to <b>Settled in full</b> and drops off the owing list.
+  </p>
+
+  <div class="callout"><b>Always take the reference.</b> An M-Pesa code takes ten seconds to note and settles a "I already paid" conversation instantly.</div>
+
+  <div class="fig" style="margin-top:5mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/admin/credit — expanded customer with Record Payment</span></div>
+    <img src="assets/11-credit-expanded.png" alt="Record payment">
+  </div>
+
+  <div class="runner bottom"><span>Credit</span><span>Page 11</span></div>
+</section>
+
+<!-- ══════════════════════════ 06 ORDERS ══════════════════════════ -->
+<section id="pg12" class="page">
+  <div class="runner top"><span><span class="dot"></span>06 · Orders</span><span>Fulfilment</span></div>
+
+  <div class="kicker">Section 06</div>
+  <h3 class="title">Orders — the fulfilment queue</h3>
+  <p class="body">
+    Every order, wherever it came from, lands in one list. A filter row lets you slice by status
+    (pending, delivered, cancelled) and by <b>payment</b> — paid, or <b>Owed</b>. Overdue credit
+    orders are ringed in red so a late payer never hides in the stack.
+  </p>
+
+  <div class="steps">
+    <div class="step"><div class="n"></div><div class="txt"><b>Work top-down.</b> Oldest pending first — that's the fairest queue for customers.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Use the Owed filter</b> to see everything bought on credit that hasn't been settled.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Record Payment inline</b> from the order card — no need to visit the Credit page for a one-off.</div></div>
+  </div>
+
+  <div class="fig" style="margin-top:5mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/admin/orders — payment filters</span></div>
+    <img src="assets/07-orders.png" alt="Orders">
+  </div>
+
+  <div class="runner bottom"><span>Orders</span><span>Page 12</span></div>
+</section>
+
+<!-- ══════════════════════════ 06b OWED ══════════════════════════ -->
+<section id="pg13" class="page">
+  <div class="runner top"><span><span class="dot"></span>06 · Orders</span><span>The owed queue</span></div>
+
+  <div class="kicker">Section 06 · continued</div>
+  <h3 class="title">The Owed queue — credit, surfaced</h3>
+  <p class="body">
+    Switch the payment filter to <b>Owed</b> and the list narrows to unsettled credit orders.
+    Each card carries an amber <b>Record Payment (KSh … owed)</b> button showing exactly how much
+    is outstanding, and an overdue order is ringed in red. Tapping the button opens a focused
+    modal — amount, method, reference — and returns you straight to the filtered list.
+  </p>
+
+  <div class="callout warn"><b>Chase, don't guess.</b> The owed list is your call sheet. Ring from the top, note every promise in the reference field, and record payments the moment money arrives.</div>
+
+  <div class="fig" style="margin-top:4mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/admin/orders — Owed filter</span></div>
+    <img src="assets/08-orders-owed.png" alt="Orders owed">
+  </div>
+  <div class="fig" style="margin-top:4mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/admin/orders — Record Payment modal</span></div>
+    <img src="assets/09-record-payment.png" alt="Record payment modal">
+  </div>
+
+  <div class="runner bottom"><span>Orders</span><span>Page 13</span></div>
+</section>
+
+<!-- ══════════════════════════ 07 PRODUCTS ══════════════════════════ -->
+<section id="pg14" class="page">
+  <div class="runner top"><span><span class="dot"></span>07 · Products</span><span>Catalogue</span></div>
+
+  <div class="kicker">Section 07</div>
+  <h3 class="title">Products — pricing, variants &amp; stock</h3>
+  <p class="body">
+    Products drives the shop, the POS tiles and what stock is tracked against. Each product carries
+    a description, its category, and one or more <b>variants</b> — sizes like Small / Medium / Large,
+    or pack counts for fingerlings — each with its own price. Toggle a product off and it
+    disappears from the storefront without deleting its history.
+  </p>
+
+  <div class="steps">
+    <div class="step"><div class="n"></div><div class="txt"><b>Price a variant</b> by editing its amount; the shop and POS pick it up immediately.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Set stock per variant</b> so a sold-out size stops taking orders online.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Add a variant</b> when you introduce a new size or pack — no code needed.</div></div>
+  </div>
+
+  <div class="fig" style="margin-top:5mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/admin/products — variants &amp; stock</span></div>
+    <img src="assets/12-products.png" alt="Products">
+  </div>
+
+  <div class="runner bottom"><span>Products</span><span>Page 14</span></div>
+</section>
+
+<!-- ══════════════════════════ 08 CONTENT ══════════════════════════ -->
+<section id="pg15" class="page">
+  <div class="runner top"><span><span class="dot"></span>08 · Site content</span><span>CMS</span></div>
+
+  <div class="kicker">Section 08</div>
+  <h3 class="title">Site content — the storefront in your hands</h3>
+  <p class="body">
+    The public website is not a separate thing to ask a developer about. The Site Content editor
+    lets an admin change the words, banners and imagery customers see — the hero headline, the
+    promotional strip, service descriptions — and publish. Media lives in the <b>Media Library</b>,
+    so photos uploaded once can be reused across pages.
+  </p>
+
+  <div class="callout"><b>Think before you publish.</b> Changes go live to every visitor. Preview the wording, check spelling, then save — and remember the same content powers the mobile site.</div>
+
+  <div class="fig" style="margin-top:5mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/admin/content — CMS editor</span></div>
+    <img src="assets/13-site-content.png" alt="Site content editor">
+  </div>
+
+  <div class="runner bottom"><span>Site content</span><span>Page 15</span></div>
+</section>
+
+<!-- ══════════════════════════ 09 STOREFRONT ══════════════════════════ -->
+<section id="pg16" class="page">
+  <div class="runner top"><span><span class="dot"></span>09 · Storefront</span><span>Customer view</span></div>
+
+  <div class="kicker">Section 09</div>
+  <h3 class="title">The storefront — what your customer sees</h3>
+  <p class="body">
+    All your work lands here. The public site opens on a hero that sells Lake-to-Table tilapia,
+    then flows into a shop grid of live products with category filters — whole fish, fillets,
+    fingerlings, feed, consultancy. Customers pay by M-Pesa or request a quote, and their order
+    drops straight into the same queue you fulfil.
+  </p>
+
+  <div class="fig" style="margin-top:4mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/ — landing page</span></div>
+    <img src="assets/14-landing.png" alt="Landing page">
+  </div>
+  <div class="fig" style="margin-top:4mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/shop — live catalogue</span></div>
+    <img src="assets/15-shop.png" alt="Shop">
+  </div>
+
+  <div class="runner bottom"><span>Storefront</span><span>Page 16</span></div>
+</section>
+
+<!-- ══════════════════════════ CHECKLIST ══════════════════════════ -->
+<section id="pg17" class="page">
+  <div class="runner top"><span><span class="dot"></span>09 · Storefront</span><span>Daily checklist</span></div>
+
+  <div class="kicker">Wrap-up</div>
+  <h3 class="title">The daily close — a five-minute routine</h3>
+  <p class="body">
+    Run this at the end of every trading day. It takes five minutes and it is the difference
+    between a business you can trust and a spreadsheet you can't.
+  </p>
+
+  <div class="checklist" style="margin-top:6mm;">
+    <div class="check"><span class="box"></span>Record every harvest from the day — cages, ponds, hatchery.</div>
+    <div class="check"><span class="box"></span>Send-out balances match what physically left for each outlet.</div>
+    <div class="check"><span class="box"></span>Every outlet sale logged with its cash taken.</div>
+    <div class="check"><span class="box"></span>POS orders closed out; no stray open carts.</div>
+    <div class="check"><span class="box"></span>Owed queue reviewed; payments recorded as they came in.</div>
+    <div class="check"><span class="box"></span>Overdue credit chased — a call or an M-Pesa request.</div>
+    <div class="check"><span class="box"></span>Low-stock alerts cleared or restock planned.</div>
+    <div class="check"><span class="box"></span>Site content checked if a promo or price changed today.</div>
+  </div>
+
+  <div class="callout" style="margin-top:8mm;">
+    <b>When something looks wrong.</b> The Activity Log records who changed what, and when. If a
+    number doesn't reconcile, start there before you re-enter anything.
+  </div>
+
+  <div style="margin-top:auto;display:flex;align-items:center;gap:4mm;padding-top:6mm;border-top:1px solid var(--line);">
+    <div style="width:11mm;height:11mm;border-radius:3mm;background:linear-gradient(140deg,#3b93ce,#124f7a);display:flex;align-items:center;justify-content:center;">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6.5 12c.9-3.4 3.8-5.5 7.5-5.5 2.9 0 5.4 1.3 6.9 3.4-1.5 2.1-4 3.4-6.9 3.4-3.7 0-6.6-2.1-7.5-5.5Z"/><path d="M6.5 12c.9 3.4 3.8 5.5 7.5 5.5"/><circle cx="16.4" cy="10.4" r=".9" fill="#fff" stroke="none"/>
+      </svg>
+    </div>
+    <div>
+      <div style="font-size:9pt;font-weight:800;color:var(--ink);">Ethasfish Farms — Operations Manual</div>
+      <div style="font-size:7.5pt;color:var(--muted);letter-spacing:.08em;">Version 1.0 · 2026 · Internal use only</div>
+    </div>
+  </div>
+
+  <div class="runner bottom"><span>End of manual</span><span>Page 17</span></div>
+</section>
+
+</body>
+</html>
