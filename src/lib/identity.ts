@@ -12,7 +12,7 @@ import { prisma } from './prisma';
 
 export const CLERK_ENABLED = Boolean(process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && process.env.CLERK_SECRET_KEY);
 
-export type StaffRole = 'admin' | 'sales_manager';
+export type StaffRole = 'admin' | 'sales_manager' | 'driver';
 
 export interface StaffSession {
   id: string;
@@ -62,6 +62,15 @@ export async function requireStaff(): Promise<StaffSession> {
 export async function requireAdmin(): Promise<StaffSession> {
   const staff = await requireStaff();
   if (staff.role !== 'admin') throw new Forbidden();
+  return staff;
+}
+
+// Drivers sign in through the same Clerk flow as everyone else but only
+// ever touch their own job + GPS pings. Admins are also allowed through
+// so the dispatch team can test the driver app from their own account.
+export async function requireDriver(): Promise<StaffSession> {
+  const staff = await requireStaff();
+  if (staff.role !== 'driver' && staff.role !== 'admin') throw new Forbidden();
   return staff;
 }
 

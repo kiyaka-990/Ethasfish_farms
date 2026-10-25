@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Search, Package, CheckCircle2, Clock, Truck, MapPin, Phone, Receipt as ReceiptIcon } from 'lucide-react';
 import { fmtKsh } from '@/lib/utils';
+import LiveDelivery from './LiveDelivery';
 
 const STAGES = [
   { key: 'pending',          label: 'Order Received',   subtitle: 'Awaiting payment',                         Icon: Clock },
@@ -33,10 +34,32 @@ function TrackInner() {
     finally { setLoading(false); }
   }
 
+  // Silent refresh for the background poll - never clears the card, so
+  // the UI doesn't flash every 5s while the order is in flight.
+  async function refresh(num: string) {
+    try {
+      const res = await fetch(`/api/orders?orderNumber=${encodeURIComponent(num)}`);
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.order) setOrder((prev: any) => ({ ...data.order, items: data.order.items ?? prev?.items }));
+    } catch { /* next tick */ }
+  }
+
   useEffect(() => {
     if (params.get('order')) lookup(params.get('order')!);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Keep the stage timeline moving without a manual refresh: poll while
+  // the order is still in flight, stop once it reaches a terminal state.
+  useEffect(() => {
+    if (!order || ['delivered', 'cancelled'].includes(order.status)) return;
+    const t = setInterval(() => {
+      if (!document.hidden) refresh(order.orderNumber);
+    }, 5000);
+    return () => clearInterval(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order?.orderNumber, order?.status]);
 
   const currentStageIdx = order ? STAGES.findIndex(s => s.key === order.status) : -1;
   const cancelled = order?.status === 'cancelled';
@@ -131,6 +154,9 @@ function TrackInner() {
                 })}
               </div>
             )}
+
+            {/* Live rider map - only while a delivery is on */}
+            {order.status !== 'cancelled' && <LiveDelivery orderNumber={order.orderNumber} />}
 
             {/* Order details */}
             <div className="grid sm:grid-cols-2 gap-4 pt-4 border-t border-[var(--border-color)]">

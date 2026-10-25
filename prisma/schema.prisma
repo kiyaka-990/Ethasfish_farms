@@ -21,9 +21,10 @@ model StaffProfile {
   clerkUserId String   @unique
   email       String   @unique
   name        String
-  role        String   @default("sales_manager") // admin | sales_manager
-  active      Boolean  @default(true)
+  role        String    @default("sales_manager") // admin | sales_manager | driver
+  active      Boolean   @default(true)
   lastSeenAt  DateTime?
+  driver      Driver?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -102,10 +103,73 @@ model Order {
   items           OrderItem[]
   payments        Payment[]
   invoices        Invoice[]
+  delivery        Delivery?
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
 
   @@index([customerId])
+}
+
+// ===================== ERP: DELIVERY / LIVE TRACKING =====================
+// One Delivery per fulfilment order: who is riding it, the geocoded
+// destination pin, and the pickup→drop timestamps that feed delivery
+// reports. The Order.status field stays the single fulfilment source of
+// truth (paid | preparing | out_for_delivery | delivered) - Delivery
+// mirrors it so driver/dispatch queries don't have to join the order.
+model Delivery {
+  id           String    @id @default(cuid())
+  orderId      String    @unique
+  order        Order     @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  driverId     String?
+  driver       Driver?   @relation(fields: [driverId], references: [id], onDelete: SetNull)
+  status       String    @default("assigned") // assigned | picked_up | delivered | cancelled
+  destLat      Float?    // geocoded from the order's delivery address (admin can correct on the map)
+  destLng      Float?
+  assignedAt   DateTime  @default(now())
+  pickedUpAt    DateTime?
+  deliveredAt  DateTime?
+  cancelReason String?
+  positions    DriverPosition[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([driverId, status])
+  @@index([status])
+}
+
+model Driver {
+  id          String    @id @default(cuid())
+  staffId     String?   @unique // StaffProfile with role=driver - sign-in lives in Clerk
+  staff       StaffProfile? @relation(fields: [staffId], references: [id], onDelete: SetNull)
+  name        String
+  phone       String
+  plate       String? // motorcycle/bike registration
+  vehicle     String    @default("motorcycle") // motorcycle | bicycle | van
+  active      Boolean   @default(true)
+  lastLat     Float?    // latest ping - what the live map draws
+  lastLng     Float?
+  lastSeenAt  DateTime?
+  deliveries  Delivery[]
+  positions   DriverPosition[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// GPS history for the ride trail + distance travelled. Rows are pruned
+// after 30 days on each ping so the table stays small.
+model DriverPosition {
+  id         String   @id @default(cuid())
+  driverId   String
+  driver     Driver   @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  deliveryId String?
+  delivery   Delivery? @relation(fields: [deliveryId], references: [id], onDelete: SetNull)
+  lat        Float
+  lng        Float
+  speedKph   Float?
+  recordedAt DateTime @default(now())
+
+  @@index([driverId, recordedAt])
+  @@index([deliveryId])
 }
 
 model OrderItem {

@@ -22,3 +22,6 @@ coverage
 .vercel
 .env*
 public/uploads
+
+# e2e delivery test harness state (throwaway credentials)
+.e2e-state.json

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { UserButton, SignOutButton } from '@clerk/nextjs';
 import { LogOut } from 'lucide-react';
 import { getStaffSession, CLERK_ENABLED } from '@/lib/identity';
-import { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings, Megaphone, Fish, HandCoins, BookOpen } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings, Megaphone, Fish, HandCoins, BookOpen, Bike } from 'lucide-react';
 import Logo from '@/components/Logo';
 import ThemeToggle from '@/components/ThemeToggle';
 import AdminMobileNav from './AdminMobileNav';
@@ -27,6 +27,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   const staff = await getStaffSession();
   if (!staff) redirect('/sign-in?redirect_url=/admin');
+  // Drivers are staff too (they sign in for /driver) but never get the
+  // business portal - their phone page is the only thing they need.
+  if (staff.role === 'driver') redirect('/driver');
 
   // `icon` is a plain string here (not a component reference) specifically
   // so this array stays serializable when passed into AdminMobileNav, a
@@ -43,6 +46,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: '/admin/pos', icon: 'Store' as const, label: 'Point of Sale' },
     { href: '/admin/orders', icon: 'ShoppingBag' as const, label: 'Orders' },
     { href: '/admin/credit', icon: 'HandCoins' as const, label: 'Credit' },
+    { href: '/admin/deliveries', icon: 'Bike' as const, label: 'Deliveries' },
     { href: '/admin/leads', icon: 'UserPlus' as const, label: 'Leads' },
     { href: '/admin/products', icon: 'Package' as const, label: 'Products' },
     { href: '/admin/promotions', icon: 'Megaphone' as const, label: 'Promotions' },
@@ -65,7 +69,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: '/manual/ethasfish-portal-manual.pdf', icon: 'BookOpen' as const, label: 'Portal Manual', download: true }
   ];
 
-  const ICON_MAP = { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings, Megaphone, Fish, HandCoins, BookOpen };
+  const ICON_MAP = { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings, Megaphone, Fish, HandCoins, BookOpen, Bike };
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
