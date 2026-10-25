@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import HeroPromoBadge from './HeroPromoBadge';
+import MutedVideo from './MutedVideo';
 
 // Pure CSS per-letter reveal, no client JS needed - each character gets a
 // staggered animation-delay so the headline writes itself on. `start`
@@ -68,14 +69,11 @@ export default function HeroCarousel({ slides = DEFAULT_HERO_SLIDES }: { slides?
     <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
         {s.media.type === 'video' ? (
-          <video
+          <MutedVideo
             className="absolute inset-0 w-full h-full object-cover animate-ken-burns"
             src={s.media.url}
             poster={s.media.poster}
-            autoPlay
-            muted
             loop
-            playsInline
           />
         ) : (
           <Image src={s.media.url} alt="" fill priority sizes="100vw" className="object-cover animate-ken-burns" />
