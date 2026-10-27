@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Search, Plus, Minus, X, Loader2, Banknote, Smartphone, Printer, ReceiptText, ShoppingCart, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { fmtKsh } from '@/lib/utils';
+import { printIsolated } from '@/lib/print';
 import PosAssistant from './PosAssistant';
 import InstallPosButton from './InstallPosButton';
 
@@ -140,13 +141,13 @@ export default function PosClient() {
     }
   }
 
+  // Print the receipt in-page: window.open() is blocked by popup blockers
+  // (and outright inside the installed POS PWA), and printing a freshly
+  // written document before it loads gives a blank sheet. printIsolated()
+  // prints only the node marked `print-target` in the receipt card.
   function printReceipt() {
-    const w = window.open('', '_blank', 'width=380,height=640');
-    if (!w) return;
-    w.document.write(`<pre style="font-family:monospace;font-size:13px;white-space:pre-wrap;padding:16px;">${receipt?.text.replace(/</g, '&lt;')}</pre>`);
-    w.document.close();
-    w.focus();
-    w.print();
+    if (!receipt || !printRef.current) return;
+    printIsolated();
   }
 
   return (
@@ -336,7 +337,7 @@ export default function PosClient() {
               {receipt.method === 'credit' ? 'Given on Credit' : 'Sale Complete'}
             </p>
             <p className="text-xs text-muted mb-4">{receipt.orderNumber}</p>
-            <div ref={printRef} className="bg-[var(--surface)] rounded-xl p-4 mb-4">
+            <div ref={printRef} className="print-target bg-[var(--surface)] rounded-xl p-4 mb-4 print:bg-white print:border-0 print:shadow-none">
               <pre className="text-[11.5px] whitespace-pre-wrap text-primary font-mono">{receipt.text}</pre>
             </div>
             <div className="flex gap-2">

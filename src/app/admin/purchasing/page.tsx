@@ -1,8 +1,10 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Loader2, Plus, Trash2, Truck, Building2 } from 'lucide-react';
+import { Loader2, Plus, Trash2, Truck, Building2, Printer } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { fmtKsh } from '@/lib/utils';
+import Logo from '@/components/Logo';
+import { printIsolated } from '@/lib/print';
 
 interface Supplier { id: string; name: string; contactName: string | null; phone: string | null; email: string | null; category: string; }
 interface POItem { description: string; quantity: number; unitCost: number; }
@@ -32,6 +34,18 @@ export default function AdminPurchasingPage() {
   const [poItems, setPoItems] = useState<POItem[]>([{ ...emptyItem }]);
   const [expectedDate, setExpectedDate] = useState('');
   const [creatingPo, setCreatingPo] = useState(false);
+  const [printPo, setPrintPo] = useState<PurchaseOrder | null>(null);
+
+  // Mount the printable sheet, let it paint, then print only that node
+  // (one A4 page, no portal chrome) and take the sheet back down.
+  useEffect(() => {
+    if (!printPo) return;
+    const t = setTimeout(() => {
+      printIsolated();
+      setPrintPo(null);
+    }, 300);
+    return () => clearTimeout(t);
+  }, [printPo]);
 
   async function load() {
     setLoading(true);
@@ -162,8 +176,16 @@ export default function AdminPurchasingPage() {
                 <p className="font-semibold text-primary font-mono text-sm">{po.poNumber}</p>
                 <p className="text-xs text-secondary">{po.supplier.name} · {po.items.length} item{po.items.length !== 1 ? 's' : ''} · {new Date(po.createdAt).toLocaleDateString()}</p>
               </div>
-              <div className="text-right">
+              <div className="text-right flex items-center gap-3 justify-end">
                 <p className="font-display font-bold text-primary">{fmtKsh(po.totalCost)}</p>
+                <button
+                  onClick={() => setPrintPo(po)}
+                  className="no-print p-2 rounded-lg border border-[var(--border-color)] text-secondary hover:text-primary hover:border-[var(--accent)]"
+                  aria-label={`Print ${po.poNumber}`}
+                  title="Print purchase order"
+                >
+                  <Printer className="w-4 h-4" />
+                </button>
                 <select
                   value={po.status}
                   disabled={savingPo === po.id}
@@ -175,6 +197,68 @@ export default function AdminPurchasingPage() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Printable purchase order - only this node reaches the printer. */}
+      {printPo && (
+        <div className="fixed inset-0 z-[95] flex items-start justify-center bg-black/50 p-4 overflow-y-auto">
+          <div className="print-target w-full max-w-2xl rounded-3xl bg-white p-8 text-[#0B1F3A] shadow-xl print:p-0 print:rounded-none print:shadow-none">
+            <div className="flex items-start justify-between mb-8 print:mb-5">
+              <Logo size={40} />
+              <div className="text-right">
+                <h1 className="font-display text-2xl font-bold">PURCHASE ORDER</h1>
+                <p className="font-mono text-sm text-[#5B7190]">{printPo.poNumber}</p>
+                <p className="text-xs uppercase tracking-wider mt-1 font-semibold">{printPo.status}</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6 mb-8 text-sm print:gap-4 print:mb-4">
+              <div>
+                <p className="text-xs uppercase tracking-wider text-[#5B7190] mb-1">Supplier</p>
+                <p className="font-semibold">{printPo.supplier.name}</p>
+                {printPo.supplier.contactName && <p>{printPo.supplier.contactName}</p>}
+                {printPo.supplier.phone && <p>{printPo.supplier.phone}</p>}
+                {printPo.supplier.email && <p>{printPo.supplier.email}</p>}
+              </div>
+              <div className="text-right">
+                <p><span className="text-[#5B7190]">Raised:</span> {new Date(printPo.createdAt).toLocaleDateString()}</p>
+                {printPo.expectedDate && <p><span className="text-[#5B7190]">Expected:</span> {new Date(printPo.expectedDate).toLocaleDateString()}</p>}
+              </div>
+            </div>
+
+            <table className="w-full text-sm mb-6 print:mb-4">
+              <thead>
+                <tr className="border-b border-[#C7D9EC] text-left text-[#5B7190] text-xs uppercase tracking-wider">
+                  <th className="pb-2">Description</th>
+                  <th className="pb-2 text-right">Qty</th>
+                  <th className="pb-2 text-right">Unit Cost</th>
+                  <th className="pb-2 text-right">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {printPo.items.map((it, i) => (
+                  <tr key={it.id ?? i} className="border-b border-[#E7EFF8]">
+                    <td className="py-1.5">{it.description}</td>
+                    <td className="py-1.5 text-right">{it.quantity}</td>
+                    <td className="py-1.5 text-right">{fmtKsh(it.unitCost)}</td>
+                    <td className="py-1.5 text-right font-medium">{fmtKsh(it.lineTotal)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div className="flex justify-end">
+              <div className="w-56 text-sm space-y-1">
+                <div className="flex justify-between font-display text-lg font-bold pt-2 border-t border-[#C7D9EC]"><span>Total</span><span>{fmtKsh(printPo.totalCost)}</span></div>
+              </div>
+            </div>
+
+            <div className="mt-10 pt-6 border-t border-[#E7EFF8] flex justify-between text-xs text-[#5B7190] print:mt-6">
+              <p>Requested by ______________________</p>
+              <p>Received by ______________________</p>
+            </div>
+          </div>
         </div>
       )}
     </div>

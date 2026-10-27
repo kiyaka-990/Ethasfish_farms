@@ -24,15 +24,22 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
 
   return (
     <>
-      <AnnouncementBar />
-      <Navbar />
+      {/* Everything outside <main> is wrapped in `no-print` so a receipt or
+          order printed from a storefront page is just the document - no
+          fixed navbar, footer or floating chat/WhatsApp buttons. */}
+      <div className="no-print">
+        <AnnouncementBar />
+        <Navbar />
+      </div>
       <main id="main" className="flex-1 pt-[calc(4rem+var(--promo-bar-h,0px))]">{children}</main>
-      <Footer />
-      <CartDrawer />
-      <ChatWidget />
-      <WhatsAppButton />
-      <ScrollToTop />
-      <CookieConsent />
+      <div className="no-print">
+        <Footer />
+        <CartDrawer />
+        <ChatWidget />
+        <WhatsAppButton />
+        <ScrollToTop />
+        <CookieConsent />
+      </div>
     </>
   );
 }

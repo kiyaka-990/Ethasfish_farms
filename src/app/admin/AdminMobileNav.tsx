@@ -35,7 +35,7 @@ export default function AdminMobileNav({ navItems, staffName, staffEmail, portal
   const pathname = usePathname();
 
   return (
-    <div className="lg:hidden">
+    <div className="no-print lg:hidden">
       <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-color)] sticky top-0 z-40 bg-[var(--bg-primary)]">
         <Logo size={30} />
         <div className="flex items-center gap-1.5">

@@ -1,12 +1,15 @@
 'use client';
 import { Printer, Share2 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { printIsolated } from '@/lib/print';
 
 interface Props { orderNumber: string; }
 
 export default function ReceiptActions({ orderNumber }: Props) {
+  // Isolated print: only the receipt card is painted, not the storefront
+  // navbar/footer (which are `no-print`) or the floating chat buttons.
   function handlePrint() {
-    if (typeof window !== 'undefined') window.print();
+    if (typeof window !== 'undefined') printIsolated();
   }
 
   async function handleShare() {

@@ -80,7 +80,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         staffEmail={staff.email}
         portalLabel={staff.role === 'admin' ? 'Admin Portal' : 'Sales Portal'}
       />
-      <aside className="hidden lg:flex w-64 flex-col border-r border-[var(--border-color)] sticky top-0 self-start h-screen">
+      <aside className="no-print hidden lg:flex w-64 flex-col border-r border-[var(--border-color)] sticky top-0 self-start h-screen">
         <div className="shrink-0 px-4 py-4 flex items-start justify-between">
           <Link href="/">
             <Logo size={36} />

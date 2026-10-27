@@ -31,8 +31,10 @@ export default async function ReceiptPage({ searchParams }: { searchParams: Prom
           <ReceiptActions orderNumber={order.orderNumber} />
         </div>
 
-        {/* Receipt card */}
-        <div className="glass-strong rounded-3xl p-6 md:p-8 print:bg-white print:border-0 print:shadow-none">
+        {/* Receipt card - marked as the print target so Print (see
+            lib/print.ts) paints only this sheet, at full width, even with
+            the storefront chrome around it. */}
+        <div className="print-target glass-strong rounded-3xl p-6 md:p-8 print:bg-white print:border-0 print:shadow-none print:rounded-none">
           {/* Header */}
           <div className="flex flex-col items-center text-center pb-5 border-b border-[var(--border-color)]">
             <Logo size={48} showText={false} />

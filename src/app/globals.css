@@ -269,3 +269,85 @@ body::after {
 [data-motion="reduce"] *, [data-motion="reduce"] *::before, [data-motion="reduce"] *::after {
   animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important;
 }
+
+/* ========================= PRINT ========================= */
+/* One A4 sheet for every document we hand to a printer: receipts,
+   invoices, purchase orders. Applied by window.print() anywhere in the
+   app; lib/print.ts's printIsolated() additionally adds the
+   `printing-target` body class so ONLY the .print-target subtree paints. */
+@page { size: A4; margin: 12mm; }
+
+@media print {
+  /* Portal + storefront chrome, and every control, never prints. */
+  .no-print, button, select, input { display: none !important; }
+
+  html, body {
+    background: #fff !important;
+    background-image: none !important;
+    color: #0B1F3A !important;
+    overflow: visible !important;
+    min-height: 0 !important;
+    transition: none !important;
+  }
+  body::before, body::after, .orb { display: none !important; }
+
+  /* Dark-theme text would otherwise print white-on-white. */
+  .text-primary { color: #0B1F3A !important; }
+  .text-secondary { color: #2F4868 !important; }
+  .text-muted { color: #5B7190 !important; }
+
+  /* Clipped or transparent text (gradient-text, white-on-accent chips). */
+  .gradient-text {
+    background: none !important;
+    -webkit-text-fill-color: #0B1F3A !important;
+    color: #0B1F3A !important;
+  }
+  .text-white, .text-white * { color: #0B1F3A !important; }
+
+  /* Frosted-glass panels become plain white sheets (backdrop-filter and
+     shadows are not painted by the print engine anyway). */
+  .glass, .glass-strong, .glass-soft, .glass-card-interactive {
+    background: #fff !important;
+    background-image: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border-color: #D7E3F0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+
+  /* Keep rows and blocks intact across the page break. */
+  tr, .avoid-break { break-inside: avoid; page-break-inside: avoid; }
+  a { text-decoration: none; color: inherit; }
+
+  /* ---- isolated print (lib/print.ts) ----
+     Hide everything, then bring just the target back - including its
+     layout, since ancestors that stay in flow would otherwise leave the
+     sidebar's empty column on the sheet. */
+  body.printing-target * { visibility: hidden !important; }
+  body.printing-target .print-target,
+  body.printing-target .print-target * { visibility: visible !important; }
+  body.printing-target .print-target {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    background: #fff !important;
+    background-image: none !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    overflow: visible !important;
+    z-index: 9999;
+  }
+  body.printing-target .print-target pre {
+    color: #000 !important;
+    background: none !important;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+}
