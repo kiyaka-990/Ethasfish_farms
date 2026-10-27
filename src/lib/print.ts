@@ -11,20 +11,35 @@
 // element is hidden except the one marked `.print-target`, so only the
 // receipt / invoice / purchase order is painted, at the top-left of the
 // sheet, with no portal chrome around it.
-export function printIsolated() {
+//
+// Two paper shapes are supported:
+//   a4      - invoices, purchase orders, the customer receipt page (default)
+//   thermal - POS receipts on an 80mm receipt roll; adds a `paper-thermal`
+//             body class that assigns the `.print-target` to a named
+//             `@page thermal` (80mm wide) and narrows it to the roll.
+//             If the print dialog's paper can't be changed to 80mm the
+//             content still lays out at roll width, so nothing overlaps.
+export interface PrintOptions {
+  paper?: 'a4' | 'thermal';
+}
+
+export function printIsolated(options: PrintOptions = {}) {
   if (typeof document === 'undefined') return;
 
+  const thermal = options.paper === 'thermal';
   const body = document.body;
   let done = false;
   const cleanup = () => {
     if (done) return;
     done = true;
     body.classList.remove('printing-target');
+    body.classList.remove('paper-thermal');
     window.removeEventListener('afterprint', cleanup);
   };
 
   window.addEventListener('afterprint', cleanup);
   body.classList.add('printing-target');
+  if (thermal) body.classList.add('paper-thermal');
 
   try {
     window.print();

@@ -276,6 +276,10 @@ body::after {
    app; lib/print.ts's printIsolated() additionally adds the
    `printing-target` body class so ONLY the .print-target subtree paints. */
 @page { size: A4; margin: 12mm; }
+/* Named page for POS receipts: printIsolated({paper:'thermal'}) assigns the
+   .print-target to it, so only documents that opt in print at roll width -
+   invoices/POs stay on the A4 sheet above. */
+@page thermal { size: 80mm auto; margin: 4mm; }
 
 @media print {
   /* Portal + storefront chrome, and every control, never prints. */
@@ -327,6 +331,14 @@ body::after {
   body.printing-target * { visibility: hidden !important; }
   body.printing-target .print-target,
   body.printing-target .print-target * { visibility: visible !important; }
+  /* Visibility alone is not enough: invisible boxes keep their layout, so a
+     tall page behind the document (the POS product grid) paginates into
+     blank trailing sheets. Take every element except the target and its
+     ancestor chain out of flow entirely - that guarantees exactly one
+     sheet regardless of what sits behind the receipt/invoice. */
+  body.printing-target *:not(.print-target):not(.print-target *):not(:has(.print-target)) {
+    display: none !important;
+  }
   body.printing-target .print-target {
     position: fixed !important;
     top: 0 !important;
@@ -349,5 +361,24 @@ body::after {
     background: none !important;
     font-size: 12px;
     line-height: 1.45;
+  }
+
+  /* ---- 80mm thermal roll (POS receipts) ----
+     Same isolation, but the sheet is a receipt roll: the named `thermal`
+     page, roll-width content, tighter type. If the print dialog offers no
+     80mm paper, the receipt still lays out at roll width in the sheet's
+     top-left instead of sprawling across A4. */
+  body.paper-thermal.printing-target .print-target {
+    page: thermal !important;
+    width: 80mm !important;
+    max-width: 80mm !important;
+    padding: 3mm !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+  }
+  body.paper-thermal.printing-target .print-target pre {
+    font-size: 10px !important;
+    line-height: 1.35 !important;
+    word-break: break-word !important;
   }
 }

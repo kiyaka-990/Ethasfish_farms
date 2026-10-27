@@ -144,10 +144,11 @@ export default function PosClient() {
   // Print the receipt in-page: window.open() is blocked by popup blockers
   // (and outright inside the installed POS PWA), and printing a freshly
   // written document before it loads gives a blank sheet. printIsolated()
-  // prints only the node marked `print-target` in the receipt card.
-  function printReceipt() {
+  // prints only the node marked `print-target` in the receipt card -
+  // on A4, or at 80mm width for a thermal receipt printer.
+  function printReceipt(paper: 'a4' | 'thermal' = 'a4') {
     if (!receipt || !printRef.current) return;
-    printIsolated();
+    printIsolated({ paper });
   }
 
   return (
@@ -341,8 +342,11 @@ export default function PosClient() {
               <pre className="text-[11.5px] whitespace-pre-wrap text-primary font-mono">{receipt.text}</pre>
             </div>
             <div className="flex gap-2">
-              <button onClick={printReceipt} className="flex-1 py-2.5 rounded-xl text-sm font-medium border border-[var(--border-color)] text-secondary hover:bg-[var(--surface)] flex items-center justify-center gap-2">
-                <Printer className="w-4 h-4" /> Print
+              <button onClick={() => printReceipt('a4')} title="Print on an A4 sheet" className="flex-1 py-2.5 rounded-xl text-xs font-medium border border-[var(--border-color)] text-secondary hover:bg-[var(--surface)] flex items-center justify-center gap-1.5 whitespace-nowrap">
+                <Printer className="w-3.5 h-3.5" /> Print A4
+              </button>
+              <button onClick={() => printReceipt('thermal')} title="Print on an 80mm thermal receipt printer" className="flex-1 py-2.5 rounded-xl text-xs font-medium border border-[var(--border-color)] text-secondary hover:bg-[var(--surface)] flex items-center justify-center gap-1.5 whitespace-nowrap">
+                <Printer className="w-3.5 h-3.5" /> Print 80mm
               </button>
               <button onClick={resetSale} className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-br from-[var(--accent-light)] to-[var(--accent)]">
                 New Sale
