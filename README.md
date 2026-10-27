@@ -79,7 +79,10 @@ Tiles show a LIVE badge while the stream loads, an error state with a Retry butt
 
 Ground telemetry and automation: sensors report **water temperature, water level, pH, dissolved oxygen** (any metric name works — these are formatted nicely), threshold **rules** turn readings into alerts and pump/aerator commands, and the **AI advisor** interprets trends and can queue actions on your say-so.
 
-**No hardware yet?** Try the whole loop in a minute:
+**No hardware yet?** Two ways in:
+
+- **Key figures in by hand** — *Log Reading* (top of the dashboard): pick the metric, type what the pond gauge/thermometer shows, save. It joins the same table, charts, alert rules and WhatsApp notifications as sensor data, so your starting figures drive real alerts from day one.
+- **Simulate a whole day** in a minute:
 
 ```bash
 node scripts/simulate-farm.mjs seed   # 3 demo devices + 4 rules (prints tokens)

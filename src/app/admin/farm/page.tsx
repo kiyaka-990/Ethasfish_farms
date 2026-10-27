@@ -13,7 +13,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Activity, AlertTriangle, Bot, CheckCircle2, Copy, Cpu, Droplets, Eye, EyeOff,
-  Loader2, MessageCircle, Plus, Send, Thermometer, Trash2, Waves, Wind, X, Power, PowerOff
+  Loader2, MessageCircle, PencilLine, Plus, Send, Thermometer, Trash2, Waves, Wind, X, Power, PowerOff
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ACTUATOR_COMMANDS, METRICS, metricMeta, formatValue } from '@/lib/farm-metrics';
@@ -224,6 +224,81 @@ function DeviceForm({ onClose, onSaved }: { onClose: () => void; onSaved: () => 
 
 const EMPTY_RULE = { name: '', metric: 'water_level_pct', comparator: 'lt', threshold: '35', hysteresis: '3', severity: 'warning', action: '', targetDeviceId: '', cooldownMinutes: '30' };
 
+function ReadingForm({ devices, onClose, onSaved }: { devices: Device[]; onClose: () => void; onSaved: () => void }) {
+  const [form, setForm] = useState({ metric: 'temperature_c', value: '', deviceId: '' });
+  const [saving, setSaving] = useState(false);
+  const sensors = devices.filter((d) => d.kind === 'sensor' || d.kind === 'combo');
+
+  async function save(e: React.FormEvent) {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      const res = await fetch('/api/admin/farm', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          op: 'reading',
+          metric: form.metric,
+          value: Number(form.value),
+          deviceId: form.deviceId || null
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Save failed');
+      toast.success('Reading logged — it is on the chart and in the rules engine');
+      (data.alerts || []).forEach((a: { severity: string; message: string }) =>
+        toast(a.message, { icon: a.severity === 'critical' ? '🚨' : '⚠️', duration: 8000 })
+      );
+      onSaved();
+      onClose();
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <Modal title="Log a ground reading" icon={<PencilLine className="w-5 h-5 text-[var(--accent)]" />} onClose={onClose}>
+      <form onSubmit={save} className="space-y-4">
+        <p className="text-xs text-muted">
+          Key in what the pond/gauge actually shows — starting figures before probes are installed, or any day
+          you measure by hand. It joins the same data, charts and alert rules as sensor readings.
+        </p>
+        <div className="grid sm:grid-cols-2 gap-4">
+          <label className="block text-sm">
+            <span className="text-secondary">Metric *</span>
+            <select value={form.metric} onChange={(e) => setForm((f) => ({ ...f, metric: e.target.value }))}
+              className="mt-1 w-full rounded-xl bg-[var(--surface-soft)] border border-[var(--border-color)] px-3 py-2">
+              {Object.entries(METRICS).map(([k, m]) => <option key={k} value={k}>{m.label}{m.unit ? ` (${m.unit})` : ''}</option>)}
+            </select>
+          </label>
+          <label className="block text-sm">
+            <span className="text-secondary">Value *</span>
+            <input type="number" step="any" required value={form.value}
+              onChange={(e) => setForm((f) => ({ ...f, value: e.target.value }))}
+              placeholder="27.5" className="mt-1 w-full rounded-xl bg-[var(--surface-soft)] border border-[var(--border-color)] px-3 py-2" />
+          </label>
+        </div>
+        <label className="block text-sm">
+          <span className="text-secondary">Measured by</span>
+          <select value={form.deviceId} onChange={(e) => setForm((f) => ({ ...f, deviceId: e.target.value }))}
+            className="mt-1 w-full rounded-xl bg-[var(--surface-soft)] border border-[var(--border-color)] px-3 py-2">
+            <option value="">Staff, by hand</option>
+            {sensors.map((d) => <option key={d.id} value={d.id}>{d.name}{d.zone ? ` (${d.zone})` : ''}</option>)}
+          </select>
+          <span className="mt-1.5 block text-[11px] text-muted">Pick a device only if you read it off that device&apos;s meter.</span>
+        </label>
+        <div className="flex justify-end gap-3 pt-1">
+          <button type="button" onClick={onClose} className="btn-secondary text-sm">Cancel</button>
+          <button type="submit" disabled={saving} className="btn-primary text-sm">
+            {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : null} Log reading
+          </button>
+        </div>
+      </form>
+    </Modal>
+  );
+}
+
 function RuleForm({ devices, onClose, onSaved }: { devices: Device[]; onClose: () => void; onSaved: () => void }) {
   const [form, setForm] = useState(EMPTY_RULE);
   const [saving, setSaving] = useState(false);
@@ -349,6 +424,7 @@ export default function FarmIntelligencePage() {
   const [loading, setLoading] = useState(true);
   const [deviceForm, setDeviceForm] = useState(false);
   const [ruleForm, setRuleForm] = useState(false);
+  const [readingForm, setReadingForm] = useState(false);
   const [revealed, setRevealed] = useState<Record<string, boolean>>({});
   const [chartMetric, setChartMetric] = useState('temperature_c');
   const [advisorPrompt, setAdvisorPrompt] = useState('Review the last 24 hours of readings and tell me what needs attention — and what to do about it.');
@@ -487,7 +563,8 @@ export default function FarmIntelligencePage() {
           </p>
         </div>
         <button onClick={() => setRuleForm(true)} className="btn-secondary text-sm"><AlertTriangle className="w-4 h-4" /> Add Rule</button>
-        <button onClick={() => setDeviceForm(true)} className="btn-primary"><Plus className="w-4 h-4" /> Add Device</button>
+        <button onClick={() => setDeviceForm(true)} className="btn-secondary text-sm"><Plus className="w-4 h-4" /> Add Device</button>
+        <button onClick={() => setReadingForm(true)} className="btn-primary"><PencilLine className="w-4 h-4" /> Log Reading</button>
       </div>
 
       {/* metric cards */}
@@ -797,6 +874,7 @@ export default function FarmIntelligencePage() {
 
       {deviceForm && <DeviceForm onClose={() => setDeviceForm(false)} onSaved={load} />}
       {ruleForm && <RuleForm devices={devices} onClose={() => setRuleForm(false)} onSaved={load} />}
+      {readingForm && <ReadingForm devices={devices} onClose={() => setReadingForm(false)} onSaved={load} />}
     </div>
   );
 }

@@ -4,8 +4,10 @@ import { requireAdmin, identityErrorStatus } from '@/lib/identity';
 import { logActivity } from '@/lib/audit';
 import {
   ACTUATOR_COMMANDS,
+  METRICS,
   generateDeviceToken,
-  queueCommand
+  queueCommand,
+  evaluateRules
 } from '@/lib/farm';
 
 export const dynamic = 'force-dynamic';
@@ -139,6 +141,33 @@ export async function POST(req: NextRequest) {
         : await prisma.businessSettings.create({ data: { farmAlertPhones: parts.join(', ') || null } });
       await audit(admin, 'farm.settings.update', `updated farm alert recipients (${parts.length} number${parts.length === 1 ? '' : 's'})`, 'BusinessSettings', settings.id);
       return NextResponse.json({ settings: { farmAlertPhones: settings.farmAlertPhones || '' } });
+    }
+
+    if (op === 'reading') {
+      // Staff keying in what the pond actually shows (initial figures, or
+      // any day the probe isn't installed yet). Same table + rules engine
+      // as device data, so charts, alerts and WhatsApp all treat it real.
+      const metric = typeof body.metric === 'string' ? body.metric.trim() : '';
+      const value = Number(body.value);
+      if (!metric || !METRICS[metric]) {
+        return NextResponse.json({ error: `metric must be one of ${Object.keys(METRICS).join(', ')}` }, { status: 400 });
+      }
+      if (!Number.isFinite(value)) return NextResponse.json({ error: 'value must be a number' }, { status: 400 });
+      if (value < -100 || value > 100000) return NextResponse.json({ error: 'value out of sensible range' }, { status: 400 });
+      if (body.deviceId) {
+        const dev = await prisma.sensorDevice.findUnique({ where: { id: body.deviceId } });
+        if (!dev) return NextResponse.json({ error: 'deviceId not found' }, { status: 404 });
+      }
+
+      const reading = await prisma.sensorReading.create({
+        data: { metric, value, deviceId: body.deviceId || null }
+      });
+      const fired = await evaluateRules([{ metric, value }], body.deviceId || undefined);
+      await audit(admin, 'farm.reading.manual', `logged ${metric} = ${value} by hand`, 'SensorReading', reading.id);
+      return NextResponse.json({
+        reading,
+        alerts: fired.alerts.map((a) => ({ id: a.id, severity: a.severity, message: a.message }))
+      });
     }
 
     if (op === 'command') {

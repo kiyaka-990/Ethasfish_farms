@@ -558,10 +558,12 @@ model SensorDevice {
 
 // One row per measurement. Metrics are free-form strings with agreed
 // names: temperature_c, water_level_pct, ph, dissolved_oxygen, humidity.
+// deviceId is null for readings staff key in by hand (Dashboard → Log a
+// reading) - same table, same rules, just a different source.
 model SensorReading {
   id        String       @id @default(cuid())
-  deviceId  String
-  device    SensorDevice @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  deviceId  String?
+  device    SensorDevice? @relation(fields: [deviceId], references: [id], onDelete: SetNull)
   metric    String
   value     Float
   createdAt DateTime     @default(now())
