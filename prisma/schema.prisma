@@ -534,6 +534,91 @@ model Camera {
   updatedAt DateTime @updatedAt
 }
 
+// ===================== FARM INTELLIGENCE =====================
+// Ground sensors (temperature, water level, pH, dissolved oxygen) and
+// actuators (pumps, aerators) reporting into the portal. Devices
+// authenticate with their own token - no staff session on a microcontroller.
+model SensorDevice {
+  id         String    @id @default(cuid())
+  name       String
+  zone       String? // "Pond 1", "Pump house", "Tank 2" ...
+  kind       String    @default("sensor") // sensor | combo | pump | aerator
+  token      String    @unique
+  active     Boolean   @default(true)
+  lastSeenAt DateTime?
+  createdBy  String? // StaffProfile.id of whoever added it
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  readings   SensorReading[]
+  alerts     FarmAlert[]
+  commands   DeviceCommand[]
+  targetedRules SensorRule[] // rules that queue commands to this device
+}
+
+// One row per measurement. Metrics are free-form strings with agreed
+// names: temperature_c, water_level_pct, ph, dissolved_oxygen, humidity.
+model SensorReading {
+  id        String       @id @default(cuid())
+  deviceId  String
+  device    SensorDevice @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  metric    String
+  value     Float
+  createdAt DateTime     @default(now())
+  @@index([metric, createdAt])
+  @@index([deviceId, createdAt])
+}
+
+// Threshold rules evaluated server-side on every ingest. An action queues
+// a DeviceCommand for the target actuator (e.g. water below 35% -> pump_on).
+model SensorRule {
+  id             String        @id @default(cuid())
+  name           String
+  metric         String
+  comparator     String // gt | lt
+  threshold      Float
+  hysteresis     Float         @default(0) // clear band before the rule can re-fire
+  severity       String        @default("warning") // info | warning | critical
+  action         String? // null = alert only | pump_on | pump_off | aerator_on | aerator_off
+  targetDeviceId String? // actuator that receives the command
+  targetDevice   SensorDevice? @relation(fields: [targetDeviceId], references: [id], onDelete: SetNull)
+  cooldownMinutes Int          @default(30)
+  enabled        Boolean       @default(true)
+  lastFiredAt    DateTime?
+  alerts         FarmAlert[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+}
+
+model FarmAlert {
+  id         String        @id @default(cuid())
+  deviceId   String?
+  device     SensorDevice? @relation(fields: [deviceId], references: [id], onDelete: SetNull)
+  ruleId     String?
+  rule       SensorRule?   @relation(fields: [ruleId], references: [id], onDelete: SetNull)
+  metric     String
+  value      Float
+  severity   String        @default("warning")
+  message    String
+  status     String        @default("open") // open | acknowledged | resolved
+  createdAt  DateTime      @default(now())
+  resolvedAt DateTime?
+  @@index([status, createdAt])
+}
+
+// Commands queued for actuators. The device picks its commands up on its
+// next poll (ingest response or GET .../commands) and reports back.
+model DeviceCommand {
+  id          String        @id @default(cuid())
+  deviceId    String
+  device      SensorDevice  @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  command     String // pump_on | pump_off | aerator_on | aerator_off
+  source      String        @default("rule") // rule | manual | ai
+  status      String        @default("pending") // pending | delivered | done | failed
+  createdAt   DateTime      @default(now())
+  deliveredAt DateTime?
+  @@index([deviceId, status])
+}
+
 model Promotion {
   id        String    @id @default(cuid())
   type      String    @default("announcement") // sale | harvest | announcement | restock

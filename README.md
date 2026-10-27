@@ -75,6 +75,50 @@ The portal has a live CCTV wall at **`/admin/cameras`** (admin-only): a grid of 
 
 Tiles show a LIVE badge while the stream loads, an error state with a Retry button when the relay is unreachable, and disabled cameras are stored but never loaded. Latency depends on the feed type: HLS ~2–5 s, go2rtc's WebRTC embed is near real-time.
 
+## 🌱 Farm Intelligence (Admin → Farm Intelligence)
+
+Ground telemetry and automation: sensors report **water temperature, water level, pH, dissolved oxygen** (any metric name works — these are formatted nicely), threshold **rules** turn readings into alerts and pump/aerator commands, and the **AI advisor** interprets trends and can queue actions on your say-so.
+
+**No hardware yet?** Try the whole loop in a minute:
+
+```bash
+node scripts/simulate-farm.mjs seed   # 3 demo devices + 4 rules (prints tokens)
+npm run start                          # server on :3001
+node scripts/simulate-farm.mjs run     # posts a drifting scenario -> alert fires -> pump_on queued
+node scripts/simulate-farm.mjs clean   # removes the demo data
+```
+
+### Connecting real devices (ESP32 / Arduino / Raspberry Pi)
+
+1. **Add the device** in Admin → Farm Intelligence → *Add Device* (name, zone, type). The API token is copied to your clipboard — paste it into the firmware.
+2. **Report readings** every 30–60 s:
+
+   ```http
+   POST /api/farm/ingest
+   X-Device-Token: efdev_...
+   { "readings": [ {"metric": "temperature_c", "value": 27.4}, {"metric": "water_level_pct", "value": 41} ] }
+   ```
+
+3. **Run commands** returned by the call (or poll `GET /api/farm/ingest?token=…`):
+
+   ```json
+   { "ok": true, "stored": 2, "alerts": [], "commands": [{ "id": "…", "command": "pump_on" }] }
+   ```
+
+   `pump_on / pump_off / aerator_on / aerator_off` map to your relays. After acting, report the resulting state (e.g. `pump_state` or just keep sending level readings) so the dashboard shows it.
+
+Suggested sensors: DS18B20 or an I2S submersible for temperature, an ultrasonic sensor (JSN-SR04T) for water level, a pH probe + ADC, and a luminescent DO sensor — any board that can POST JSON works; the portal doesn't care which.
+
+### Rules and safety
+
+Rules run **server-side on every ingest**: threshold + hysteresis (no flapping) + cooldown (no spam), with an optional action that *queues* a command for an actuator. Alerts auto-resolve when readings clearly return to normal, and everything lands in the Activity Log.
+
+⚠️ **Rules are not a safety system.** Firmware must keep its own cutoffs — never run a pump dry, cap continuous runtime, and fail safe when the network is down. The portal decides *when*; the device decides *how long it may physically run*.
+
+### AI advisor
+
+The advisor panel runs a ToolLoopAgent (same fleet as the sales/stockist agents) over live readings, alerts, rules and devices. It quotes real numbers, explains combinations (hot + low oxygen is the danger pair), and can `queueCommand` — audited like every agent write. Staff must ask it to act; it advises otherwise.
+
 ## 🤖 The AI Sales Agent
 
 `/api/chatbot` first tries **Fin**, the autonomous sales agent (`src/lib/agents/sales-agent.ts`), built with the AI SDK's `ToolLoopAgent` and routed through the Vercel AI Gateway. It has three tools:
