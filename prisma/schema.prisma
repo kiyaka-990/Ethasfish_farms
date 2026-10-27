@@ -508,6 +508,7 @@ model BusinessSettings {
   id        String   @id @default("singleton")
   vatRate   Int      @default(0) // percent, e.g. 16. 0 = not VAT-registered yet.
   kraPin    String? // shown on receipts once VAT-registered
+  farmAlertPhones String? // comma-separated 254... numbers that get WhatsApp'd when a warning/critical farm alert fires
   updatedAt DateTime @updatedAt
 }
 

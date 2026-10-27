@@ -13,7 +13,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Activity, AlertTriangle, Bot, CheckCircle2, Copy, Cpu, Droplets, Eye, EyeOff,
-  Loader2, Plus, Send, Thermometer, Trash2, Waves, Wind, X, Power, PowerOff
+  Loader2, MessageCircle, Plus, Send, Thermometer, Trash2, Waves, Wind, X, Power, PowerOff
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ACTUATOR_COMMANDS, METRICS, metricMeta, formatValue } from '@/lib/farm-metrics';
@@ -38,7 +38,7 @@ interface CommandT {
 interface Reading { metric: string; value: number; createdAt: string; deviceId: string }
 interface Dash {
   devices: Device[]; rules: Rule[]; alerts: AlertT[]; commands: CommandT[];
-  series: Reading[]; seriesSince: string;
+  series: Reading[]; seriesSince: string; settings: { farmAlertPhones: string };
 }
 
 const SEVERITY_ORDER: Record<string, number> = { critical: 3, warning: 2, info: 1 };
@@ -354,6 +354,9 @@ export default function FarmIntelligencePage() {
   const [advisorPrompt, setAdvisorPrompt] = useState('Review the last 24 hours of readings and tell me what needs attention — and what to do about it.');
   const [advisorText, setAdvisorText] = useState('');
   const [advisorBusy, setAdvisorBusy] = useState(false);
+  const [phones, setPhones] = useState('');
+  const [phonesLoaded, setPhonesLoaded] = useState(false);
+  const [savingPhones, setSavingPhones] = useState(false);
   const seenRef = useRef(false);
 
   const load = useCallback(async () => {
@@ -395,6 +398,15 @@ export default function FarmIntelligencePage() {
   }, [data]);
 
   const openAlerts = useMemo(() => (data?.alerts || []).filter((a) => a.status === 'open'), [data]);
+
+  // Seed the recipients input once from server settings (later polls must
+  // not clobber what staff is typing).
+  useEffect(() => {
+    if (data?.settings && !phonesLoaded) {
+      setPhones(data.settings.farmAlertPhones || '');
+      setPhonesLoaded(true);
+    }
+  }, [data, phonesLoaded]);
   const rules = data?.rules || [];
   const devices = data?.devices || [];
   const chartPoints = seriesByMetric.get(chartMetric) || [];
@@ -431,6 +443,12 @@ export default function FarmIntelligencePage() {
   function queueManual(device: Device, command: string) {
     if (!confirm(`Queue "${command.replace('_', ' ')}" for ${device.name}? It runs on the device's next poll.`)) return;
     apiCall({ method: 'POST', body: { op: 'command', deviceId: device.id, command } }, `Queued ${command} for ${device.name}`);
+  }
+
+  async function savePhones() {
+    setSavingPhones(true);
+    await apiCall({ method: 'POST', body: { op: 'settings', farmAlertPhones: phones } }, 'Alert recipients saved');
+    setSavingPhones(false);
   }
 
   async function runAdvisor(prompt?: string) {
@@ -576,6 +594,23 @@ export default function FarmIntelligencePage() {
       <div className="grid lg:grid-cols-3 gap-6 items-start">
         <div className="lg:col-span-2 glass rounded-3xl p-5 space-y-3">
           <h2 className="font-display text-lg font-bold text-primary">Alert feed</h2>
+          <div className="rounded-xl border border-dashed border-[var(--border-color)] p-3 space-y-2">
+            <p className="text-xs text-secondary flex items-center gap-1.5">
+              <MessageCircle className="w-3.5 h-3.5 text-emerald-500" /> WhatsApp warning &amp; critical alerts to:
+            </p>
+            <div className="flex gap-2 flex-wrap">
+              <input
+                value={phones}
+                onChange={(e) => setPhones(e.target.value)}
+                placeholder="0722 123456, 254733 987654"
+                className="flex-1 min-w-[200px] rounded-xl bg-[var(--surface-soft)] border border-[var(--border-color)] px-3 py-2 text-sm text-primary outline-none focus:border-[var(--accent)] font-mono"
+              />
+              <button onClick={savePhones} disabled={savingPhones} className="btn-secondary text-xs">
+                {savingPhones ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null} Save numbers
+              </button>
+            </div>
+            <p className="text-[11px] text-muted">Comma-separated. Normalized to 254… automatically. Needs WHATSAPP_TOKEN (already used for receipts) — nothing is sent until a number is saved here.</p>
+          </div>
           {(data?.alerts || []).length === 0 ? (
             <p className="text-sm text-muted py-6 text-center border-2 border-dashed border-[var(--border-color)] rounded-2xl">
               Nothing has fired yet. Rules you create show up here the moment a reading crosses a threshold.

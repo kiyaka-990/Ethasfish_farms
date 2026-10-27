@@ -26,7 +26,7 @@ export async function GET() {
     await requireAdmin();
     const since = new Date(Date.now() - SERIES_SINCE_HOURS * 3600_000);
 
-    const [devices, rules, alerts, commands, series, pendingByDevice] = await Promise.all([
+    const [devices, rules, alerts, commands, series, pendingByDevice, settings] = await Promise.all([
       prisma.sensorDevice.findMany({ orderBy: [{ zone: 'asc' }, { name: 'asc' }] }),
       prisma.sensorRule.findMany({ orderBy: [{ enabled: 'desc' }, { createdAt: 'asc' }] }),
       prisma.farmAlert.findMany({ orderBy: { createdAt: 'desc' }, take: 40 }),
@@ -41,7 +41,8 @@ export async function GET() {
         by: ['deviceId'],
         where: { status: 'pending' },
         _count: { _all: true }
-      })
+      }),
+      prisma.businessSettings.findUnique({ where: { id: 'singleton' } })
     ]);
 
     const pending = Object.fromEntries(pendingByDevice.map((p) => [p.deviceId, p._count._all]));
@@ -52,7 +53,8 @@ export async function GET() {
       alerts,
       commands,
       series,
-      seriesSince: since
+      seriesSince: since,
+      settings: { farmAlertPhones: settings?.farmAlertPhones || '' }
     });
   } catch (e: any) {
     return NextResponse.json({ error: e.message }, { status: identityErrorStatus(e) });
@@ -119,6 +121,24 @@ export async function POST(req: NextRequest) {
       });
       await audit(admin, 'farm.rule.create', `added rule "${rule.name}" (${rule.metric} ${rule.comparator} ${rule.threshold})`, 'SensorRule', rule.id);
       return NextResponse.json({ rule });
+    }
+
+    if (op === 'settings') {
+      const csv = typeof body.farmAlertPhones === 'string' ? body.farmAlertPhones.trim() : '';
+      // Store only normalized digits - reject junk so the notifier can't be
+      // pointed at garbage, and normalizePhone()'d recipients are stable.
+      const parts = csv ? csv.split(',').map((s: string) => s.trim()).filter(Boolean) : [];
+      for (const part of parts) {
+        if (!/^[\d+\s()-]{6,20}$/.test(part)) {
+          return NextResponse.json({ error: `"${part}" doesn't look like a phone number` }, { status: 400 });
+        }
+      }
+      const existing = await prisma.businessSettings.findUnique({ where: { id: 'singleton' } });
+      const settings = existing
+        ? await prisma.businessSettings.update({ where: { id: 'singleton' }, data: { farmAlertPhones: parts.join(', ') || null } })
+        : await prisma.businessSettings.create({ data: { farmAlertPhones: parts.join(', ') || null } });
+      await audit(admin, 'farm.settings.update', `updated farm alert recipients (${parts.length} number${parts.length === 1 ? '' : 's'})`, 'BusinessSettings', settings.id);
+      return NextResponse.json({ settings: { farmAlertPhones: settings.farmAlertPhones || '' } });
     }
 
     if (op === 'command') {

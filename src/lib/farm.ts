@@ -14,7 +14,7 @@
 import crypto from 'node:crypto';
 import { prisma } from './prisma';
 import { logActivity } from './audit';
-import { metricMeta, formatValue, ACTUATOR_COMMANDS, type ActuatorCommand } from './farm-metrics';
+import { metricMeta, formatValue, ACTUATOR_COMMANDS, type ActuatorCommand, parseRecipients } from './farm-metrics';
 
 // Re-exported so server callers keep a single import surface.
 export * from './farm-metrics';
@@ -105,6 +105,12 @@ export async function evaluateRules(readings: IngestedReading[], sourceDeviceId?
     await prisma.sensorRule.update({ where: { id: rule.id }, data: { lastFiredAt: new Date() } });
     createdAlerts.push(alert);
 
+    // WhatsApp the configured farm numbers. A send failure never removes
+    // or delays the alert - it is already persisted above.
+    const notify = await notifyFarmAlert(alert);
+    if (notify.sent) console.log(`[farm] alert WhatsApp sent to ${notify.sent} number(s)`);
+    else if (notify.skipped) console.log(`[farm] alert WhatsApp not sent: ${notify.skipped}`);
+
     // Queue the actuator command (dedupe: never stack identical pendings).
     if (rule.action && rule.targetDeviceId) {
       const pending = await prisma.deviceCommand.findFirst({
@@ -167,4 +173,63 @@ export async function queueCommand(
   });
   if (pending) return pending; // already on its way
   return prisma.deviceCommand.create({ data: { deviceId, command, source } });
+}
+
+/* ------------------------- WhatsApp alerting ------------------------- */
+
+function alertText(alert: { severity: string; message: string; createdAt?: Date }): string {
+  const icon = alert.severity === 'critical' ? '🚨' : alert.severity === 'warning' ? '⚠️' : 'ℹ️';
+  const site = process.env.NEXT_PUBLIC_SITE_URL || 'https://ethasfish.co.ke';
+  return (
+    `${icon} Ethasfish farm alert (${alert.severity})\n\n` +
+    `${alert.message}\n\n` +
+    `Handle it in Admin → Farm Intelligence: ${site}/admin/farm`
+  );
+}
+
+/**
+ * WhatsApp a warning/critical alert to the configured farm numbers.
+ * Deliberately defensive: no WhatsApp env, no recipients, or an API
+ * failure never breaks ingest - the alert is already recorded either way.
+ * Awaited (not fire-and-forget) because Vercel functions stop after the
+ * response; the call happens only when an alert is created, which the
+ * rules engine already rate-limits via cooldown.
+ */
+export async function notifyFarmAlert(alert: {
+  id: string;
+  severity: string;
+  message: string;
+}): Promise<{ sent: number; skipped: string | null }> {
+  try {
+    if (alert.severity !== 'critical' && alert.severity !== 'warning') {
+      return { sent: 0, skipped: 'info severity - not sent' };
+    }
+    const token = process.env.WHATSAPP_TOKEN;
+    const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
+    if (!token || !phoneNumberId) return { sent: 0, skipped: 'WhatsApp not configured' };
+
+    const settings = await prisma.businessSettings.findUnique({ where: { id: 'singleton' } });
+    const recipients = parseRecipients(settings?.farmAlertPhones);
+    if (!recipients.length) return { sent: 0, skipped: 'no recipients configured' };
+
+    const body = alertText(alert);
+    let sent = 0;
+    for (const to of recipients) {
+      try {
+        const res = await fetch(`https://graph.facebook.com/v20.0/${phoneNumberId}/messages`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messaging_product: 'whatsapp', to, text: { body } })
+        });
+        if (res.ok) sent++;
+        else console.error(`[farm] WhatsApp alert to ${to} failed:`, res.status, (await res.text()).slice(0, 200));
+      } catch (e) {
+        console.error(`[farm] WhatsApp alert to ${to} errored:`, e);
+      }
+    }
+    return { sent, skipped: sent === recipients.length ? null : 'some sends failed' };
+  } catch (e) {
+    console.error('[farm] notifyFarmAlert failed:', e);
+    return { sent: 0, skipped: 'notify failed' };
+  }
 }

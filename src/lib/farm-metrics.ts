@@ -29,3 +29,19 @@ export function formatValue(metric: string, value: number): string {
 
 export const ACTUATOR_COMMANDS = ['pump_on', 'pump_off', 'aerator_on', 'aerator_off'] as const;
 export type ActuatorCommand = (typeof ACTUATOR_COMMANDS)[number];
+
+// Normalize Kenyan formats to WhatsApp's 254... form:
+// 0722... -> 254722..., +254.../spaces/dashes -> digits only.
+export function normalizePhone(raw: string): string | null {
+  const digits = raw.replace(/[^\d]/g, '');
+  if (!digits) return null;
+  if (digits.startsWith('254')) return digits;
+  if (digits.startsWith('0')) return '254' + digits.slice(1);
+  if (digits.startsWith('7') || digits.startsWith('1')) return '254' + digits;
+  return digits;
+}
+
+export function parseRecipients(csv: string | null | undefined): string[] {
+  if (!csv) return [];
+  return [...new Set(csv.split(',').map(normalizePhone).filter((p): p is string => !!p))];
+}
