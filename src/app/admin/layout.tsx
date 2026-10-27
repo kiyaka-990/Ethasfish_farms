@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { UserButton, SignOutButton } from '@clerk/nextjs';
 import { LogOut } from 'lucide-react';
 import { getStaffSession, CLERK_ENABLED } from '@/lib/identity';
-import { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings, Megaphone, Fish, HandCoins, BookOpen, Bike } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, Image as ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings, Megaphone, Fish, HandCoins, BookOpen, Bike, Camera } from 'lucide-react';
 import Logo from '@/components/Logo';
 import ThemeToggle from '@/components/ThemeToggle';
 import AdminMobileNav from './AdminMobileNav';
@@ -59,6 +59,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       { href: '/admin/purchasing', icon: 'Truck' as const, label: 'Purchasing' },
       { href: '/admin/content', icon: 'LayoutTemplate' as const, label: 'Site Content' },
       { href: '/admin/media', icon: 'ImageIcon' as const, label: 'Media Library' },
+      { href: '/admin/cameras', icon: 'Camera' as const, label: 'Cameras' },
       { href: '/admin/faqs', icon: 'MessageSquare' as const, label: 'Bot FAQs' },
       { href: '/admin/activity', icon: 'Activity' as const, label: 'Activity Log' },
       { href: '/admin/staff', icon: 'Users' as const, label: 'Staff' },
@@ -69,7 +70,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     { href: '/manual/ethasfish-portal-manual.pdf', icon: 'BookOpen' as const, label: 'Portal Manual', download: true }
   ];
 
-  const ICON_MAP = { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings, Megaphone, Fish, HandCoins, BookOpen, Bike };
+  const ICON_MAP = { LayoutDashboard, Package, ShoppingBag, MessageSquare, LayoutTemplate, ImageIcon, Users, UserPlus, Activity, FileText, Boxes, Wallet, Truck, Bot, Sparkles, Store, Settings, Megaphone, Fish, HandCoins, BookOpen, Bike, Camera };
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">

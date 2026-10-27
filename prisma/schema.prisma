@@ -515,6 +515,25 @@ model BusinessSettings {
 // Site-wide promo banner entries ("New harvest in!", "20% off fillets").
 // Staff-level (not admin-only) by design - branch sales managers should be
 // able to announce their own sale/harvest without needing an admin.
+// ===================== FARM SECURITY =====================
+// Live camera feeds for Admin > Cameras. `streamUrl` must be a
+// browser-playable source: an HLS playlist (.m3u8), an embeddable relay
+// page (e.g. go2rtc's /embed.html?src=...), or a snapshot image (.jpg).
+// Raw rtsp:// URLs are rejected by the API - browsers can't play them,
+// so the always-on NVR/PC at the farm relays each camera to HTTP(S).
+model Camera {
+  id        String   @id @default(cuid())
+  name      String
+  zone      String? // "Cage 1", "Gate", "Pump house" ...
+  kind      String   @default("hls") // hls | embed | image
+  streamUrl String
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  createdBy String? // StaffProfile.id of whoever added it
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Promotion {
   id        String    @id @default(cuid())
   type      String    @default("announcement") // sale | harvest | announcement | restock

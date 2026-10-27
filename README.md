@@ -51,6 +51,30 @@ Open http://localhost:3000
 
 Until Clerk is connected, `/admin` and `/account` show a "not yet configured" message and the rest of the site works normally.
 
+## 📹 Farm cameras (Admin → Cameras)
+
+The portal has a live CCTV wall at **`/admin/cameras`** (admin-only): a grid of named tiles — Cage 1, Gate, Pump house — each playing its feed live, with add/edit/delete managed from the same page and every change written to the activity log.
+
+**The one constraint:** cameras speak RTSP, browsers don't, and the portal runs on HTTPS. So each camera must be relayed to an HTTPS URL by a machine that is always on (the NVR or an office PC — `rtsp://` links are rejected by the API with that explanation). The recommended, free setup:
+
+1. **Install [go2rtc](https://github.com/AlexxIT/go2rtc)** on the always-on machine (Windows/Linux binary — no dependencies).
+2. **Add the cameras** to its `go2rtc.yml` — either each camera directly, or once from the NVR's RTSP sub-stream:
+   ```yaml
+   streams:
+     cage1: rtsp://admin:PASSWORD@192.168.1.20:554/Streaming/Channels/101
+     gate:  rtsp://admin:PASSWORD@192.168.1.21:554/Streaming/Channels/101
+   ```
+3. **Expose it over HTTPS** with a [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) (`cloudflared`) pointed at go2rtc's port — free, no port-forwarding, and the URL stays stable. Any other HTTPS tunnel or reverse proxy works too.
+4. **Paste the URL into Admin → Cameras.** Three feed types are supported (auto-detected from the URL if you leave the type on *Auto-detect*):
+
+| Type | URL shape | Player |
+|---|---|---|
+| **HLS** | `https://…/api/stream.m3u8` | hls.js (Safari uses native HLS) — best for grids |
+| **Embed** | `https://…/embed.html?src=cage1` | iframe — go2rtc's built-in viewer |
+| **Image** | `https://…/snapshot.jpg` | snapshot refreshed every 5 s — lowest bandwidth |
+
+Tiles show a LIVE badge while the stream loads, an error state with a Retry button when the relay is unreachable, and disabled cameras are stored but never loaded. Latency depends on the feed type: HLS ~2–5 s, go2rtc's WebRTC embed is near real-time.
+
 ## 🤖 The AI Sales Agent
 
 `/api/chatbot` first tries **Fin**, the autonomous sales agent (`src/lib/agents/sales-agent.ts`), built with the AI SDK's `ToolLoopAgent` and routed through the Vercel AI Gateway. It has three tools:
