@@ -219,16 +219,17 @@
       <div class="rule"></div>
       <p class="sub">
         The complete staff guide to running the Ethasfish portal — from recording a harvest
-        on the cages, through outlet stock and the point of sale, to customer credit and
-        settlements. Every screen in this book is a real capture of the live system.
+        on the cages, through outlet stock and the point of sale, to customer credit,
+        rider dispatch and the farm's sensors and cameras. Every screen in this book is a
+        real capture of the live system.
       </p>
     </div>
   </div>
 
   <div class="cover-grid">
     <div class="cover-chip"><div class="k">Audience</div><div class="v">Sales &amp; Admin staff</div></div>
-    <div class="cover-chip"><div class="k">Version</div><div class="v">1.0 — 2026</div></div>
-    <div class="cover-chip"><div class="k">Screens</div><div class="v">15 live captures</div></div>
+    <div class="cover-chip"><div class="k">Version</div><div class="v">1.1 — 2026</div></div>
+    <div class="cover-chip"><div class="k">Screens</div><div class="v">21 live captures</div></div>
   </div>
 
   <svg class="cover-wave" viewBox="0 0 800 180" preserveAspectRatio="none">
@@ -250,7 +251,7 @@
     <div class="kicker">What's inside</div>
     <h3 class="title">Contents</h3>
     <div class="stripe" style="width:34mm;height:4px;border-radius:4px;background:linear-gradient(90deg,var(--accent),rgba(28,110,168,0));margin:1mm 0 2mm;"></div>
-    <p class="body" style="max-width:130mm;">Nine sections follow the flow of a working day: open the portal, take stock, sell, settle credit, and manage the storefront that customers see.</p>
+    <p class="body" style="max-width:130mm;">Twelve sections follow the flow of a working day: open the portal, take stock, sell, settle credit, manage the storefront customers see, dispatch riders and watch the farm itself.</p>
 
     <div class="toc">
       <a href="#pg04"><span class="no">01</span><span class="nm">Getting started — the portal at a glance</span><span class="dots"></span><span class="pg">4</span></a>
@@ -261,7 +262,11 @@
       <a href="#pg12"><span class="no">06</span><span class="nm">Orders — fulfilment &amp; the owed queue</span><span class="dots"></span><span class="pg">12</span></a>
       <a href="#pg14"><span class="no">07</span><span class="nm">Products — pricing, variants &amp; stock levels</span><span class="dots"></span><span class="pg">14</span></a>
       <a href="#pg15"><span class="no">08</span><span class="nm">Site content — managing what customers see</span><span class="dots"></span><span class="pg">15</span></a>
-      <a href="#pg16"><span class="no">09</span><span class="nm">The customer storefront &amp; daily checklist</span><span class="dots"></span><span class="pg">16</span></a>
+      <a href="#pg16"><span class="no">09</span><span class="nm">The customer storefront</span><span class="dots"></span><span class="pg">16</span></a>
+      <a href="#pg17"><span class="no">10</span><span class="nm">Deliveries — dispatch, riders &amp; live tracking</span><span class="dots"></span><span class="pg">17</span></a>
+      <a href="#pg21"><span class="no">11</span><span class="nm">Farm cameras — the video wall</span><span class="dots"></span><span class="pg">21</span></a>
+      <a href="#pg22"><span class="no">12</span><span class="nm">Farm intelligence — sensors, alerts &amp; the advisor</span><span class="dots"></span><span class="pg">22</span></a>
+      <a href="#pg23" style="margin-top:1mm;"><span class="no" style="color:var(--muted);">★</span><span class="nm">The daily close — checklist</span><span class="dots"></span><span class="pg">23</span></a>
     </div>
 
     <div class="callout" style="margin-top:9mm;">
@@ -271,7 +276,7 @@
     </div>
   </div>
 
-  <div class="runner bottom"><span>Operations Manual · v1.0</span><span>Page 2</span></div>
+  <div class="runner bottom"><span>Operations Manual · v1.1</span><span>Page 2</span></div>
 </section>
 
 <!-- ══════════════════════════ WELCOME ══════════════════════════ -->
@@ -285,12 +290,13 @@
     <p class="lede">
       Ethasfish Farms runs on a single portal. The fish counted on the cages this morning are the
       same stock the outlet sells this afternoon, the same products the online shop offers tonight —
-      and the same balances the credit ledger tracks when a customer pays later. Nothing is entered twice.
+      and the same balances the credit ledger tracks when a customer pays later. An order taken online
+      can be on a rider's bike minutes later, tracked live by the customer until it lands. Nothing is entered twice.
     </p>
 
     <div class="cols2" style="margin-top:9mm;">
       <p><b>For sales staff.</b> You will live in three places: <b>Stock</b> (harvest, send-out, outlet sales), <b>Point of Sale</b> (counter orders and receipts), and <b>Orders</b> (following up and taking payment).</p>
-      <p><b>For admins.</b> Everything above, plus products and pricing, credit, purchasing, accounting, the media library and the website content your customers browse.</p>
+      <p><b>For admins.</b> Everything above, plus products and pricing, credit, purchasing, accounting, the media library, the website, the rider dispatch board, the farm cameras and the live sensor dashboard.</p>
     </div>
 
     <div class="callout" style="margin-top:8mm;">
@@ -299,7 +305,7 @@
     </div>
   </div>
 
-  <div class="runner bottom"><span>Operations Manual · v1.0</span><span>Page 3</span></div>
+  <div class="runner bottom"><span>Operations Manual · v1.1</span><span>Page 3</span></div>
 </section>
 
 <!-- ══════════════════════════ 01 DASHBOARD ══════════════════════════ -->
@@ -648,9 +654,193 @@
   <div class="runner bottom"><span>Storefront</span><span>Page 16</span></div>
 </section>
 
-<!-- ══════════════════════════ CHECKLIST ══════════════════════════ -->
+<!-- ══════════════════════════ 10 DELIVERIES ══════════════════════════ -->
 <section id="pg17" class="page">
-  <div class="runner top"><span><span class="dot"></span>09 · Storefront</span><span>Daily checklist</span></div>
+  <div class="runner top"><span><span class="dot"></span>10 · Deliveries</span><span>Dispatch</span></div>
+
+  <div class="kicker">Section 10</div>
+  <h3 class="title">Deliveries — the dispatch board</h3>
+  <p class="body">
+    Every paid online order that needs a rider lands on <b>Admin → Deliveries</b>. The board
+    refreshes every five seconds: a live map showing each rider and the destination pins, an
+    <b>Unassigned orders</b> queue, the <b>On the road</b> list of active jobs, and a
+    <b>Fleet status</b> card down the side showing who is carrying what.
+  </p>
+
+  <div class="steps">
+    <div class="step"><div class="n"></div><div class="txt"><b>Assign.</b> Open an unassigned order and pick an idle rider — each choice shows their last signal, so you never book a phone that's been dark for an hour.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Watch.</b> The rider's dot moves on the map as their phone sends GPS pings. A faded dot means no signal for over 90 seconds.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Nudge.</b> <b>Move pin</b> fixes an address that geocoded wrongly; <b>Customer</b> dials the recipient without leaving the board.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Close.</b> <b>Mark delivered</b> mirrors the rider's own tap — the order flips to delivered and leaves the road.</div></div>
+  </div>
+
+  <div class="callout"><b>Map legend.</b> ● rider · ● destination · faded = no signal &gt; 90s. The board is also where you cancel a job before pickup.</div>
+
+  <div class="fig" style="margin-top:4mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/admin/deliveries — live dispatch board</span></div>
+    <img src="assets/16-deliveries.png" alt="Dispatch board">
+  </div>
+
+  <div class="runner bottom"><span>Deliveries</span><span>Page 17</span></div>
+</section>
+
+<!-- ══════════════════════════ 10b DRIVERS ══════════════════════════ -->
+<section id="pg18" class="page">
+  <div class="runner top"><span><span class="dot"></span>10 · Deliveries</span><span>Riders</span></div>
+
+  <div class="kicker">Section 10 · continued</div>
+  <h3 class="title">Drivers &amp; the rider phone app</h3>
+  <p class="body">
+    The <b>Drivers</b> tab holds the fleet: name, phone, plate number, vehicle type
+    (motorcycle, bicycle or van) and whether the person may sign in. Riders use their own
+    phones: they sign into the rider app at <b>/driver</b>, see the jobs assigned to them,
+    and tap once to collect and once to deliver. While a job is active the phone streams a
+    GPS ping every few seconds — that is what moves the dot on your board and on the
+    customer's tracking page.
+  </p>
+
+  <div class="steps">
+    <div class="step"><div class="n"></div><div class="txt"><b>Add a driver.</b> Name and phone are required; plate and vehicle show up on the board and in the assign menu.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Link their sign-in.</b> Attach a staff email so they can open the rider app — a driver with no sign-in yet is flagged in amber on the card.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Assign work.</b> The dispatch queue only offers <b>idle, active</b> riders; off-duty riders can't be booked.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>One-tap flow.</b> Collect → Delivered on the phone. GPS pings stop the moment the job ends or the tab is hidden — battery matters more than a perfect trail.</div></div>
+  </div>
+
+  <div class="callout warn"><b>Lost phone?</b> Mark the rider <b>off</b> (or block their staff account) and their current job returns to the unassigned queue — no rider can keep a job after sign-out.</div>
+
+  <div class="fig" style="margin-top:4mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/admin/deliveries — Drivers tab</span></div>
+    <img src="assets/17-drivers.png" alt="Drivers tab">
+  </div>
+
+  <div class="runner bottom"><span>Deliveries</span><span>Page 18</span></div>
+</section>
+
+<!-- ══════════════════════════ 10c REPORTS ══════════════════════════ -->
+<section id="pg19" class="page">
+  <div class="runner top"><span><span class="dot"></span>10 · Deliveries</span><span>Reports</span></div>
+
+  <div class="kicker">Section 10 · continued</div>
+  <h3 class="title">Delivery reports — volumes, speed &amp; the league table</h3>
+  <p class="body">
+    The <b>Reports</b> tab answers the manager's questions without a spreadsheet: how many
+    deliveries went out and when, how long rides take on average, how far the fleet travels,
+    and a per-driver league table ranking delivered jobs, average ride time, total
+    kilometres and cancellations.
+  </p>
+
+  <div class="steps">
+    <div class="step"><div class="n"></div><div class="txt"><b>Volume trend.</b> Spot your busy days and put another rider on shift before they happen again.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Speed.</b> Average ride minutes and kilometres — a rising trend usually means prep delays, not slow bikes.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>League table.</b> Celebrate the top rider, and open a conversation where cancellations cluster.</div></div>
+  </div>
+
+  <div class="callout"><b>Review weekly.</b> Ten minutes on this page every Monday tells you whether you need more riders, better packing, or clearer addresses at checkout.</div>
+
+  <div class="fig" style="margin-top:4mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/admin/deliveries — Reports tab</span></div>
+    <img src="assets/18-reports.png" alt="Delivery reports">
+  </div>
+
+  <div class="runner bottom"><span>Deliveries</span><span>Page 19</span></div>
+</section>
+
+<!-- ══════════════════════════ 10d TRACKING ══════════════════════════ -->
+<section id="pg20" class="page">
+  <div class="runner top"><span><span class="dot"></span>10 · Deliveries</span><span>Customer tracking</span></div>
+
+  <div class="kicker">Section 10 · continued</div>
+  <h3 class="title">Live tracking — what the customer sees</h3>
+  <p class="body">
+    Customers don't ring to ask “where is it?” — every receipt carries a track link. The
+    public <b>/track</b> page takes the order number and shows the five-stage journey, then,
+    once a rider picks up, a live map with the rider's dot, first name, vehicle and an
+    <b>ETA chip</b> that counts down until delivery. It is your dispatch board's data,
+    trimmed to what a customer may see: no phone numbers, no internal ids, no fleet-wide
+    positions.
+  </p>
+
+  <div class="steps">
+    <div class="step"><div class="n"></div><div class="txt"><b>Share the link.</b> WhatsApp, SMS and email receipts already include it — nothing extra to send.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Rider assigned</b> — “Rider assigned — collecting your order”.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Picked up</b> — the live dot appears with a green <b>Live</b> badge and the ETA, refreshing every 5 seconds.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Delivered</b> — the timeline completes and the live block retires into the stage history.</div></div>
+  </div>
+
+  <div class="callout"><b>Same pin, same truth.</b> If the destination lands wrong, fix it once with <b>Move pin</b> on the dispatch board — the customer's map corrects itself on the next refresh.</div>
+
+  <div class="fig" style="margin-top:4mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/track — customer live tracking</span></div>
+    <img src="assets/21-track.png" alt="Customer live tracking">
+  </div>
+
+  <div class="runner bottom"><span>Deliveries</span><span>Page 20</span></div>
+</section>
+
+<!-- ══════════════════════════ 11 CAMERAS ══════════════════════════ -->
+<section id="pg21" class="page">
+  <div class="runner top"><span><span class="dot"></span>11 · Cameras</span><span>Video wall</span></div>
+
+  <div class="kicker">Section 11</div>
+  <h3 class="title">Farm cameras — the video wall</h3>
+  <p class="body">
+    <b>Admin → Cameras</b> brings the farm's CCTV into the portal: a grid of live tiles for
+    the gates, ponds, stores and curing rooms, each marked <b>LIVE</b> or <b>OFFLINE</b> at
+    a glance. Add a camera with its name, the area it covers and its stream URL — the tile
+    then plays whatever that URL offers: an HLS playlist, the web viewer of the farm's
+    recorder, or a snapshot image refreshed every few seconds.
+  </p>
+
+  <div class="steps">
+    <div class="step"><div class="n"></div><div class="txt"><b>Add a camera.</b> Name, area, URL and type — HLS streams play inline, embed URLs show the recorder's own viewer, image URLs poll a JPEG.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Watch the wall.</b> Every tile plays at once; status tells you instantly which feeds are answering.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Edit or remove</b> a feed from its tile when the farm rearranges cameras.</div></div>
+  </div>
+
+  <div class="callout warn"><b>RTSP is rejected on purpose.</b> Browsers cannot play raw <code>rtsp://</code> links — the farm's always-on NVR or relay PC must expose each camera over HTTPS first (see README → Farm cameras). A tile stuck OFFLINE means the relay, not the portal.</div>
+
+  <div class="fig" style="margin-top:4mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/admin/cameras — live camera wall</span></div>
+    <img src="assets/19-cameras.png" alt="Camera wall">
+  </div>
+
+  <div class="runner bottom"><span>Cameras</span><span>Page 21</span></div>
+</section>
+
+<!-- ══════════════════════════ 12 FARM INTELLIGENCE ══════════════════════════ -->
+<section id="pg22" class="page">
+  <div class="runner top"><span><span class="dot"></span>12 · Farm intelligence</span><span>Sensors</span></div>
+
+  <div class="kicker">Section 12</div>
+  <h3 class="title">Farm intelligence — sensors, alerts &amp; the advisor</h3>
+  <p class="body">
+    <b>Admin → Farm Intelligence</b> is the ground view. Field devices push water
+    temperature, water level, pH, dissolved oxygen and humidity; the page turns those into
+    live metric cards coloured by your rules, a 48-hour trend chart with the thresholds
+    drawn straight onto it, and an alert feed fed by the rules engine. Devices that can
+    act — pumps and aerators — take commands queued right from the actuator panel.
+  </p>
+
+  <div class="steps">
+    <div class="step"><div class="n"></div><div class="txt"><b>Register devices.</b> Create a device (name, zone, kind), copy its token into the reporter — freshness shows <b>live / idle / offline</b>.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Set the rules.</b> Metric, above or below, threshold, severity (info / warning / critical), cooldown and the action to fire — the chart draws each threshold as a dashed line.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Work the alert feed.</b> Warning-and-above alerts land here and go out by <b>WhatsApp</b> to the farm's alert phones (deduplicated); acknowledge or resolve as you act.</div></div>
+    <div class="step"><div class="n"></div><div class="txt"><b>Act, or ask.</b> Queue <b>pump / aerator on-off</b> from the actuator panel, or ask the <b>AI advisor</b> — it reads the same telemetry and rules and explains what needs attention now.</div></div>
+  </div>
+
+  <div class="callout"><b>No device on a pond yet?</b> Enter readings by hand — manual entries join the same series, so baselines and initial figures from the ground are keyed in from this page too.</div>
+
+  <div class="fig" style="margin-top:4mm;">
+    <div class="bar"><i></i><i></i><i></i><span>/admin/farm — live metrics, rules &amp; advisor</span></div>
+    <img src="assets/20-farm.png" alt="Farm intelligence">
+  </div>
+
+  <div class="runner bottom"><span>Farm intelligence</span><span>Page 22</span></div>
+</section>
+
+<!-- ══════════════════════════ CHECKLIST ══════════════════════════ -->
+<section id="pg23" class="page">
+  <div class="runner top"><span><span class="dot"></span>Wrap-up</span><span>Daily checklist</span></div>
 
   <div class="kicker">Wrap-up</div>
   <h3 class="title">The daily close — a five-minute routine</h3>
@@ -668,6 +858,10 @@
     <div class="check"><span class="box"></span>Overdue credit chased — a call or an M-Pesa request.</div>
     <div class="check"><span class="box"></span>Low-stock alerts cleared or restock planned.</div>
     <div class="check"><span class="box"></span>Site content checked if a promo or price changed today.</div>
+    <div class="check"><span class="box"></span>On-the-road deliveries closed out — every rider delivered or accounted for.</div>
+    <div class="check"><span class="box"></span>Dispatch map glance — any faded (no-signal) rider followed up.</div>
+    <div class="check"><span class="box"></span>Farm alerts cleared — pumps and aerators acted on; devices still reporting live.</div>
+    <div class="check"><span class="box"></span>Camera wall scanned — gates and ponds secure for the night.</div>
   </div>
 
   <div class="callout" style="margin-top:8mm;">
@@ -683,11 +877,11 @@
     </div>
     <div>
       <div style="font-size:9pt;font-weight:800;color:var(--ink);">Ethasfish Farms — Operations Manual</div>
-      <div style="font-size:7.5pt;color:var(--muted);letter-spacing:.08em;">Version 1.0 · 2026 · Internal use only</div>
+      <div style="font-size:7.5pt;color:var(--muted);letter-spacing:.08em;">Version 1.1 · 2026 · Internal use only</div>
     </div>
   </div>
 
-  <div class="runner bottom"><span>End of manual</span><span>Page 17</span></div>
+  <div class="runner bottom"><span>End of manual</span><span>Page 23</span></div>
 </section>
 
 </body>
