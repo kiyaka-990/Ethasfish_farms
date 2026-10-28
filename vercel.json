@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/farm-digest",
+      "schedule": "0 4 * * *"
+    }
+  ]
+}

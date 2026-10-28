@@ -188,6 +188,33 @@ function alertText(alert: { severity: string; message: string; createdAt?: Date 
 }
 
 /**
+ * One WhatsApp text message through the Cloud API the receipts use.
+ * Caller is responsible for checking WHATSAPP_* env and recipients;
+ * failures are logged and reported as `false`, never thrown.
+ */
+export async function sendWhatsAppText(to: string, body: string): Promise<boolean> {
+  try {
+    const res = await fetch(
+      `https://graph.facebook.com/v20.0/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`,
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.WHATSAPP_TOKEN}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ messaging_product: 'whatsapp', to, text: { body } })
+      }
+    );
+    if (res.ok) return true;
+    console.error(`[whatsapp] to ${to} failed: ${res.status} ${(await res.text()).slice(0, 200)}`);
+    return false;
+  } catch (e) {
+    console.error(`[whatsapp] to ${to} errored:`, e);
+    return false;
+  }
+}
+
+/**
  * WhatsApp a warning/critical alert to the configured farm numbers.
  * Deliberately defensive: no WhatsApp env, no recipients, or an API
  * failure never breaks ingest - the alert is already recorded either way.
@@ -215,17 +242,7 @@ export async function notifyFarmAlert(alert: {
     const body = alertText(alert);
     let sent = 0;
     for (const to of recipients) {
-      try {
-        const res = await fetch(`https://graph.facebook.com/v20.0/${phoneNumberId}/messages`, {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messaging_product: 'whatsapp', to, text: { body } })
-        });
-        if (res.ok) sent++;
-        else console.error(`[farm] WhatsApp alert to ${to} failed:`, res.status, (await res.text()).slice(0, 200));
-      } catch (e) {
-        console.error(`[farm] WhatsApp alert to ${to} errored:`, e);
-      }
+      if (await sendWhatsAppText(to, body)) sent++;
     }
     return { sent, skipped: sent === recipients.length ? null : 'some sends failed' };
   } catch (e) {

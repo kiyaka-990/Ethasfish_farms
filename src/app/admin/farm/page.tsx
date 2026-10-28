@@ -433,6 +433,8 @@ export default function FarmIntelligencePage() {
   const [phones, setPhones] = useState('');
   const [phonesLoaded, setPhonesLoaded] = useState(false);
   const [savingPhones, setSavingPhones] = useState(false);
+  const [digestText, setDigestText] = useState<string | null>(null);
+  const [sendingDigest, setSendingDigest] = useState(false);
   const seenRef = useRef(false);
 
   const load = useCallback(async () => {
@@ -525,6 +527,25 @@ export default function FarmIntelligencePage() {
     setSavingPhones(true);
     await apiCall({ method: 'POST', body: { op: 'settings', farmAlertPhones: phones } }, 'Alert recipients saved');
     setSavingPhones(false);
+  }
+
+  async function sendDigest() {
+    setSendingDigest(true);
+    try {
+      const res = await fetch('/api/admin/farm/digest', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ send: true })
+      });
+      const d = await res.json();
+      if (!res.ok) throw new Error(d.error || 'Digest failed');
+      setDigestText(d.digest);
+      if (d.sent) toast.success(`Digest sent to ${d.sent} number(s)`);
+      else toast(d.skipped || 'Digest built (nothing sent)', { icon: 'ℹ️', duration: 6000 });
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setSendingDigest(false);
+    }
   }
 
   async function runAdvisor(prompt?: string) {
@@ -685,8 +706,11 @@ export default function FarmIntelligencePage() {
               <button onClick={savePhones} disabled={savingPhones} className="btn-secondary text-xs">
                 {savingPhones ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null} Save numbers
               </button>
+              <button onClick={sendDigest} disabled={sendingDigest} className="btn-secondary text-xs" title="Build yesterday's digest and WhatsApp it to the numbers above">
+                {sendingDigest ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />} Send digest
+              </button>
             </div>
-            <p className="text-[11px] text-muted">Comma-separated. Normalized to 254… automatically. Needs WHATSAPP_TOKEN (already used for receipts) — nothing is sent until a number is saved here.</p>
+            <p className="text-[11px] text-muted">Comma-separated. Normalized to 254… automatically. Needs WHATSAPP_TOKEN (already used for receipts) — nothing is sent until a number is saved here. A daily digest also goes out automatically at 07:00 (Nairobi).</p>
           </div>
           {(data?.alerts || []).length === 0 ? (
             <p className="text-sm text-muted py-6 text-center border-2 border-dashed border-[var(--border-color)] rounded-2xl">
@@ -875,6 +899,17 @@ export default function FarmIntelligencePage() {
       {deviceForm && <DeviceForm onClose={() => setDeviceForm(false)} onSaved={load} />}
       {ruleForm && <RuleForm devices={devices} onClose={() => setRuleForm(false)} onSaved={load} />}
       {readingForm && <ReadingForm devices={devices} onClose={() => setReadingForm(false)} onSaved={load} />}
+      {digestText && (
+        <Modal title="Daily farm digest" icon={<Send className="w-5 h-5 text-[var(--accent)]" />} onClose={() => setDigestText(null)}>
+          <pre className="whitespace-pre-wrap rounded-xl bg-[var(--surface-soft)] border border-[var(--border-color)] p-3 text-xs text-primary font-mono max-h-[55vh] overflow-y-auto">
+            {digestText}
+          </pre>
+          <div className="flex justify-end gap-3">
+            <button onClick={() => { navigator.clipboard?.writeText(digestText); toast.success('Digest copied'); }} className="btn-secondary text-sm">Copy</button>
+            <button onClick={() => setDigestText(null)} className="btn-primary text-sm">Close</button>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

@@ -82,6 +82,12 @@ export async function GET(req: NextRequest) {
   try {
     const a = await auth(req);
     if ('error' in a) return NextResponse.json({ error: a.error }, { status: 401 });
+    // A poll is proof of life even with nothing to report (actuators
+    // usually never POST) - without this every pump would read "never seen".
+    await prisma.sensorDevice.update({
+      where: { id: a.device.id },
+      data: { lastSeenAt: new Date() }
+    });
     const commands = await takeCommands(a.device.id);
     return NextResponse.json({ ok: true, commands });
   } catch (e: any) {

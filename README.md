@@ -122,6 +122,10 @@ Rules run **server-side on every ingest**: threshold + hysteresis (no flapping) 
 
 The advisor panel runs a ToolLoopAgent (same fleet as the sales/stockist agents) over live readings, alerts, rules and devices. It quotes real numbers, explains combinations (hot + low oxygen is the danger pair), and can `queueCommand` — audited like every agent write. Staff must ask it to act; it advises otherwise.
 
+### Daily WhatsApp digest
+
+Every morning at **07:00 (Nairobi)** Vercel's cron calls `/api/cron/farm-digest` (guarded by the `CRON_SECRET` env var, fail-closed) and sends the previous day's digest to the same alert recipients: one line per metric (last/avg/min/max + trend), alerts that fired, commands executed, and any device that went silent. The *Send digest* button on the dashboard builds the identical message on demand — it always returns the text for preview even when nothing is configured to send.
+
 ## 🤖 The AI Sales Agent
 
 `/api/chatbot` first tries **Fin**, the autonomous sales agent (`src/lib/agents/sales-agent.ts`), built with the AI SDK's `ToolLoopAgent` and routed through the Vercel AI Gateway. It has three tools:
